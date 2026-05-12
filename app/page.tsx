@@ -7,17 +7,45 @@ import { useRouter } from "next/navigation";
 export default function HomePage() {
   const router = useRouter();
   const [scrolled, setScrolled] = React.useState(false);
+  const [pastHero, setPastHero] = React.useState(false);
+  const [menuOpen, setMenuOpen] = React.useState(false);
   const [inputValue, setInputValue] = React.useState("");
   const inputRef = React.useRef<HTMLInputElement>(null);
   const heroStaggerRef = React.useRef<HTMLDivElement>(null);
 
-  // ── Navbar scroll effect ──
+  // ── Navbar scroll + sticky CTA trigger ──
   React.useEffect(() => {
-    const onScroll = () => setScrolled(window.scrollY > 8);
+    const onScroll = () => {
+      const y = window.scrollY;
+      setScrolled(y > 8);
+      setPastHero(y > window.innerHeight * 0.7);
+    };
     window.addEventListener("scroll", onScroll, { passive: true });
     onScroll();
     return () => window.removeEventListener("scroll", onScroll);
   }, []);
+
+  // ── Body scroll lock when mobile menu open ──
+  React.useEffect(() => {
+    if (menuOpen) {
+      document.body.style.overflow = "hidden";
+    } else {
+      document.body.style.overflow = "";
+    }
+    return () => {
+      document.body.style.overflow = "";
+    };
+  }, [menuOpen]);
+
+  // ── Close menu on Esc ──
+  React.useEffect(() => {
+    if (!menuOpen) return;
+    const onKey = (e: KeyboardEvent) => {
+      if (e.key === "Escape") setMenuOpen(false);
+    };
+    window.addEventListener("keydown", onKey);
+    return () => window.removeEventListener("keydown", onKey);
+  }, [menuOpen]);
 
   // ── Intersection observer reveal + hero immediate ──
   React.useEffect(() => {
@@ -179,12 +207,114 @@ export default function HomePage() {
             >
               Untuk Installer
             </a>
-            <Link href="/kalkulator" className="sl-btn sl-btn-primary sl-btn-sm">
+            <Link href="/kalkulator" className="sl-btn sl-btn-primary sl-btn-sm sl-nav-cta">
               Hitung Sekarang
             </Link>
+            <button
+              type="button"
+              className="sl-nav-toggle"
+              aria-label="Buka menu"
+              aria-expanded={menuOpen}
+              onClick={() => setMenuOpen(true)}
+            >
+              <svg width="22" height="22" viewBox="0 0 24 24" fill="none" stroke="currentColor" strokeWidth="2.2" strokeLinecap="round">
+                <line x1="4" y1="7" x2="20" y2="7" />
+                <line x1="4" y1="12" x2="20" y2="12" />
+                <line x1="4" y1="17" x2="20" y2="17" />
+              </svg>
+            </button>
           </nav>
         </div>
       </header>
+
+      {/* ===== MOBILE DRAWER ===== */}
+      <div
+        className={"sl-drawer-backdrop" + (menuOpen ? " is-open" : "")}
+        onClick={() => setMenuOpen(false)}
+        aria-hidden="true"
+      />
+      <aside
+        className={"sl-drawer" + (menuOpen ? " is-open" : "")}
+        role="dialog"
+        aria-modal="true"
+        aria-label="Menu navigasi"
+      >
+        <div className="sl-drawer-head">
+          <span className="sl-logo">
+            <img src="/solario-icon.png" alt="" className="sl-logo-icon" aria-hidden="true" />
+            Solario<span className="sub">.id</span>
+          </span>
+          <button
+            type="button"
+            className="sl-drawer-close"
+            aria-label="Tutup menu"
+            onClick={() => setMenuOpen(false)}
+          >
+            <svg width="22" height="22" viewBox="0 0 24 24" fill="none" stroke="currentColor" strokeWidth="2.2" strokeLinecap="round">
+              <line x1="6" y1="6" x2="18" y2="18" />
+              <line x1="18" y1="6" x2="6" y2="18" />
+            </svg>
+          </button>
+        </div>
+        <nav className="sl-drawer-nav">
+          <a
+            href="#top"
+            onClick={(e) => {
+              setMenuOpen(false);
+              handleAnchorClick(e, "top");
+            }}
+            className="sl-drawer-link"
+          >
+            <svg width="20" height="20" viewBox="0 0 24 24" fill="none" stroke="currentColor" strokeWidth="1.8" strokeLinecap="round" strokeLinejoin="round">
+              <path d="M3 12l9-9 9 9" />
+              <path d="M5 10v10h14V10" />
+            </svg>
+            Beranda
+          </a>
+          <Link href="/kalkulator" className="sl-drawer-link" onClick={() => setMenuOpen(false)}>
+            <svg width="20" height="20" viewBox="0 0 24 24" fill="none" stroke="currentColor" strokeWidth="1.8" strokeLinecap="round" strokeLinejoin="round">
+              <rect x="4" y="3" width="16" height="18" rx="2" />
+              <line x1="8" y1="8" x2="16" y2="8" />
+              <line x1="8" y1="13" x2="11" y2="13" />
+              <line x1="13" y1="13" x2="16" y2="13" />
+              <line x1="8" y1="17" x2="11" y2="17" />
+            </svg>
+            Kalkulator
+          </Link>
+          <Link href="/partner-installer" className="sl-drawer-link" onClick={() => setMenuOpen(false)}>
+            <svg width="20" height="20" viewBox="0 0 24 24" fill="none" stroke="currentColor" strokeWidth="1.8" strokeLinecap="round" strokeLinejoin="round">
+              <path d="M14 7l-3 3 3 3" />
+              <path d="M21 12H8" />
+              <path d="M17 21V5a2 2 0 0 0-2-2H5a2 2 0 0 0-2 2v16" />
+            </svg>
+            Untuk Installer
+          </Link>
+          <Link href="/admin" className="sl-drawer-link" onClick={() => setMenuOpen(false)}>
+            <svg width="20" height="20" viewBox="0 0 24 24" fill="none" stroke="currentColor" strokeWidth="1.8" strokeLinecap="round" strokeLinejoin="round">
+              <rect x="3" y="11" width="18" height="11" rx="2" />
+              <path d="M7 11V7a5 5 0 0110 0v4" />
+            </svg>
+            Masuk Admin
+          </Link>
+        </nav>
+        <div className="sl-drawer-foot">
+          <Link
+            href="/kalkulator"
+            className="sl-btn sl-btn-hero sl-btn-hero-primary sl-drawer-cta"
+            onClick={() => setMenuOpen(false)}
+          >
+            Hitung Sekarang <span className="arr">→</span>
+          </Link>
+          <p className="sl-drawer-tag">Gratis · Tanpa daftar</p>
+        </div>
+      </aside>
+
+      {/* ===== STICKY MOBILE CTA ===== */}
+      <div className={"sl-sticky-cta" + (pastHero ? " is-visible" : "")} aria-hidden={!pastHero}>
+        <Link href="/kalkulator" className="sl-btn sl-btn-hero sl-btn-hero-primary sl-sticky-cta-btn">
+          Hitung Sekarang <span className="arr">→</span>
+        </Link>
+      </div>
 
       {/* ===== HERO ===== */}
       <section className="sl-hero" id="top">

@@ -53,6 +53,11 @@ html, body {
   }
 }
 
+@keyframes drawerItemIn {
+  from { opacity: 0; transform: translateX(12px); }
+  to   { opacity: 1; transform: translateX(0); }
+}
+
 /* ============================================================
    SOLARIO LANDING — design system (scoped under .solario-landing)
    ============================================================ */
@@ -300,6 +305,156 @@ html, body {
 }
 .solario-landing .sl-nav-link:hover { color: var(--sl-primary); }
 .solario-landing .sl-nav-link:hover::after { transform: scaleX(1); }
+
+/* Hamburger toggle */
+.solario-landing .sl-nav-toggle {
+  display: none;
+  width: 40px; height: 40px;
+  align-items: center; justify-content: center;
+  border-radius: 100px;
+  background: transparent;
+  color: var(--sl-ink);
+  border: 1px solid var(--sl-line);
+  cursor: pointer;
+  transition: background-color .2s var(--sl-ease-soft), border-color .2s var(--sl-ease-soft);
+  margin-left: 4px;
+}
+.solario-landing .sl-nav-toggle:hover {
+  background: var(--sl-accent-soft);
+  border-color: var(--sl-accent-border);
+}
+
+/* Mobile drawer */
+.solario-landing .sl-drawer-backdrop {
+  position: fixed; inset: 0;
+  background: rgba(7, 41, 31, 0.4);
+  backdrop-filter: blur(6px);
+  -webkit-backdrop-filter: blur(6px);
+  opacity: 0;
+  pointer-events: none;
+  transition: opacity .3s var(--sl-ease-soft);
+  z-index: 199;
+}
+.solario-landing .sl-drawer-backdrop.is-open {
+  opacity: 1;
+  pointer-events: auto;
+}
+
+.solario-landing .sl-drawer {
+  position: fixed; top: 0; right: 0; bottom: 0;
+  width: min(360px, 82vw);
+  background: #fff;
+  z-index: 200;
+  display: flex;
+  flex-direction: column;
+  transform: translateX(100%);
+  transition: transform .32s var(--sl-ease);
+  box-shadow: -20px 0 60px -20px rgba(7, 41, 31, 0.18);
+}
+.solario-landing .sl-drawer.is-open {
+  transform: translateX(0);
+}
+
+.solario-landing .sl-drawer-head {
+  display: flex; align-items: center; justify-content: space-between;
+  padding: 20px 22px 16px;
+  border-bottom: 1px solid var(--sl-line);
+}
+.solario-landing .sl-drawer-close {
+  width: 38px; height: 38px;
+  display: inline-flex; align-items: center; justify-content: center;
+  border-radius: 100px;
+  background: var(--sl-bg-soft);
+  color: var(--sl-ink);
+  border: 1px solid var(--sl-line);
+  cursor: pointer;
+  transition: background-color .2s var(--sl-ease-soft);
+}
+.solario-landing .sl-drawer-close:hover {
+  background: var(--sl-line-soft);
+}
+
+.solario-landing .sl-drawer-nav {
+  flex: 1;
+  padding: 18px 14px;
+  display: flex;
+  flex-direction: column;
+  gap: 2px;
+}
+.solario-landing .sl-drawer-link {
+  display: flex; align-items: center; gap: 14px;
+  padding: 14px 14px;
+  border-radius: 12px;
+  font-size: 16px; font-weight: 500;
+  color: var(--sl-ink);
+  text-decoration: none;
+  transition: background-color .2s var(--sl-ease-soft), color .2s var(--sl-ease-soft);
+  opacity: 0;
+  transform: translateX(12px);
+}
+.solario-landing .sl-drawer.is-open .sl-drawer-link {
+  animation: sl-drawerItem .5s var(--sl-ease) forwards;
+}
+.solario-landing .sl-drawer.is-open .sl-drawer-link:nth-child(1) { animation-delay: .08s; }
+.solario-landing .sl-drawer.is-open .sl-drawer-link:nth-child(2) { animation-delay: .14s; }
+.solario-landing .sl-drawer.is-open .sl-drawer-link:nth-child(3) { animation-delay: .2s; }
+.solario-landing .sl-drawer.is-open .sl-drawer-link:nth-child(4) { animation-delay: .26s; }
+.solario-landing .sl-drawer-link:hover {
+  background: var(--sl-accent-soft);
+  color: var(--sl-primary);
+}
+.solario-landing .sl-drawer-link svg {
+  color: var(--sl-muted);
+  flex-shrink: 0;
+}
+.solario-landing .sl-drawer-link:hover svg {
+  color: var(--sl-accent);
+}
+@keyframes sl-drawerItem {
+  to { opacity: 1; transform: translateX(0); }
+}
+
+.solario-landing .sl-drawer-foot {
+  padding: 18px 22px 26px;
+  border-top: 1px solid var(--sl-line);
+  display: flex;
+  flex-direction: column;
+  align-items: center;
+  gap: 8px;
+}
+.solario-landing .sl-drawer-cta {
+  width: 100%;
+  justify-content: center;
+}
+.solario-landing .sl-drawer-tag {
+  font-size: 12px;
+  color: var(--sl-muted);
+  margin: 0;
+}
+
+/* Sticky bottom CTA — mobile only */
+.solario-landing .sl-sticky-cta {
+  display: none;
+  position: fixed;
+  bottom: 0; left: 0; right: 0;
+  padding: 12px 16px max(12px, env(safe-area-inset-bottom));
+  background: rgba(255, 255, 255, 0.95);
+  backdrop-filter: saturate(180%) blur(20px);
+  -webkit-backdrop-filter: saturate(180%) blur(20px);
+  border-top: 1px solid var(--sl-line);
+  z-index: 90;
+  transform: translateY(110%);
+  transition: transform .35s var(--sl-ease);
+}
+.solario-landing .sl-sticky-cta.is-visible {
+  transform: translateY(0);
+}
+.solario-landing .sl-sticky-cta-btn {
+  width: 100%;
+  justify-content: center;
+  padding: 15px 22px;
+  font-size: 15px;
+}
 
 /* ── Hero (Apple-style, light) ── */
 .solario-landing .sl-hero {
@@ -833,43 +988,171 @@ html, body {
 
 /* ── Responsive ── */
 @media (max-width: 900px) {
-  .solario-landing .container { padding: 0 24px; }
-  .solario-landing .sl-hero { padding: 110px 0 0; }
-  .solario-landing .sl-hero-image-wrap { margin-top: 40px; padding: 0; }
+  .solario-landing .container { padding: 0 20px; }
+  .solario-landing .sl-nav-inner { padding: 0 16px; }
+
+  /* Navbar: show hamburger, hide menu links */
+  .solario-landing .sl-nav-link { display: none; }
+  .solario-landing .sl-nav-toggle { display: inline-flex; }
+  .solario-landing .sl-nav-cta { padding: 8px 14px; font-size: 13px; }
+  .solario-landing .sl-logo-icon { width: 38px; height: 38px; }
+  .solario-landing .sl-logo { font-size: 18px; gap: 8px; }
+
+  /* Hero: smaller, tighter, no 100vh */
+  .solario-landing .sl-hero {
+    padding: 96px 0 0;
+    min-height: auto;
+  }
+  .solario-landing .sl-h1 {
+    font-size: clamp(34px, 8.4vw, 56px);
+    letter-spacing: -0.035em;
+    line-height: 1.04;
+  }
+  .solario-landing .sl-hero-sub { font-size: 16px; margin-top: 20px; }
+  .solario-landing .sl-hero-ctas { margin-top: 26px; }
+  .solario-landing .sl-hero-stats { margin-top: 22px; font-size: 13px; }
+  .solario-landing .sl-hero-stats .dot { margin: 0 10px; }
+  .solario-landing .sl-badge { margin-bottom: 20px; font-size: 12px; }
+
+  /* Hero image: adaptive crop — show tighter/taller portrait crop */
+  .solario-landing .sl-hero-image-wrap {
+    margin-top: 32px;
+    height: 56vw;
+    max-height: 320px;
+    min-height: 200px;
+    overflow: hidden;
+  }
+  .solario-landing .sl-hero-image-wrap img {
+    width: 100%;
+    height: 100%;
+    object-fit: cover;
+    object-position: center 45%;
+  }
+
+  /* Sections: tighter padding */
   .solario-landing .sl-how,
   .solario-landing .sl-calc-cta,
   .solario-landing .sl-proof,
-  .solario-landing .sl-installer { padding: 96px 0; }
-  .solario-landing .sl-how-grid { grid-template-columns: 1fr; gap: 16px; }
-  .solario-landing .sl-proof-grid { grid-template-columns: repeat(2, 1fr); gap: 36px 20px; margin-bottom: 56px; }
-  .solario-landing .sl-testi-grid { grid-template-columns: 1fr; }
-  .solario-landing .sl-installer-grid { grid-template-columns: 1fr; gap: 48px; }
+  .solario-landing .sl-installer { padding: 72px 0; }
+  .solario-landing .sl-section-head { margin-bottom: 48px; }
+  .solario-landing .sl-section-head h2 { font-size: clamp(28px, 6vw, 40px); }
+  .solario-landing .sl-section-head p { font-size: 16px; }
+
+  .solario-landing .sl-how-grid { grid-template-columns: 1fr; gap: 14px; }
+  .solario-landing .sl-step { padding: 26px 24px; }
+  .solario-landing .sl-step h3 { font-size: 19px; }
+  .solario-landing .sl-step-num { font-size: 52px; margin-bottom: 14px; }
+
+  /* Proof stats: 2x2 grid (instead of stacking to 1 col) */
+  .solario-landing .sl-proof-grid {
+    grid-template-columns: repeat(2, 1fr);
+    gap: 32px 16px;
+    margin-bottom: 48px;
+  }
+  .solario-landing .sl-proof-stat .val { font-size: clamp(32px, 8vw, 44px); }
+  .solario-landing .sl-proof-stat .lab { font-size: 13px; }
+
+  /* Testi: horizontal snap carousel */
+  .solario-landing .sl-testi-grid {
+    display: flex;
+    grid-template-columns: none;
+    overflow-x: auto;
+    scroll-snap-type: x mandatory;
+    gap: 12px;
+    padding: 4px 20px 16px;
+    margin: 0 -20px;
+    scrollbar-width: none;
+    -ms-overflow-style: none;
+  }
+  .solario-landing .sl-testi-grid::-webkit-scrollbar { display: none; }
+  .solario-landing .sl-testi {
+    scroll-snap-align: start;
+    flex: 0 0 86%;
+    min-width: 86%;
+    padding: 24px;
+  }
+  .solario-landing .sl-testi .quote { font-size: 15px; }
+
+  /* Calc CTA */
+  .solario-landing .sl-calc-cta h2 { font-size: clamp(28px, 6.5vw, 40px); }
+  .solario-landing .sl-calc-cta p { font-size: 16px; }
+  .solario-landing .sl-calc-input { font-size: 16px; padding: 18px 22px; }
+
+  /* Installer */
+  .solario-landing .sl-installer-grid { grid-template-columns: 1fr; gap: 40px; }
+  .solario-landing .sl-installer h2 { font-size: clamp(28px, 6.5vw, 40px); }
+  .solario-landing .sl-installer p.lead { font-size: 16px; }
+  .solario-landing .sl-bullets li { font-size: 15px; }
   .solario-landing .sl-lead-card { margin: 0 auto; }
+
+  /* Footer */
   .solario-landing .sl-footer-grid { grid-template-columns: 1fr 1fr; gap: 32px; }
-  .solario-landing .sl-nav-link { display: none; }
-  .solario-landing .sl-logo-icon { width: 40px; height: 40px; }
-  .solario-landing .sl-logo { font-size: 20px; }
+  .solario-landing .sl-footer { padding: 56px 0 32px; }
+  .solario-landing .sl-footer-logo-img {
+    height: 92px;
+    margin-left: -16px;
+    margin-top: -12px;
+    margin-bottom: -22px;
+  }
+
+  /* Sticky CTA: show on mobile */
+  .solario-landing .sl-sticky-cta { display: block; }
+
+  /* Body: add bottom padding so sticky CTA doesn't overlap content */
+  .solario-landing { padding-bottom: 78px; }
 }
+
 @media (max-width: 480px) {
   .solario-landing { font-size: 16px; }
-  .solario-landing .container { padding: 0 20px; }
-  .solario-landing .sl-nav-inner { padding: 0 20px; }
-  .solario-landing .sl-hero { padding: 96px 0 0; }
-  .solario-landing .sl-hero-sub { font-size: 16px; }
-  .solario-landing .sl-hero-image-wrap { margin-top: 32px; }
-  .solario-landing .sl-calc-input { font-size: 17px; padding: 18px 22px; }
-  .solario-landing .sl-step { padding: 28px 24px; }
-  .solario-landing .sl-testi { padding: 24px; }
-  .solario-landing .sl-proof-grid { grid-template-columns: 1fr; gap: 32px; }
-  .solario-landing .sl-footer-grid { grid-template-columns: 1fr; }
-  .solario-landing .sl-footer-bottom { flex-direction: column; gap: 12px; }
-  .solario-landing .sl-logo-icon { width: 36px; height: 36px; }
-  .solario-landing .sl-footer-logo-img {
-    height: 88px;
-    margin-left: -14px;
-    margin-top: -12px;
-    margin-bottom: -20px;
+  .solario-landing .container { padding: 0 18px; }
+  .solario-landing .sl-nav-inner { padding: 0 14px; }
+
+  /* Hide CTA in nav at very small — drawer + sticky have it */
+  .solario-landing .sl-nav-cta { display: none; }
+  .solario-landing .sl-nav-toggle { width: 42px; height: 42px; }
+
+  /* Hero */
+  .solario-landing .sl-hero { padding: 80px 0 0; }
+  .solario-landing .sl-h1 {
+    font-size: clamp(30px, 9vw, 44px);
   }
+  .solario-landing .sl-hero-sub { font-size: 15px; }
+  .solario-landing .sl-badge {
+    font-size: 11px;
+    padding: 5px 14px 5px 5px;
+  }
+  .solario-landing .sl-badge .id-pill {
+    font-size: 10px; padding: 2px 7px;
+  }
+
+  /* Hero image: even tighter portrait crop on small mobile */
+  .solario-landing .sl-hero-image-wrap {
+    height: 64vw;
+    max-height: 280px;
+    min-height: 220px;
+  }
+
+  /* Footer */
+  .solario-landing .sl-footer-grid {
+    grid-template-columns: 1fr 1fr;
+    gap: 28px 20px;
+  }
+  .solario-landing .sl-footer-grid > div:first-child {
+    grid-column: span 2;
+  }
+  .solario-landing .sl-footer-bottom { flex-direction: column; gap: 8px; text-align: center; }
+  .solario-landing .sl-footer-logo-img {
+    height: 84px;
+    margin-left: -14px;
+    margin-top: -10px;
+    margin-bottom: -22px;
+  }
+
+  /* Sections: even tighter */
+  .solario-landing .sl-how,
+  .solario-landing .sl-calc-cta,
+  .solario-landing .sl-proof,
+  .solario-landing .sl-installer { padding: 64px 0; }
 }
 
 @media (prefers-reduced-motion: reduce) {
