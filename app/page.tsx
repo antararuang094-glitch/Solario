@@ -4,6 +4,65 @@ import * as React from "react";
 import Link from "next/link";
 import { useRouter } from "next/navigation";
 
+const TESTIMONIALS = [
+  {
+    quote:
+      "Gak nyangka tagihan PLN 2 juta bisa nyusut tinggal 350 ribu. Balik modal lebih cepat dari prediksi.",
+    initials: "BS",
+    name: "B.S.",
+    city: "Jakarta Selatan",
+  },
+  {
+    quote:
+      "Awalnya cuma iseng hitung. Tiga hari kemudian sudah survey lokasi. Installer-nya profesional.",
+    initials: "SR",
+    name: "S.R.",
+    city: "Bandung",
+  },
+  {
+    quote:
+      "Kalkulatornya jelas, angkanya masuk akal. Dari semua referensi yang saya cek, Solario paling transparan.",
+    initials: "AW",
+    name: "A.W.",
+    city: "Surabaya",
+  },
+  {
+    quote:
+      "Bingung mau mulai dari mana, di Solario semua jelas dalam 60 detik. Akhirnya pasang juga setelah 2 tahun mikir.",
+    initials: "DK",
+    name: "D.K.",
+    city: "Yogyakarta",
+  },
+  {
+    quote:
+      "Estimasi hematnya pas banget dengan tagihan sekarang. Tahun ke-3 dan masih on track sesuai prediksi.",
+    initials: "RM",
+    name: "R.M.",
+    city: "Medan",
+  },
+  {
+    quote:
+      "Pertama kali kalkulator solar yang gak minta email duluan. Refreshing banget, langsung dapat angka.",
+    initials: "LH",
+    name: "L.H.",
+    city: "Tangerang",
+  },
+  {
+    quote:
+      "Toko saya pakai sejak 2024, hemat 6 jutaan per bulan. ROI lebih cepat dari beli alat baru.",
+    initials: "FP",
+    name: "F.P.",
+    city: "Semarang",
+  },
+  {
+    quote:
+      "Installer-nya rapi, garansi 25 tahun, dan after-sales responsif. Worth setiap rupiahnya.",
+    initials: "NS",
+    name: "N.S.",
+    city: "Denpasar",
+  },
+];
+
 export default function HomePage() {
   const router = useRouter();
   const [scrolled, setScrolled] = React.useState(false);
@@ -352,16 +411,8 @@ export default function HomePage() {
             </div>
           </div>
 
-          <div className="sl-hero-image-wrap sl-hero-image-desktop">
-            <img
-              src="/solario-hero.png"
-              alt="Solario — solar untuk Indonesia"
-              loading="eager"
-            />
-          </div>
-
-          <div className="sl-hero-hills-mobile" aria-hidden="true">
-            <svg viewBox="0 0 400 140" preserveAspectRatio="none" xmlns="http://www.w3.org/2000/svg">
+          <div className="sl-hero-hills" aria-hidden="true">
+            <svg viewBox="0 0 1200 280" preserveAspectRatio="none" xmlns="http://www.w3.org/2000/svg">
               <defs>
                 <linearGradient id="hillBack" x1="0" y1="0" x2="0" y2="1">
                   <stop offset="0%" stopColor="#dcfce7" />
@@ -375,28 +426,51 @@ export default function HomePage() {
                   <stop offset="0%" stopColor="#4ade80" />
                   <stop offset="100%" stopColor="#22c55e" />
                 </linearGradient>
+                <symbol id="solarPanel" viewBox="0 0 22 16">
+                  <path d="M0,5 L10,0 L22,0 L12,5 Z" />
+                  <rect x="10.4" y="5" width="1.6" height="11" />
+                </symbol>
               </defs>
-              <path d="M0,140 L0,60 Q90,30 180,55 T400,48 L400,140 Z" fill="url(#hillBack)" />
-              <path d="M0,140 L0,90 Q120,65 240,85 T400,82 L400,140 Z" fill="url(#hillMid)" />
-              <path d="M0,140 L0,118 Q150,102 280,114 T400,118 L400,140 Z" fill="url(#hillFront)" opacity="0.9" />
-              {/* Solar panels silhouettes on the front hill */}
-              <g fill="#0a3d2e" opacity="0.85">
-                <g transform="translate(260,103)">
-                  <path d="M0,5 L9,0 L20,0 L11,5 Z" />
-                  <rect x="9.4" y="5" width="1.5" height="9" />
-                </g>
-                <g transform="translate(286,101)">
-                  <path d="M0,5 L9,0 L20,0 L11,5 Z" />
-                  <rect x="9.4" y="5" width="1.5" height="10" />
-                </g>
-                <g transform="translate(312,103)">
-                  <path d="M0,5 L9,0 L20,0 L11,5 Z" />
-                  <rect x="9.4" y="5" width="1.5" height="9" />
-                </g>
-                <g transform="translate(338,104)">
-                  <path d="M0,5 L9,0 L20,0 L11,5 Z" />
-                  <rect x="9.4" y="5" width="1.5" height="8" />
-                </g>
+
+              {/* Back hills (furthest, lightest) */}
+              <path
+                d="M0,280 L0,130 Q150,75 300,100 T600,95 T900,105 T1200,98 L1200,280 Z"
+                fill="url(#hillBack)"
+              />
+
+              {/* Mid hills */}
+              <path
+                d="M0,280 L0,175 Q200,135 400,158 T800,160 T1200,155 L1200,280 Z"
+                fill="url(#hillMid)"
+              />
+
+              {/* Front hills (darkest, closest) */}
+              <path
+                d="M0,280 L0,220 Q260,195 520,210 T1000,215 T1200,212 L1200,280 Z"
+                fill="url(#hillFront)"
+                opacity="0.9"
+              />
+
+              {/* Solar panel clusters distributed along the front hill */}
+              <g fill="#0a3d2e" opacity="0.88">
+                {/* Left cluster */}
+                <use href="#solarPanel" x="170" y="200" width="22" height="16" />
+                <use href="#solarPanel" x="200" y="199" width="22" height="16" />
+                <use href="#solarPanel" x="230" y="201" width="22" height="16" />
+                <use href="#solarPanel" x="260" y="202" width="22" height="16" />
+
+                {/* Center cluster (bigger - hero panels) */}
+                <use href="#solarPanel" x="500" y="200" width="26" height="19" />
+                <use href="#solarPanel" x="534" y="198" width="26" height="19" />
+                <use href="#solarPanel" x="568" y="200" width="26" height="19" />
+                <use href="#solarPanel" x="602" y="201" width="26" height="19" />
+                <use href="#solarPanel" x="636" y="200" width="26" height="19" />
+
+                {/* Right cluster */}
+                <use href="#solarPanel" x="880" y="201" width="22" height="16" />
+                <use href="#solarPanel" x="910" y="203" width="22" height="16" />
+                <use href="#solarPanel" x="940" y="202" width="22" height="16" />
+                <use href="#solarPanel" x="970" y="201" width="22" height="16" />
               </g>
             </svg>
           </div>
@@ -509,42 +583,24 @@ export default function HomePage() {
             </div>
           </div>
 
-          <div className="sl-testi-grid" data-stagger>
-            <div className="sl-testi">
-              <p className="quote">
-                &ldquo;Gak nyangka tagihan PLN 2 juta bisa nyusut tinggal 350 ribu. Balik modal lebih cepat dari prediksi.&rdquo;
-              </p>
-              <div className="who">
-                <div className="avatar">BS</div>
-                <div>
-                  <div className="name">B.S.</div>
-                  <div className="city">Jakarta Selatan</div>
+          <div className="sl-testi-marquee">
+            <div className="sl-testi-track">
+              {[...TESTIMONIALS, ...TESTIMONIALS].map((t, i) => (
+                <div
+                  key={i}
+                  className="sl-testi"
+                  aria-hidden={i >= TESTIMONIALS.length}
+                >
+                  <p className="quote">&ldquo;{t.quote}&rdquo;</p>
+                  <div className="who">
+                    <div className="avatar">{t.initials}</div>
+                    <div>
+                      <div className="name">{t.name}</div>
+                      <div className="city">{t.city}</div>
+                    </div>
+                  </div>
                 </div>
-              </div>
-            </div>
-            <div className="sl-testi">
-              <p className="quote">
-                &ldquo;Awalnya cuma iseng hitung. Tiga hari kemudian sudah survey lokasi. Installer-nya profesional.&rdquo;
-              </p>
-              <div className="who">
-                <div className="avatar">SR</div>
-                <div>
-                  <div className="name">S.R.</div>
-                  <div className="city">Bandung</div>
-                </div>
-              </div>
-            </div>
-            <div className="sl-testi">
-              <p className="quote">
-                &ldquo;Kalkulatornya jelas, angkanya masuk akal. Dari semua referensi yang saya cek, Solario paling transparan.&rdquo;
-              </p>
-              <div className="who">
-                <div className="avatar">AW</div>
-                <div>
-                  <div className="name">A.W.</div>
-                  <div className="city">Surabaya</div>
-                </div>
-              </div>
+              ))}
             </div>
           </div>
         </div>
