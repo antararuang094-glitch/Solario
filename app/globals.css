@@ -551,7 +551,7 @@ html, body {
   50%      { transform: translateY(-4px); }
 }
 
-/* Hero image — full-bleed illustration (no crop) */
+/* Hero image — full-bleed illustration (no crop) — desktop only */
 .solario-landing .sl-hero-image-wrap {
   margin: 48px 0 0;
   width: 100%;
@@ -565,6 +565,21 @@ html, body {
   height: auto;
   display: block;
   border-radius: 0;
+}
+
+/* Mobile-only hills SVG — desktop hides it */
+.solario-landing .sl-hero-hills-mobile {
+  display: none;
+  width: 100%;
+  margin-top: 40px;
+  opacity: 0;
+  transform: translateY(20px);
+  animation: sl-heroImageIn 1s var(--sl-ease) .25s forwards;
+}
+.solario-landing .sl-hero-hills-mobile svg {
+  width: 100%;
+  height: 140px;
+  display: block;
 }
 @keyframes sl-heroImageIn {
   to { opacity: 1; transform: translateY(0); }
@@ -1014,20 +1029,9 @@ html, body {
   .solario-landing .sl-hero-stats .dot { margin: 0 10px; }
   .solario-landing .sl-badge { margin-bottom: 20px; font-size: 12px; }
 
-  /* Hero image: adaptive crop — show tighter/taller portrait crop */
-  .solario-landing .sl-hero-image-wrap {
-    margin-top: 32px;
-    height: 56vw;
-    max-height: 320px;
-    min-height: 200px;
-    overflow: hidden;
-  }
-  .solario-landing .sl-hero-image-wrap img {
-    width: 100%;
-    height: 100%;
-    object-fit: cover;
-    object-position: center 45%;
-  }
+  /* Hero image: hide on mobile, show SVG hills instead */
+  .solario-landing .sl-hero-image-desktop { display: none; }
+  .solario-landing .sl-hero-hills-mobile { display: block; }
 
   /* Sections: tighter padding */
   .solario-landing .sl-how,
@@ -1125,12 +1129,9 @@ html, body {
     font-size: 10px; padding: 2px 7px;
   }
 
-  /* Hero image: even tighter portrait crop on small mobile */
-  .solario-landing .sl-hero-image-wrap {
-    height: 64vw;
-    max-height: 280px;
-    min-height: 220px;
-  }
+  /* Hills tighter on small mobile */
+  .solario-landing .sl-hero-hills-mobile { margin-top: 32px; }
+  .solario-landing .sl-hero-hills-mobile svg { height: 120px; }
 
   /* Footer */
   .solario-landing .sl-footer-grid {

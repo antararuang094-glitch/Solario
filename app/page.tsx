@@ -352,12 +352,53 @@ export default function HomePage() {
             </div>
           </div>
 
-          <div className="sl-hero-image-wrap">
+          <div className="sl-hero-image-wrap sl-hero-image-desktop">
             <img
               src="/solario-hero.png"
               alt="Solario — solar untuk Indonesia"
               loading="eager"
             />
+          </div>
+
+          <div className="sl-hero-hills-mobile" aria-hidden="true">
+            <svg viewBox="0 0 400 140" preserveAspectRatio="none" xmlns="http://www.w3.org/2000/svg">
+              <defs>
+                <linearGradient id="hillBack" x1="0" y1="0" x2="0" y2="1">
+                  <stop offset="0%" stopColor="#dcfce7" />
+                  <stop offset="100%" stopColor="#bbf7d0" />
+                </linearGradient>
+                <linearGradient id="hillMid" x1="0" y1="0" x2="0" y2="1">
+                  <stop offset="0%" stopColor="#bbf7d0" />
+                  <stop offset="100%" stopColor="#86efac" />
+                </linearGradient>
+                <linearGradient id="hillFront" x1="0" y1="0" x2="0" y2="1">
+                  <stop offset="0%" stopColor="#4ade80" />
+                  <stop offset="100%" stopColor="#22c55e" />
+                </linearGradient>
+              </defs>
+              <path d="M0,140 L0,60 Q90,30 180,55 T400,48 L400,140 Z" fill="url(#hillBack)" />
+              <path d="M0,140 L0,90 Q120,65 240,85 T400,82 L400,140 Z" fill="url(#hillMid)" />
+              <path d="M0,140 L0,118 Q150,102 280,114 T400,118 L400,140 Z" fill="url(#hillFront)" opacity="0.9" />
+              {/* Solar panels silhouettes on the front hill */}
+              <g fill="#0a3d2e" opacity="0.85">
+                <g transform="translate(260,103)">
+                  <path d="M0,5 L9,0 L20,0 L11,5 Z" />
+                  <rect x="9.4" y="5" width="1.5" height="9" />
+                </g>
+                <g transform="translate(286,101)">
+                  <path d="M0,5 L9,0 L20,0 L11,5 Z" />
+                  <rect x="9.4" y="5" width="1.5" height="10" />
+                </g>
+                <g transform="translate(312,103)">
+                  <path d="M0,5 L9,0 L20,0 L11,5 Z" />
+                  <rect x="9.4" y="5" width="1.5" height="9" />
+                </g>
+                <g transform="translate(338,104)">
+                  <path d="M0,5 L9,0 L20,0 L11,5 Z" />
+                  <rect x="9.4" y="5" width="1.5" height="8" />
+                </g>
+              </g>
+            </svg>
           </div>
         </div>
       </section>

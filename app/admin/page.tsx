@@ -9,7 +9,7 @@ import { adminLoginSchema } from "@/lib/validations";
 import { Button } from "@/components/ui/button";
 import { Input } from "@/components/ui/input";
 import { Label, FieldError } from "@/components/ui/label";
-import { Sun, Lock } from "lucide-react";
+import { Lock } from "lucide-react";
 import { useToast } from "@/components/ui/toast";
 
 type FormData = z.infer<typeof adminLoginSchema>;
@@ -50,10 +50,13 @@ export default function AdminLoginPage() {
     <main className="min-h-screen flex items-center justify-center px-4 bg-surface">
       <div className="w-full max-w-sm">
         <div className="flex flex-col items-center mb-6">
-          <div className="w-12 h-12 rounded-xl bg-[#0d3b2e] flex items-center justify-center text-white">
-            <Sun className="w-6 h-6" />
-          </div>
-          <h1 className="mt-4 text-2xl font-semibold text-ink">
+          <img
+            src="/solario-icon.png"
+            alt=""
+            aria-hidden="true"
+            className="w-16 h-16 object-contain"
+          />
+          <h1 className="mt-3 text-2xl font-semibold text-ink">
             Solario<span className="text-[#16a34a]">.id</span> Admin
           </h1>
           <p className="mt-1 text-sm text-subtext">Login untuk mengelola leads dan installer</p>

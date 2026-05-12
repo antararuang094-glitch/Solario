@@ -5,7 +5,7 @@ import Link from "next/link";
 import { useRouter } from "next/navigation";
 import { AdminLeadTable, AdminInstallerTable } from "@/components/AdminLeadTable";
 import { Button } from "@/components/ui/button";
-import { LogOut, Sun } from "lucide-react";
+import { LogOut } from "lucide-react";
 import { cn } from "@/lib/utils";
 
 interface Lead {
@@ -64,9 +64,12 @@ export function AdminDashboardClient({
       <header className="border-b border-[#e5e7eb] bg-white">
         <div className="mx-auto max-w-7xl px-4 sm:px-6 h-16 flex items-center justify-between">
           <Link href="/admin/dashboard" className="flex items-center gap-2">
-            <div className="w-8 h-8 rounded-xl bg-[#0d3b2e] flex items-center justify-center text-white">
-              <Sun className="w-4 h-4" />
-            </div>
+            <img
+              src="/solario-icon.png"
+              alt=""
+              aria-hidden="true"
+              className="w-9 h-9 object-contain -ml-1"
+            />
             <span className="font-semibold text-ink">
               Solario<span className="text-[#16a34a]">.id</span>
             </span>

@@ -23,7 +23,6 @@ import {
   Home,
   Leaf,
   Lock,
-  Sun,
   TrendingUp,
   Warehouse,
 } from "lucide-react";
@@ -221,7 +220,12 @@ export function Calculator() {
             />
             <div className="relative">
               <div className="inline-flex items-center gap-2 text-[10px] sm:text-xs font-semibold uppercase tracking-[0.12em] text-emerald-200/80">
-                <Sun className="w-3.5 h-3.5" />
+                <img
+                  src="/solario-icon.png"
+                  alt=""
+                  aria-hidden="true"
+                  className="w-5 h-5 object-contain brightness-0 invert opacity-90"
+                />
                 Hasil untuk {inputState.kota === "default" ? "Kota Anda" : inputState.kota}
                 <span className="text-white/30">·</span>
                 {inputState.golonganListrik}

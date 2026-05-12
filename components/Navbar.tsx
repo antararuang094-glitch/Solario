@@ -2,7 +2,7 @@
 
 import * as React from "react";
 import Link from "next/link";
-import { Calculator, Home, LogIn, Menu, Sun, Wrench, X } from "lucide-react";
+import { Calculator, Home, LogIn, Menu, Wrench, X } from "lucide-react";
 import { cn } from "@/lib/utils";
 
 export function Navbar() {
@@ -35,9 +35,12 @@ export function Navbar() {
       <header className="border-b border-[#e5e7eb] bg-white/85 backdrop-blur sticky top-0 z-30">
         <div className="mx-auto max-w-6xl px-4 sm:px-6 h-16 flex items-center justify-between">
           <Link href="/" className="flex items-center gap-2 group">
-            <div className="w-9 h-9 rounded-xl bg-[#0a3d2e] flex items-center justify-center text-white group-hover:bg-[#16a34a] transition-colors">
-              <Sun className="w-4 h-4" />
-            </div>
+            <img
+              src="/solario-icon.png"
+              alt=""
+              aria-hidden="true"
+              className="w-11 h-11 object-contain -ml-1 transition-transform group-hover:rotate-[-4deg] group-hover:scale-105"
+            />
             <span className="font-bold text-ink text-lg tracking-tight">
               Solario<span className="text-[#16a34a]">.id</span>
             </span>
@@ -109,9 +112,12 @@ export function Navbar() {
       >
         <div className="flex items-center justify-between px-5 py-4 border-b border-[#e5e7eb]">
           <span className="flex items-center gap-2">
-            <div className="w-8 h-8 rounded-xl bg-[#0a3d2e] flex items-center justify-center text-white">
-              <Sun className="w-4 h-4" />
-            </div>
+            <img
+              src="/solario-icon.png"
+              alt=""
+              aria-hidden="true"
+              className="w-10 h-10 object-contain -ml-1"
+            />
             <span className="font-bold text-ink tracking-tight">
               Solario<span className="text-[#16a34a]">.id</span>
             </span>
@@ -220,9 +226,12 @@ export function Footer() {
         <div className="grid grid-cols-2 sm:grid-cols-4 gap-8 sm:gap-10">
           <div className="col-span-2 sm:col-span-1">
             <Link href="/" className="flex items-center gap-2">
-              <div className="w-8 h-8 rounded-xl bg-[#0a3d2e] flex items-center justify-center text-white">
-                <Sun className="w-4 h-4" />
-              </div>
+              <img
+                src="/solario-icon.png"
+                alt=""
+                aria-hidden="true"
+                className="w-10 h-10 object-contain -ml-1"
+              />
               <span className="font-bold text-ink tracking-tight">
                 Solario<span className="text-[#16a34a]">.id</span>
               </span>
