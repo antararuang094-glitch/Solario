@@ -1,0 +1,46 @@
+"use client";
+
+import * as React from "react";
+import { cn } from "@/lib/utils";
+
+export interface InputProps extends React.InputHTMLAttributes<HTMLInputElement> {
+  error?: boolean;
+}
+
+export const Input = React.forwardRef<HTMLInputElement, InputProps>(
+  ({ className, error, ...props }, ref) => {
+    return (
+      <input
+        ref={ref}
+        className={cn(
+          "block w-full h-11 px-3 text-[15px] rounded-xl border bg-white text-ink placeholder:text-subtext",
+          "focus:outline-none focus:ring-2 focus:ring-[#16a34a]/30 focus:border-[#16a34a]",
+          "disabled:bg-surface disabled:cursor-not-allowed",
+          error ? "border-red-500" : "border-[#e5e7eb]",
+          className
+        )}
+        {...props}
+      />
+    );
+  }
+);
+Input.displayName = "Input";
+
+export const Textarea = React.forwardRef<
+  HTMLTextAreaElement,
+  React.TextareaHTMLAttributes<HTMLTextAreaElement> & { error?: boolean }
+>(({ className, error, ...props }, ref) => {
+  return (
+    <textarea
+      ref={ref}
+      className={cn(
+        "block w-full min-h-[88px] px-3 py-2 text-[15px] rounded-xl border bg-white text-ink placeholder:text-subtext",
+        "focus:outline-none focus:ring-2 focus:ring-[#16a34a]/30 focus:border-[#16a34a]",
+        error ? "border-red-500" : "border-[#e5e7eb]",
+        className
+      )}
+      {...props}
+    />
+  );
+});
+Textarea.displayName = "Textarea";

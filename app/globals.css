@@ -1,0 +1,892 @@
+/* ===== Custom fonts ===== */
+@import url('https://fonts.googleapis.com/css2?family=Inter:wght@500;600;700;800;900&display=swap');
+
+@font-face {
+  font-family: 'Grift';
+  src: url('/fonts/Grift-Regular.woff2') format('woff2');
+  font-weight: 400;
+  font-style: normal;
+  font-display: swap;
+}
+@font-face {
+  font-family: 'Grift';
+  src: url('/fonts/Grift-Medium.woff2') format('woff2');
+  font-weight: 500;
+  font-style: normal;
+  font-display: swap;
+}
+@font-face {
+  font-family: 'Grift';
+  src: url('/fonts/Grift-Bold.woff2') format('woff2');
+  font-weight: 700;
+  font-style: normal;
+  font-display: swap;
+}
+
+@tailwind base;
+@tailwind components;
+@tailwind utilities;
+
+:root {
+  color-scheme: light;
+}
+
+html, body {
+  background: #ffffff;
+  color: #111827;
+  font-size: 15px;
+  -webkit-font-smoothing: antialiased;
+  -moz-osx-font-smoothing: grayscale;
+  font-feature-settings: "cv02", "cv03", "cv04", "cv11";
+}
+
+@layer utilities {
+  .animate-slide-in { animation: slide-in 200ms ease-out; }
+  @keyframes slide-in {
+    from { transform: translateX(20px); opacity: 0; }
+    to   { transform: translateX(0);    opacity: 1; }
+  }
+  .animate-fade-in { animation: fade-in 250ms ease-out; }
+  @keyframes fade-in {
+    from { opacity: 0; transform: translateY(8px); }
+    to   { opacity: 1; transform: translateY(0); }
+  }
+}
+
+/* ============================================================
+   SOLARIO LANDING — design system (scoped under .solario-landing)
+   ============================================================ */
+
+.solario-landing {
+  --sl-bg: #ffffff;
+  --sl-bg-soft: #f8faf8;
+  --sl-primary: #0a3d2e;
+  --sl-primary-deep: #07291f;
+  --sl-accent: #22c55e;
+  --sl-accent-soft: #f0fdf4;
+  --sl-accent-border: #bbf7d0;
+  --sl-ink: #0f172a;
+  --sl-ink-2: #1e293b;
+  --sl-muted: #64748b;
+  --sl-line: #e2e8f0;
+  --sl-line-soft: #eef2ef;
+  --sl-gradient: linear-gradient(110deg, #22c55e 0%, #0a3d2e 100%);
+  --sl-ease: cubic-bezier(0.16, 1, 0.3, 1);
+  --sl-ease-soft: cubic-bezier(0.22, 0.61, 0.36, 1);
+  --sl-shadow-sm: 0 1px 2px rgba(15, 23, 42, .04);
+  --sl-shadow:    0 10px 30px -16px rgba(15, 23, 42, .15), 0 2px 6px rgba(15, 23, 42, .04);
+  --sl-shadow-lg: 0 30px 80px -28px rgba(15, 23, 42, .25), 0 8px 24px rgba(15, 23, 42, .06);
+  --sl-radius: 16px;
+  --sl-radius-lg: 24px;
+  --sl-radius-xl: 32px;
+  --sl-max: 1200px;
+
+  font-family: 'Grift', -apple-system, BlinkMacSystemFont, "Segoe UI", "Inter", sans-serif;
+  background: var(--sl-bg);
+  color: var(--sl-ink);
+  font-size: 17px;
+  line-height: 1.65;
+  overflow-x: hidden;
+  display: block;
+  min-height: 100vh;
+}
+
+.solario-landing h1,
+.solario-landing h2,
+.solario-landing h3,
+.solario-landing .sl-h1 {
+  font-family: 'Inter', 'Grift', -apple-system, BlinkMacSystemFont, sans-serif;
+  font-weight: 800;
+  letter-spacing: -0.035em;
+}
+
+.solario-landing *,
+.solario-landing *::before,
+.solario-landing *::after { box-sizing: border-box; }
+
+.solario-landing img,
+.solario-landing svg { display: block; max-width: 100%; }
+.solario-landing a { color: inherit; text-decoration: none; }
+.solario-landing button { font-family: inherit; cursor: pointer; }
+.solario-landing ::selection { background: var(--sl-primary); color: #fff; }
+
+.solario-landing .container {
+  max-width: var(--sl-max);
+  margin: 0 auto;
+  padding: 0 32px;
+}
+
+.solario-landing .eyebrow {
+  display: inline-block;
+  font-size: 13px;
+  font-weight: 500;
+  letter-spacing: 0.08em;
+  text-transform: uppercase;
+  color: var(--sl-accent);
+}
+
+.solario-landing .grad-text {
+  background: var(--sl-gradient);
+  -webkit-background-clip: text;
+  background-clip: text;
+  -webkit-text-fill-color: transparent;
+  color: transparent;
+}
+
+/* ── Reveal on scroll ── */
+.solario-landing [data-animate] {
+  opacity: 0;
+  transform: translateY(32px);
+  transition: opacity .9s var(--sl-ease), transform .9s var(--sl-ease);
+  will-change: opacity, transform;
+}
+.solario-landing [data-animate].is-visible {
+  opacity: 1;
+  transform: translateY(0);
+}
+.solario-landing [data-stagger] > * {
+  opacity: 0;
+  transform: translateY(24px);
+  transition: opacity .8s var(--sl-ease), transform .8s var(--sl-ease);
+}
+.solario-landing [data-stagger].is-visible > * { opacity: 1; transform: translateY(0); }
+.solario-landing [data-stagger].is-visible > *:nth-child(1) { transition-delay: 0ms; }
+.solario-landing [data-stagger].is-visible > *:nth-child(2) { transition-delay: 100ms; }
+.solario-landing [data-stagger].is-visible > *:nth-child(3) { transition-delay: 200ms; }
+.solario-landing [data-stagger].is-visible > *:nth-child(4) { transition-delay: 300ms; }
+.solario-landing [data-stagger].is-visible > *:nth-child(5) { transition-delay: 400ms; }
+.solario-landing [data-stagger].is-visible > *:nth-child(6) { transition-delay: 500ms; }
+
+/* ── Buttons ── */
+.solario-landing .sl-btn {
+  display: inline-flex;
+  align-items: center;
+  justify-content: center;
+  gap: 8px;
+  padding: 14px 26px;
+  border-radius: 100px;
+  font-weight: 600;
+  font-size: 16px;
+  letter-spacing: -0.005em;
+  border: 1.5px solid transparent;
+  cursor: pointer;
+  transition: transform .2s var(--sl-ease-soft), background-color .2s var(--sl-ease-soft),
+              color .2s var(--sl-ease-soft), border-color .2s var(--sl-ease-soft),
+              box-shadow .25s var(--sl-ease-soft);
+  line-height: 1;
+  white-space: nowrap;
+  text-decoration: none;
+}
+.solario-landing .sl-btn:hover { transform: scale(1.02); }
+.solario-landing .sl-btn:active { transform: scale(0.99); }
+.solario-landing .sl-btn-primary {
+  background: var(--sl-primary);
+  color: #fff;
+  border-color: var(--sl-primary);
+  box-shadow: 0 8px 20px -10px rgba(10, 61, 46, .55);
+}
+.solario-landing .sl-btn-primary:hover {
+  background: var(--sl-primary-deep);
+  box-shadow: 0 14px 30px -10px rgba(10, 61, 46, .65);
+}
+.solario-landing .sl-btn-accent {
+  background: var(--sl-accent);
+  color: var(--sl-primary);
+  border-color: var(--sl-accent);
+  box-shadow: 0 8px 20px -10px rgba(34, 197, 94, .55);
+}
+.solario-landing .sl-btn-accent:hover { background: #16a34a; color: #fff; }
+.solario-landing .sl-btn-ghost {
+  background: transparent;
+  color: var(--sl-ink);
+  border-color: var(--sl-line);
+}
+.solario-landing .sl-btn-ghost:hover { border-color: var(--sl-ink); }
+.solario-landing .sl-btn-outline {
+  background: transparent;
+  color: var(--sl-primary);
+  border-color: var(--sl-primary);
+}
+.solario-landing .sl-btn-outline:hover { background: var(--sl-primary); color: #fff; }
+.solario-landing .sl-btn .arr { transition: transform .25s var(--sl-ease-soft); }
+.solario-landing .sl-btn:hover .arr { transform: translateX(3px); }
+.solario-landing .sl-btn-sm { padding: 10px 22px; font-size: 14px; }
+
+/* ── Navbar ── */
+.solario-landing .sl-nav {
+  position: fixed;
+  top: 0; left: 0; right: 0;
+  z-index: 100;
+  background: rgba(255, 255, 255, 0.78);
+  backdrop-filter: saturate(180%) blur(20px);
+  -webkit-backdrop-filter: saturate(180%) blur(20px);
+  border-bottom: 1px solid transparent;
+  transition: padding .35s var(--sl-ease-soft), background-color .35s var(--sl-ease-soft),
+              box-shadow .35s var(--sl-ease-soft), border-color .35s var(--sl-ease-soft);
+  padding: 18px 0;
+}
+.solario-landing .sl-nav.scrolled {
+  padding: 10px 0;
+  background: rgba(255, 255, 255, 0.92);
+  box-shadow: 0 1px 0 rgba(15, 23, 42, .04), 0 6px 20px -12px rgba(15, 23, 42, .08);
+  border-bottom-color: rgba(226, 232, 240, .6);
+}
+.solario-landing .sl-nav-inner {
+  display: flex; align-items: center; justify-content: space-between;
+  max-width: var(--sl-max);
+  margin: 0 auto;
+  padding: 0 32px;
+}
+.solario-landing .sl-logo {
+  display: inline-flex; align-items: center; gap: 10px;
+  font-size: 22px; font-weight: 700;
+  letter-spacing: -0.025em;
+  color: var(--sl-ink);
+}
+.solario-landing .sl-logo-dot {
+  width: 10px; height: 10px;
+  border-radius: 50%;
+  background: var(--sl-accent);
+  box-shadow: 0 0 0 4px rgba(34, 197, 94, .15);
+  position: relative;
+  top: 1px;
+}
+.solario-landing .sl-logo-icon {
+  width: 48px;
+  height: 48px;
+  object-fit: contain;
+  display: block;
+  flex-shrink: 0;
+  margin-left: -6px;
+  transition: transform .35s var(--sl-ease-soft);
+}
+.solario-landing .sl-logo:hover .sl-logo-icon {
+  transform: rotate(-4deg) scale(1.05);
+}
+.solario-landing .sl-logo .sub { color: var(--sl-muted); font-weight: 500; }
+
+/* Footer brand — full logo with text, filtered white for dark bg */
+.solario-landing .sl-footer-brand {
+  display: inline-block;
+  line-height: 0;
+}
+.solario-landing .sl-footer-logo-img {
+  height: 120px;
+  width: auto;
+  filter: brightness(0) invert(1);
+  opacity: 0.95;
+  transition: opacity .25s var(--sl-ease-soft), transform .35s var(--sl-ease-soft);
+  margin-left: -18px;
+  margin-top: -16px;
+  margin-bottom: -28px;
+}
+.solario-landing .sl-footer-brand:hover .sl-footer-logo-img {
+  opacity: 1;
+  transform: scale(1.02);
+}
+.solario-landing .sl-nav-links {
+  display: flex; align-items: center; gap: 28px;
+}
+.solario-landing .sl-nav-link {
+  font-size: 15px; font-weight: 500; color: var(--sl-ink);
+  position: relative;
+  transition: color .2s var(--sl-ease-soft);
+}
+.solario-landing .sl-nav-link::after {
+  content: ""; position: absolute; left: 0; right: 0; bottom: -6px;
+  height: 2px; background: var(--sl-accent); border-radius: 2px;
+  transform: scaleX(0); transform-origin: left;
+  transition: transform .35s var(--sl-ease);
+}
+.solario-landing .sl-nav-link:hover { color: var(--sl-primary); }
+.solario-landing .sl-nav-link:hover::after { transform: scaleX(1); }
+
+/* ── Hero (Apple-style, light) ── */
+.solario-landing .sl-hero {
+  background: linear-gradient(180deg, #ffffff 0%, #f8faf8 100%);
+  color: var(--sl-ink);
+  padding: 140px 0 0;
+  position: relative;
+  overflow: hidden;
+  min-height: 100vh;
+  display: flex;
+  flex-direction: column;
+}
+.solario-landing .sl-hero-inner {
+  position: relative;
+  z-index: 1;
+  text-align: center;
+  flex: 1;
+  display: flex;
+  flex-direction: column;
+}
+
+.solario-landing .sl-h1 {
+  font-size: clamp(52px, 8vw, 120px);
+  font-weight: 800;
+  line-height: 1;
+  letter-spacing: -0.045em;
+  margin: 0;
+  color: var(--sl-ink);
+  text-wrap: balance;
+  text-transform: none;
+}
+.solario-landing .sl-h1 .line { display: block; }
+.solario-landing .sl-h1 .line + .line { margin-top: 4px; }
+.solario-landing .sl-h1 .grad-text {
+  background: var(--sl-gradient);
+  -webkit-background-clip: text;
+  background-clip: text;
+  -webkit-text-fill-color: transparent;
+  color: transparent;
+}
+
+.solario-landing .sl-hero-sub {
+  margin: 26px auto 0;
+  max-width: 560px;
+  font-size: 18px;
+  color: var(--sl-muted);
+  line-height: 1.5;
+  font-weight: 400;
+}
+.solario-landing .sl-hero-ctas {
+  margin-top: 34px;
+  display: flex; gap: 12px; justify-content: center; flex-wrap: wrap;
+}
+
+/* Hero badge (ID prefix pill) */
+.solario-landing .sl-badge {
+  display: inline-flex; align-items: center; gap: 8px;
+  padding: 6px 18px 6px 6px;
+  background: var(--sl-accent-soft);
+  color: #166534;
+  border: 1px solid var(--sl-accent-border);
+  border-radius: 100px;
+  font-size: 13px; font-weight: 600; letter-spacing: 0.01em;
+  margin-bottom: 28px;
+  animation: sl-floaty 8s ease-in-out infinite;
+}
+.solario-landing .sl-badge .id-pill {
+  display: inline-flex; align-items: center; justify-content: center;
+  background: var(--sl-primary);
+  color: #fff;
+  padding: 3px 9px;
+  border-radius: 100px;
+  font-size: 11px; font-weight: 700;
+  letter-spacing: 0.04em;
+}
+
+/* Hero stats row */
+.solario-landing .sl-hero-stats {
+  margin-top: 28px;
+  display: flex; gap: 0; justify-content: center; flex-wrap: wrap;
+  font-size: 14px; color: var(--sl-muted); font-weight: 500;
+}
+.solario-landing .sl-hero-stats strong {
+  color: var(--sl-ink); font-weight: 700;
+}
+.solario-landing .sl-hero-stats .dot {
+  display: inline-block; margin: 0 14px;
+  width: 4px; height: 4px; border-radius: 50%;
+  background: var(--sl-line); vertical-align: middle;
+}
+
+@keyframes sl-floaty {
+  0%, 100% { transform: translateY(0); }
+  50%      { transform: translateY(-4px); }
+}
+
+/* Hero image — full-bleed illustration (no crop) */
+.solario-landing .sl-hero-image-wrap {
+  margin: 48px 0 0;
+  width: 100%;
+  padding: 0;
+  opacity: 0;
+  transform: translateY(20px);
+  animation: sl-heroImageIn 1s var(--sl-ease) .35s forwards;
+}
+.solario-landing .sl-hero-image-wrap img {
+  width: 100%;
+  height: auto;
+  display: block;
+  border-radius: 0;
+}
+@keyframes sl-heroImageIn {
+  to { opacity: 1; transform: translateY(0); }
+}
+
+/* Apple-style buttons (smaller, pill-shape) — for light hero */
+.solario-landing .sl-btn-hero {
+  padding: 13px 26px;
+  font-size: 15px;
+  font-weight: 500;
+  font-family: 'Grift', sans-serif;
+  border-radius: 100px;
+}
+.solario-landing .sl-btn-hero-primary {
+  background: var(--sl-primary);
+  color: #fff;
+  border: 1.5px solid var(--sl-primary);
+  box-shadow: 0 8px 24px -10px rgba(10, 61, 46, .55);
+}
+.solario-landing .sl-btn-hero-primary:hover {
+  background: var(--sl-primary-deep);
+  border-color: var(--sl-primary-deep);
+}
+.solario-landing .sl-btn-hero-outline {
+  background: transparent;
+  color: var(--sl-primary);
+  border: 1.5px solid var(--sl-primary);
+}
+.solario-landing .sl-btn-hero-outline:hover {
+  background: var(--sl-primary);
+  color: #fff;
+}
+
+/* ── How it works ── */
+.solario-landing .sl-how {
+  background: var(--sl-bg-soft);
+  padding: 140px 0;
+}
+.solario-landing .sl-section-head { text-align: center; margin-bottom: 80px; }
+.solario-landing .sl-section-head .eyebrow { margin-bottom: 18px; }
+.solario-landing .sl-section-head h2 {
+  font-size: clamp(36px, 5vw, 56px);
+  font-weight: 700;
+  line-height: 1.1;
+  letter-spacing: -0.03em;
+  margin: 0 auto;
+  max-width: 18ch;
+  text-wrap: balance;
+}
+.solario-landing .sl-section-head p {
+  margin: 20px auto 0;
+  max-width: 560px;
+  font-size: 18px;
+  color: var(--sl-muted);
+}
+.solario-landing .sl-how-grid {
+  display: grid;
+  grid-template-columns: repeat(3, 1fr);
+  gap: 24px;
+}
+.solario-landing .sl-step {
+  background: #fff;
+  border: 1px solid var(--sl-line);
+  border-radius: var(--sl-radius-lg);
+  padding: 36px 32px 34px;
+  transition: transform .4s var(--sl-ease-soft), box-shadow .4s var(--sl-ease-soft), border-color .4s var(--sl-ease-soft);
+  position: relative;
+  overflow: hidden;
+}
+.solario-landing .sl-step::after {
+  content: ""; position: absolute; inset: 0;
+  background: radial-gradient(circle at 100% 0%, rgba(34,197,94,.06), transparent 50%);
+  opacity: 0;
+  transition: opacity .4s var(--sl-ease-soft);
+  pointer-events: none;
+}
+.solario-landing .sl-step:hover {
+  transform: translateY(-8px);
+  box-shadow: var(--sl-shadow);
+  border-color: var(--sl-accent-border);
+}
+.solario-landing .sl-step:hover::after { opacity: 1; }
+.solario-landing .sl-step-num {
+  font-size: 64px;
+  font-weight: 800;
+  background: linear-gradient(135deg, #22c55e 0%, #0a3d2e 100%);
+  -webkit-background-clip: text;
+  background-clip: text;
+  -webkit-text-fill-color: transparent;
+  color: transparent;
+  opacity: .55;
+  line-height: 1;
+  letter-spacing: -0.03em;
+  margin-bottom: 18px;
+  font-variant-numeric: tabular-nums;
+}
+.solario-landing .sl-step-icon {
+  width: 52px; height: 52px;
+  border-radius: 14px;
+  background: var(--sl-primary);
+  color: #fff;
+  display: grid; place-items: center;
+  margin-bottom: 22px;
+  transition: transform .4s var(--sl-ease-soft), background-color .3s var(--sl-ease-soft);
+  box-shadow: 0 8px 18px -10px rgba(10, 61, 46, .55);
+}
+.solario-landing .sl-step:hover .sl-step-icon {
+  background: var(--sl-accent);
+  color: var(--sl-primary);
+  transform: rotate(-6deg) scale(1.08);
+}
+.solario-landing .sl-step h3 {
+  font-size: 22px; font-weight: 700; margin: 0 0 10px;
+  letter-spacing: -0.02em; color: var(--sl-ink);
+}
+.solario-landing .sl-step p {
+  font-size: 16px; line-height: 1.65;
+  color: #475569;
+  margin: 0;
+}
+
+/* ── Calc CTA ── */
+.solario-landing .sl-calc-cta {
+  background: var(--sl-primary);
+  color: #fff;
+  padding: 140px 0;
+  position: relative;
+  overflow: hidden;
+}
+.solario-landing .sl-calc-cta .sl-calc-cta-inner {
+  opacity: 0;
+  transform: translateY(24px);
+  transition: opacity .9s var(--sl-ease), transform .9s var(--sl-ease);
+}
+.solario-landing .sl-calc-cta.is-visible .sl-calc-cta-inner {
+  opacity: 1;
+  transform: translateY(0);
+}
+.solario-landing .sl-calc-cta::before {
+  content: ""; position: absolute;
+  top: -300px; right: -200px; width: 700px; height: 700px;
+  border-radius: 50%;
+  background: radial-gradient(circle, rgba(34,197,94,.22), transparent 60%);
+  pointer-events: none;
+}
+.solario-landing .sl-calc-cta::after {
+  content: ""; position: absolute;
+  bottom: -260px; left: -160px; width: 560px; height: 560px;
+  border-radius: 50%;
+  background: radial-gradient(circle, rgba(255,255,255,.06), transparent 60%);
+  pointer-events: none;
+}
+.solario-landing .sl-calc-cta-inner {
+  max-width: 820px; margin: 0 auto; text-align: center;
+  position: relative; z-index: 1;
+}
+.solario-landing .sl-calc-cta .eyebrow { color: #86efac; }
+.solario-landing .sl-calc-cta h2 {
+  font-size: clamp(38px, 5.5vw, 64px);
+  font-weight: 800;
+  letter-spacing: -0.03em;
+  line-height: 1.05;
+  margin: 18px 0;
+  text-wrap: balance;
+}
+.solario-landing .sl-calc-cta p {
+  color: rgba(255,255,255,.7);
+  max-width: 540px; margin: 0 auto;
+  font-size: 18px;
+}
+.solario-landing .sl-calc-input-row {
+  margin-top: 44px;
+  display: flex; flex-direction: column; align-items: center; gap: 18px;
+}
+.solario-landing .sl-calc-input {
+  width: 100%; max-width: 560px;
+  background: rgba(255,255,255,.07);
+  border: 1.5px solid rgba(255,255,255,.18);
+  color: #fff;
+  border-radius: var(--sl-radius);
+  padding: 22px 28px;
+  font-size: 20px;
+  font-weight: 500;
+  text-align: center;
+  font-family: inherit;
+  transition: border-color .25s var(--sl-ease-soft), background-color .25s var(--sl-ease-soft), box-shadow .25s var(--sl-ease-soft);
+  outline: none;
+}
+.solario-landing .sl-calc-input::placeholder { color: rgba(255,255,255,.5); }
+.solario-landing .sl-calc-input:focus {
+  border-color: var(--sl-accent);
+  background: rgba(255,255,255,.12);
+  box-shadow: 0 0 0 4px rgba(34, 197, 94, .15);
+}
+.solario-landing .sl-calc-input-row .sl-btn-accent { padding: 18px 32px; font-size: 16px; }
+
+/* ── Social proof ── */
+.solario-landing .sl-proof { padding: 140px 0; background: #fff; }
+.solario-landing .sl-proof-grid {
+  display: grid; grid-template-columns: repeat(4, 1fr);
+  gap: 24px; margin-bottom: 80px;
+  text-align: center;
+}
+.solario-landing .sl-proof-stat .val {
+  font-size: clamp(40px, 5vw, 64px);
+  font-weight: 800;
+  letter-spacing: -0.035em;
+  line-height: 1;
+  background: var(--sl-gradient);
+  -webkit-background-clip: text; background-clip: text;
+  -webkit-text-fill-color: transparent;
+  font-variant-numeric: tabular-nums;
+  margin-bottom: 12px;
+}
+.solario-landing .sl-proof-stat .lab {
+  font-size: 14px; color: var(--sl-muted); font-weight: 500;
+  max-width: 200px; margin: 0 auto; line-height: 1.4;
+}
+.solario-landing .sl-testi-grid {
+  display: grid; grid-template-columns: repeat(3, 1fr);
+  gap: 20px;
+}
+.solario-landing .sl-testi {
+  background: var(--sl-bg-soft);
+  border: 1px solid var(--sl-line);
+  border-radius: 20px;
+  padding: 30px 30px 28px;
+  transition: box-shadow .35s var(--sl-ease-soft), transform .35s var(--sl-ease-soft);
+}
+.solario-landing .sl-testi:hover {
+  transform: translateY(-4px);
+  box-shadow: 0 0 0 2px rgba(34, 197, 94, .25), 0 14px 40px -18px rgba(10,61,46,.18);
+}
+.solario-landing .sl-testi .quote {
+  font-size: 17px; line-height: 1.6; color: var(--sl-ink-2);
+  font-weight: 500; margin: 0 0 22px;
+  text-wrap: balance;
+}
+.solario-landing .sl-testi .who {
+  display: flex; align-items: center; gap: 12px;
+  border-top: 1px solid var(--sl-line); padding-top: 18px;
+}
+.solario-landing .sl-testi .avatar {
+  width: 38px; height: 38px; border-radius: 50%;
+  display: grid; place-items: center;
+  font-weight: 700; font-size: 13px;
+  color: var(--sl-primary); background: var(--sl-accent-soft);
+  border: 1px solid var(--sl-accent-border);
+}
+.solario-landing .sl-testi .name { font-size: 14px; font-weight: 600; color: var(--sl-ink); }
+.solario-landing .sl-testi .city { font-size: 12px; color: var(--sl-muted); }
+
+/* ── Installer ── */
+.solario-landing .sl-installer {
+  padding: 140px 0;
+  background: linear-gradient(135deg, #f0fdf4 0%, #ffffff 70%);
+}
+.solario-landing .sl-installer-grid {
+  display: grid; grid-template-columns: 1.05fr 1fr;
+  gap: 80px; align-items: center;
+}
+.solario-landing .sl-installer h2 {
+  font-size: clamp(34px, 4.8vw, 56px);
+  font-weight: 700;
+  letter-spacing: -0.03em;
+  line-height: 1.08;
+  margin: 18px 0 24px;
+  text-wrap: balance;
+}
+.solario-landing .sl-installer p.lead {
+  font-size: 18px; color: var(--sl-muted);
+  max-width: 480px; margin: 0 0 32px;
+}
+.solario-landing .sl-bullets {
+  list-style: none; padding: 0; margin: 0 0 36px;
+  display: grid; gap: 14px;
+}
+.solario-landing .sl-bullets li {
+  display: flex; align-items: center; gap: 14px;
+  font-size: 16px; color: var(--sl-ink); font-weight: 500;
+}
+.solario-landing .sl-bullets .check {
+  flex-shrink: 0; width: 26px; height: 26px; border-radius: 50%;
+  background: var(--sl-primary); color: #fff;
+  display: grid; place-items: center;
+}
+
+.solario-landing .sl-lead-card {
+  background: #fff;
+  border: 1px solid var(--sl-line);
+  border-radius: var(--sl-radius-lg);
+  padding: 26px 28px;
+  box-shadow: var(--sl-shadow);
+  max-width: 420px;
+  margin: 0 0 0 auto;
+  position: relative;
+  animation: sl-floatCard 4s ease-in-out infinite;
+}
+.solario-landing .sl-lead-card::before {
+  content: "Lead baru";
+  position: absolute; top: -12px; right: 18px;
+  background: var(--sl-accent); color: var(--sl-primary);
+  font-size: 11px; font-weight: 700;
+  letter-spacing: .05em; text-transform: uppercase;
+  padding: 5px 12px; border-radius: 100px;
+  box-shadow: 0 6px 16px -6px rgba(34,197,94,.6);
+}
+.solario-landing .sl-lead-card-head {
+  display: flex; align-items: center; gap: 12px;
+  margin-bottom: 18px;
+}
+.solario-landing .sl-lead-card-avatar {
+  width: 44px; height: 44px; border-radius: 50%;
+  background: linear-gradient(135deg, #bbf7d0, #22c55e);
+  color: var(--sl-primary);
+  display: grid; place-items: center;
+  font-weight: 700; font-size: 16px;
+}
+.solario-landing .sl-lead-card-name { font-size: 16px; font-weight: 700; color: var(--sl-ink); }
+.solario-landing .sl-lead-card-city {
+  font-size: 13px; color: var(--sl-muted);
+  display: inline-flex; align-items: center; gap: 4px;
+}
+.solario-landing .sl-lead-card-rows {
+  display: grid; gap: 10px;
+  border-top: 1px solid var(--sl-line); padding-top: 16px;
+}
+.solario-landing .sl-lc-row {
+  display: flex; justify-content: space-between; align-items: baseline;
+  font-size: 14px;
+}
+.solario-landing .sl-lc-row .k { color: var(--sl-muted); }
+.solario-landing .sl-lc-row .v {
+  font-weight: 700; color: var(--sl-ink);
+  font-variant-numeric: tabular-nums;
+}
+.solario-landing .sl-lc-row .v.accent { color: var(--sl-primary); }
+.solario-landing .sl-lc-verified {
+  margin-top: 14px;
+  display: inline-flex; align-items: center; gap: 6px;
+  font-size: 12px; font-weight: 600; color: #166534;
+  background: var(--sl-accent-soft);
+  border: 1px solid var(--sl-accent-border);
+  padding: 4px 10px; border-radius: 100px;
+}
+
+/* ── Footer ── */
+.solario-landing .sl-footer {
+  background: var(--sl-primary);
+  color: #fff;
+  padding: 80px 0 40px;
+  position: relative;
+  overflow: hidden;
+}
+.solario-landing .sl-footer::before {
+  content: ""; position: absolute;
+  top: -150px; right: -100px; width: 400px; height: 400px;
+  border-radius: 50%;
+  background: radial-gradient(circle, rgba(34,197,94,.12), transparent 60%);
+  pointer-events: none;
+}
+.solario-landing .sl-footer-grid {
+  display: grid;
+  grid-template-columns: 1.4fr 1fr 1fr;
+  gap: 40px;
+  position: relative;
+}
+.solario-landing .sl-footer .sl-logo { color: #fff; }
+.solario-landing .sl-footer .sl-logo .sub { color: rgba(255,255,255,.5); }
+.solario-landing .sl-footer-tagline {
+  font-size: 18px; line-height: 1.6;
+  color: rgba(255,255,255,.7);
+  max-width: 360px; margin: 20px 0 0;
+}
+.solario-landing .sl-footer-col h4 {
+  font-size: 13px;
+  letter-spacing: 0.08em; text-transform: uppercase;
+  color: rgba(255,255,255,.5);
+  margin: 0 0 18px; font-weight: 600;
+}
+.solario-landing .sl-footer-col ul {
+  list-style: none; padding: 0; margin: 0;
+  display: grid; gap: 12px;
+}
+.solario-landing .sl-footer-col a {
+  font-size: 15px; color: rgba(255,255,255,.85);
+  transition: color .2s var(--sl-ease-soft);
+  position: relative;
+}
+.solario-landing .sl-footer-col a::after {
+  content: ""; position: absolute; left: 0; right: 100%; bottom: -2px;
+  height: 1px; background: var(--sl-accent);
+  transition: right .35s var(--sl-ease);
+}
+.solario-landing .sl-footer-col a:hover { color: var(--sl-accent); }
+.solario-landing .sl-footer-col a:hover::after { right: 0; }
+.solario-landing .sl-footer-bottom {
+  margin-top: 64px; padding-top: 28px;
+  border-top: 1px solid rgba(255,255,255,.1);
+  display: flex; justify-content: space-between; align-items: center;
+  font-size: 13px; color: rgba(255,255,255,.5);
+  position: relative;
+}
+
+/* ── Animations ── */
+@keyframes sl-floaty {
+  0%, 100% { transform: translateY(0); }
+  50%      { transform: translateY(-4px); }
+}
+@keyframes sl-cardIn {
+  to { opacity: 1; transform: scale(1); }
+}
+@keyframes sl-pulseDot {
+  0%, 100% { box-shadow: 0 0 0 3px rgba(34,197,94,.25); }
+  50%      { box-shadow: 0 0 0 6px rgba(34,197,94,.06); }
+}
+@keyframes sl-floatCard {
+  0%, 100% { transform: translateY(0); }
+  50%      { transform: translateY(-10px); }
+}
+
+/* ── Responsive ── */
+@media (max-width: 900px) {
+  .solario-landing .container { padding: 0 24px; }
+  .solario-landing .sl-hero { padding: 110px 0 0; }
+  .solario-landing .sl-hero-image-wrap { margin-top: 40px; padding: 0; }
+  .solario-landing .sl-how,
+  .solario-landing .sl-calc-cta,
+  .solario-landing .sl-proof,
+  .solario-landing .sl-installer { padding: 96px 0; }
+  .solario-landing .sl-how-grid { grid-template-columns: 1fr; gap: 16px; }
+  .solario-landing .sl-proof-grid { grid-template-columns: repeat(2, 1fr); gap: 36px 20px; margin-bottom: 56px; }
+  .solario-landing .sl-testi-grid { grid-template-columns: 1fr; }
+  .solario-landing .sl-installer-grid { grid-template-columns: 1fr; gap: 48px; }
+  .solario-landing .sl-lead-card { margin: 0 auto; }
+  .solario-landing .sl-footer-grid { grid-template-columns: 1fr 1fr; gap: 32px; }
+  .solario-landing .sl-nav-link { display: none; }
+  .solario-landing .sl-logo-icon { width: 40px; height: 40px; }
+  .solario-landing .sl-logo { font-size: 20px; }
+}
+@media (max-width: 480px) {
+  .solario-landing { font-size: 16px; }
+  .solario-landing .container { padding: 0 20px; }
+  .solario-landing .sl-nav-inner { padding: 0 20px; }
+  .solario-landing .sl-hero { padding: 96px 0 0; }
+  .solario-landing .sl-hero-sub { font-size: 16px; }
+  .solario-landing .sl-hero-image-wrap { margin-top: 32px; }
+  .solario-landing .sl-calc-input { font-size: 17px; padding: 18px 22px; }
+  .solario-landing .sl-step { padding: 28px 24px; }
+  .solario-landing .sl-testi { padding: 24px; }
+  .solario-landing .sl-proof-grid { grid-template-columns: 1fr; gap: 32px; }
+  .solario-landing .sl-footer-grid { grid-template-columns: 1fr; }
+  .solario-landing .sl-footer-bottom { flex-direction: column; gap: 12px; }
+  .solario-landing .sl-logo-icon { width: 36px; height: 36px; }
+  .solario-landing .sl-footer-logo-img {
+    height: 88px;
+    margin-left: -14px;
+    margin-top: -12px;
+    margin-bottom: -20px;
+  }
+}
+
+@media (prefers-reduced-motion: reduce) {
+  .solario-landing *,
+  .solario-landing *::before,
+  .solario-landing *::after {
+    animation-duration: .001ms !important;
+    animation-iteration-count: 1 !important;
+    transition-duration: .001ms !important;
+  }
+  .solario-landing [data-animate],
+  .solario-landing [data-stagger] > * {
+    opacity: 1 !important;
+    transform: none !important;
+  }
+  .solario-landing .sl-hero-image-wrap { opacity: 1 !important; transform: none !important; }
+  .solario-landing .sl-calc-cta .sl-calc-cta-inner { opacity: 1 !important; transform: none !important; }
+  .solario-landing .sl-lead-card { animation: none !important; }
+  html { scroll-behavior: auto; }
+}

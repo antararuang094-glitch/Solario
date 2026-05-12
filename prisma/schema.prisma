@@ -1,0 +1,55 @@
+generator client {
+  provider = "prisma-client-js"
+}
+
+datasource db {
+  provider = "sqlite"
+  url      = env("DATABASE_URL")
+}
+
+model Lead {
+  id              Int       @id @default(autoincrement())
+  nama            String
+  telepon         String
+  teleponVerified Boolean   @default(false)
+  email           String?
+  kota            String
+  provinsi        String?
+  budgetRange     String
+  timeline        String
+  tagihanListrik  Int
+  estimasiHemat   Int
+  sistemKwp       Float
+  status          String    @default("Baru")
+  installerTarget String?
+  catatan         String?
+  source          String    @default("kalkulator")
+  createdAt       DateTime  @default(now())
+  updatedAt       DateTime  @updatedAt
+}
+
+model Installer {
+  id             Int      @id @default(autoincrement())
+  namaPerusahaan String
+  picNama        String
+  picTelepon     String
+  picEmail       String?
+  kota           String
+  provinsi       String
+  cakupanKota    String
+  kapasitasBulan String
+  status         String   @default("Pending")
+  catatan        String?
+  createdAt      DateTime @default(now())
+  updatedAt      DateTime @updatedAt
+}
+
+model OTPSession {
+  id        Int      @id @default(autoincrement())
+  telepon   String
+  otp       String
+  expiresAt DateTime
+  verified  Boolean  @default(false)
+  attempts  Int      @default(0)
+  createdAt DateTime @default(now())
+}
