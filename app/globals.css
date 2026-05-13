@@ -476,8 +476,9 @@ html, body {
   flex-direction: column;
 }
 
-/* Giant "Solario" watermark — fills empty hero space (crops on edges) */
+/* Giant "Solario" watermark — mobile only (hidden on desktop) */
 .solario-landing .sl-hero-watermark {
+  display: none;
   position: absolute;
   top: 60%;
   left: 50%;
@@ -1047,10 +1048,12 @@ html, body {
     min-height: 100dvh;
   }
 
-  /* Watermark on mobile: move down so it sits between stats row and hills */
+  /* Watermark on mobile: show + lebih kelihatan, antara stats & hills */
   .solario-landing .sl-hero-watermark {
+    display: block;
     top: 70%;
-    font-size: clamp(140px, 38vw, 260px);
+    font-size: clamp(150px, 42vw, 280px);
+    opacity: 0.2;
   }
   .solario-landing .sl-h1 {
     font-size: clamp(34px, 8.4vw, 56px);
