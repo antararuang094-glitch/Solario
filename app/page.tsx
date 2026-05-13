@@ -377,7 +377,28 @@ export default function HomePage() {
 
       {/* ===== HERO ===== */}
       <section className="sl-hero" id="top">
-        <div className="sl-hero-watermark" aria-hidden="true">Solario</div>
+        <div className="sl-hero-preview" aria-hidden="true">
+          <span className="sl-hero-preview-glow" />
+          <div className="sl-hero-preview-content">
+            <div className="sl-hero-preview-eyebrow">
+              <span className="sl-hero-preview-dot" />
+              Contoh · Tagihan Rp 1,5&nbsp;jt
+            </div>
+            <p className="sl-hero-preview-num">
+              Rp 1,2 jt
+              <span className="sl-hero-preview-unit">hemat / bulan</span>
+            </p>
+            <div className="sl-hero-preview-stats">
+              <span>
+                Balik modal <b>4,5 tahun</b>
+              </span>
+              <span className="sl-hero-preview-bullet">·</span>
+              <span>
+                Sistem <b>3,5 kWp</b>
+              </span>
+            </div>
+          </div>
+        </div>
         <div className="sl-hero-inner">
           <div ref={heroStaggerRef} data-stagger className="container">
             <span className="sl-badge">
@@ -565,21 +586,21 @@ export default function HomePage() {
           </div>
           <div className="sl-proof-grid" data-stagger>
             <div className="sl-proof-stat">
-              <div className="val" data-count="2400" data-suffix="+">0+</div>
+              <div className="val" data-count="2400" data-suffix="+">2.400+</div>
               <div className="lab">Kalkulasi dilakukan</div>
             </div>
             <div className="sl-proof-stat">
               <div className="val" data-count="1.2" data-decimals="1" data-prefix="Rp " data-suffix=" Jt">
-                Rp 0 Jt
+                Rp 1,2 Jt
               </div>
               <div className="lab">Rata-rata hemat per bulan</div>
             </div>
             <div className="sl-proof-stat">
-              <div className="val" data-count="47">0</div>
+              <div className="val" data-count="18">18</div>
               <div className="lab">Partner installer aktif</div>
             </div>
             <div className="sl-proof-stat">
-              <div className="val" data-count="4.8" data-decimals="1" data-suffix="★">0★</div>
+              <div className="val" data-count="4.8" data-decimals="1" data-suffix="★">4,8★</div>
               <div className="lab">Rating kepuasan</div>
             </div>
           </div>
@@ -708,9 +729,8 @@ export default function HomePage() {
             <div className="sl-footer-col">
               <h4>Perusahaan</h4>
               <ul>
-                <li><a href="#">Tentang</a></li>
-                <li><a href="#">Kontak</a></li>
-                <li><Link href="/admin">Admin</Link></li>
+                <li><Link href="/tentang">Tentang</Link></li>
+                <li><a href="mailto:halo@solario.id">Kontak</a></li>
               </ul>
             </div>
           </div>

@@ -253,9 +253,9 @@ export function Footer() {
           <FooterColumn
             title="Perusahaan"
             links={[
-              { label: "Tentang Kami", href: "#" },
+              { label: "Tentang Kami", href: "/tentang" },
               { label: "Blog", href: "#" },
-              { label: "Kontak", href: "#" },
+              { label: "Kontak", href: "mailto:halo@solario.id" },
               { label: "Karier", href: "#" },
             ]}
           />
@@ -292,16 +292,28 @@ function FooterColumn({
         {title}
       </h4>
       <ul className="space-y-2.5">
-        {links.map((l) => (
-          <li key={l.label}>
-            <Link
-              href={l.href}
-              className="text-sm text-ink hover:text-[#16a34a] transition-colors"
-            >
-              {l.label}
-            </Link>
-          </li>
-        ))}
+        {links.map((l) => {
+          const isExternal =
+            l.href.startsWith("mailto:") ||
+            l.href.startsWith("tel:") ||
+            l.href.startsWith("http") ||
+            l.href === "#";
+          const linkClass =
+            "text-sm text-ink hover:text-[#16a34a] transition-colors";
+          return (
+            <li key={l.label}>
+              {isExternal ? (
+                <a href={l.href} className={linkClass}>
+                  {l.label}
+                </a>
+              ) : (
+                <Link href={l.href} className={linkClass}>
+                  {l.label}
+                </Link>
+              )}
+            </li>
+          );
+        })}
       </ul>
     </div>
   );
