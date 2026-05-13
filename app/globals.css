@@ -476,6 +476,26 @@ html, body {
   flex-direction: column;
 }
 
+/* Giant "Solario" watermark — fills empty hero space (crops on edges) */
+.solario-landing .sl-hero-watermark {
+  position: absolute;
+  top: 50%;
+  left: 50%;
+  transform: translate(-50%, -50%);
+  font-family: 'Inter', sans-serif;
+  font-weight: 900;
+  font-style: italic;
+  font-size: clamp(160px, 36vw, 1100px);
+  letter-spacing: -0.04em;
+  color: var(--sl-accent);
+  opacity: 0.11;
+  white-space: nowrap;
+  pointer-events: none;
+  user-select: none;
+  z-index: 0;
+  line-height: 1;
+}
+
 .solario-landing .sl-h1 {
   font-size: clamp(52px, 8vw, 120px);
   font-weight: 800;

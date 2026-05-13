@@ -377,6 +377,7 @@ export default function HomePage() {
 
       {/* ===== HERO ===== */}
       <section className="sl-hero" id="top">
+        <div className="sl-hero-watermark" aria-hidden="true">Solario</div>
         <div className="sl-hero-inner">
           <div ref={heroStaggerRef} data-stagger className="container">
             <span className="sl-badge">
