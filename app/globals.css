@@ -2,10 +2,17 @@
 @import url('https://fonts.googleapis.com/css2?family=Inter:wght@500;600;700;800;900&display=swap');
 
 @font-face {
-  font-family: 'Golek Duit';
-  src: url('/fonts/GolekDuit.otf') format('opentype');
+  font-family: 'Sturdy';
+  src: url('/fonts/Sturdy-Regular.woff2') format('woff2');
   font-weight: 400 900;
   font-style: normal;
+  font-display: swap;
+}
+@font-face {
+  font-family: 'Sturdy';
+  src: url('/fonts/Sturdy-Italic.woff2') format('woff2');
+  font-weight: 400 900;
+  font-style: italic;
   font-display: swap;
 }
 
@@ -31,9 +38,9 @@
   font-display: swap;
 }
 
-/* ── Global headline rule: Golek Duit (custom display, applies to ALL pages) ── */
+/* ── Global headline rule: Sturdy (display/sport, applies to ALL pages) ── */
 h1, h2, h3, h4 {
-  font-family: 'Golek Duit', 'Inter', -apple-system, BlinkMacSystemFont, sans-serif;
+  font-family: 'Sturdy', 'Inter', -apple-system, BlinkMacSystemFont, sans-serif;
   font-weight: 700;
   letter-spacing: -0.01em;
 }
@@ -115,7 +122,7 @@ html, body {
 .solario-landing h2,
 .solario-landing h3,
 .solario-landing .sl-h1 {
-  font-family: 'Golek Duit', 'Inter', -apple-system, BlinkMacSystemFont, sans-serif;
+  font-family: 'Sturdy', 'Inter', -apple-system, BlinkMacSystemFont, sans-serif;
   font-weight: 700;
   letter-spacing: -0.015em;
 }
