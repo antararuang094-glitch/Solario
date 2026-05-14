@@ -1,20 +1,5 @@
 /* ===== Custom fonts ===== */
-@import url('https://fonts.googleapis.com/css2?family=Inter:wght@500;600;700;800;900&display=swap');
-
-@font-face {
-  font-family: 'Sturdy';
-  src: url('/fonts/Sturdy-Regular.woff2') format('woff2');
-  font-weight: 400 900;
-  font-style: normal;
-  font-display: swap;
-}
-@font-face {
-  font-family: 'Sturdy';
-  src: url('/fonts/Sturdy-Italic.woff2') format('woff2');
-  font-weight: 400 900;
-  font-style: italic;
-  font-display: swap;
-}
+@import url('https://fonts.googleapis.com/css2?family=Inter+Tight:wght@500;600;700;800;900&family=Inter:wght@400;500;600;700;800;900&display=swap');
 
 @font-face {
   font-family: 'Grift';
@@ -38,11 +23,12 @@
   font-display: swap;
 }
 
-/* ── Global headline rule: Sturdy (display/sport, applies to ALL pages) ── */
+/* ── Global headline rule: Inter Tight (fintech-grade display, applies to ALL pages) ── */
 h1, h2, h3, h4 {
-  font-family: 'Sturdy', 'Inter', -apple-system, BlinkMacSystemFont, sans-serif;
-  font-weight: 700;
-  letter-spacing: -0.01em;
+  font-family: 'Inter Tight', 'Inter', -apple-system, BlinkMacSystemFont, sans-serif;
+  font-weight: 800;
+  letter-spacing: -0.03em;
+  font-feature-settings: "cv11", "ss01", "ss03";
 }
 
 @tailwind base;
@@ -122,9 +108,10 @@ html, body {
 .solario-landing h2,
 .solario-landing h3,
 .solario-landing .sl-h1 {
-  font-family: 'Sturdy', 'Inter', -apple-system, BlinkMacSystemFont, sans-serif;
-  font-weight: 700;
-  letter-spacing: -0.015em;
+  font-family: 'Inter Tight', 'Inter', -apple-system, BlinkMacSystemFont, sans-serif;
+  font-weight: 800;
+  letter-spacing: -0.035em;
+  font-feature-settings: "cv11", "ss01", "ss03";
 }
 
 .solario-landing *,
@@ -605,10 +592,10 @@ html, body {
 }
 
 .solario-landing .sl-h1 {
-  font-size: clamp(52px, 7vw, 96px);
+  font-size: clamp(46px, 5.5vw, 80px);
   font-weight: 800;
-  line-height: 1.02;
-  letter-spacing: -0.03em;
+  line-height: 1.05;
+  letter-spacing: -0.04em;
   margin: 0;
   color: var(--sl-ink);
   text-wrap: balance;
