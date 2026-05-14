@@ -1,5 +1,13 @@
 /* ===== Custom fonts ===== */
-@import url('https://fonts.googleapis.com/css2?family=Fraunces:opsz,wght@9..144,700;9..144,800;9..144,900&family=Inter:wght@500;600;700;800;900&display=swap');
+@import url('https://fonts.googleapis.com/css2?family=Inter:wght@500;600;700;800;900&display=swap');
+
+@font-face {
+  font-family: 'Golek Duit';
+  src: url('/fonts/GolekDuit.otf') format('opentype');
+  font-weight: 400 900;
+  font-style: normal;
+  font-display: swap;
+}
 
 @font-face {
   font-family: 'Grift';
@@ -23,12 +31,11 @@
   font-display: swap;
 }
 
-/* ── Global headline rule: Fraunces serif display (applies to ALL pages) ── */
+/* ── Global headline rule: Golek Duit (custom display, applies to ALL pages) ── */
 h1, h2, h3, h4 {
-  font-family: 'Fraunces', 'Inter', Georgia, "Times New Roman", serif;
-  font-weight: 800;
-  letter-spacing: -0.02em;
-  font-optical-sizing: auto;
+  font-family: 'Golek Duit', 'Inter', -apple-system, BlinkMacSystemFont, sans-serif;
+  font-weight: 700;
+  letter-spacing: -0.01em;
 }
 
 @tailwind base;
@@ -108,10 +115,9 @@ html, body {
 .solario-landing h2,
 .solario-landing h3,
 .solario-landing .sl-h1 {
-  font-family: 'Fraunces', 'Inter', Georgia, "Times New Roman", serif;
-  font-weight: 800;
-  letter-spacing: -0.025em;
-  font-optical-sizing: auto;
+  font-family: 'Golek Duit', 'Inter', -apple-system, BlinkMacSystemFont, sans-serif;
+  font-weight: 700;
+  letter-spacing: -0.015em;
 }
 
 .solario-landing *,
