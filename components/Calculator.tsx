@@ -19,12 +19,14 @@ import { LeadForm } from "@/components/LeadForm";
 import {
   ArrowRight,
   Building2,
+  Calculator as CalculatorIcon,
   Calendar,
   CheckCircle2,
   Download,
   Home,
   Leaf,
   Lock,
+  Sparkles,
   TrendingUp,
   Wallet,
   Warehouse,
@@ -46,6 +48,34 @@ type Tenor = (typeof TENOR_OPTIONS)[number];
 const BUNGA_FLAT_PER_BULAN = 0.008; // 0.8% flat
 const KENAIKAN_TARIF_PLN = 0.05; // 5% per tahun
 const DEGRADASI_PANEL = 0.005; // 0.5% per tahun
+const CALCULATING_DURATION_MS = 1500; // total loading state duration
+const COUNTUP_DURATION_MS = 1300; // count-up animation duration
+
+// ── Count-up hook (easeOutCubic) — animates from 0 to target ──
+function useCountUp(target: number, duration = COUNTUP_DURATION_MS, decimals = 0) {
+  const [val, setVal] = React.useState(0);
+  React.useEffect(() => {
+    if (typeof window === "undefined") return;
+    setVal(0);
+    const reduced = window.matchMedia("(prefers-reduced-motion: reduce)").matches;
+    if (reduced) {
+      setVal(target);
+      return;
+    }
+    let raf = 0;
+    const start = performance.now();
+    const factor = Math.pow(10, decimals);
+    const step = (now: number) => {
+      const p = Math.min(1, (now - start) / duration);
+      const eased = 1 - Math.pow(1 - p, 3); // easeOutCubic
+      setVal(Math.round(target * eased * factor) / factor);
+      if (p < 1) raf = requestAnimationFrame(step);
+    };
+    raf = requestAnimationFrame(step);
+    return () => cancelAnimationFrame(raf);
+  }, [target, duration, decimals]);
+  return val;
+}
 
 type FormData = {
   tagihanBulanan: number;
@@ -64,12 +94,22 @@ export function Calculator() {
   const [tagihanDisplay, setTagihanDisplay] = React.useState("");
   const [hasil, setHasil] = React.useState<KalkulatorOutput | null>(null);
   const [inputState, setInputState] = React.useState<FormData | null>(null);
+  const [calculating, setCalculating] = React.useState(false);
   const [paymentMode, setPaymentMode] = React.useState<"cash" | "cicil">("cash");
   const [dpPercent, setDpPercent] = React.useState(20);
   const [tenor, setTenor] = React.useState<Tenor>(24);
   const [pdfLoading, setPdfLoading] = React.useState(false);
   const resultsRef = React.useRef<HTMLDivElement>(null);
   const leadFormRef = React.useRef<HTMLDivElement>(null);
+
+  // ── Animated values for result hero card ──
+  const hematAnimated = useCountUp(hasil?.hematPerBulan ?? 0);
+  const hematTahunAnimated = useCountUp(hasil?.hematPerTahun ?? 0);
+  const paybackAnimated = useCountUp(hasil?.paybackPeriodTahun ?? 0, COUNTUP_DURATION_MS, 1);
+  const sistemAnimated = useCountUp(hasil?.sistemKwpRekomendasi ?? 0, COUNTUP_DURATION_MS, 1);
+  const biayaMidAnimated = useCountUp(
+    hasil ? Math.round((hasil.biayaInstalasiMin + hasil.biayaInstalasiMax) / 2) : 0
+  );
 
   // ── Proyeksi 25 tahun dengan kenaikan tarif PLN 5%/tahun + degradasi panel 0.5%/tahun ──
   const projeksi25 = React.useMemo(() => {
@@ -168,11 +208,31 @@ export function Calculator() {
       kota: data.kota,
       golonganListrik: data.golonganListrik,
     });
-    setHasil(out);
+    const reduced =
+      typeof window !== "undefined" &&
+      window.matchMedia("(prefers-reduced-motion: reduce)").matches;
+
     setInputState(data);
+
+    if (reduced) {
+      setHasil(out);
+      setCalculating(false);
+      setTimeout(() => {
+        resultsRef.current?.scrollIntoView({ behavior: "smooth", block: "start" });
+      }, 50);
+      return;
+    }
+
+    // Show calculating state, scroll into view, then reveal result after delay
+    setHasil(null);
+    setCalculating(true);
     setTimeout(() => {
       resultsRef.current?.scrollIntoView({ behavior: "smooth", block: "start" });
-    }, 50);
+    }, 80);
+    setTimeout(() => {
+      setHasil(out);
+      setCalculating(false);
+    }, CALCULATING_DURATION_MS);
   };
 
   const handleTagihanChange = (e: React.ChangeEvent<HTMLInputElement>) => {
@@ -544,8 +604,17 @@ export function Calculator() {
         </div>
       </form>
 
+      {/* ── Calculating state (1.5s loading dengan messaging) ── */}
+      {calculating && inputState ? (
+        <div ref={resultsRef} className="scroll-mt-20">
+          <CalculatingCard
+            kota={inputState.kota === "default" ? "kotamu" : inputState.kota}
+          />
+        </div>
+      ) : null}
+
       {/* ── Results ── */}
-      {hasil && inputState ? (
+      {hasil && inputState && !calculating ? (
         <div ref={resultsRef} className="space-y-6 scroll-mt-20">
           {/* HUGE dark green hero result card */}
           <div className="relative overflow-hidden rounded-2xl bg-[#0a3d2e] text-white p-7 sm:p-10 shadow-[0_30px_80px_-32px_rgba(10,61,46,0.45)]">
@@ -573,22 +642,30 @@ export function Calculator() {
               <p className="mt-5 text-base text-white/70 font-medium">
                 Kamu bisa hemat tagihan listrik
               </p>
-              <h2 className="mt-1 text-5xl sm:text-7xl lg:text-[88px] font-bold tracking-[-0.03em] text-white leading-none">
-                {formatRupiah(hasil.hematPerBulan)}
+              <h2 className="mt-1 text-5xl sm:text-7xl lg:text-[88px] font-bold tracking-[-0.03em] text-white leading-none tabular-nums">
+                {formatRupiah(hematAnimated)}
               </h2>
               <p className="mt-3 text-sm sm:text-base text-white/65">
                 setiap bulan
                 <span className="mx-2 text-white/30">·</span>
-                {formatRupiahShort(hasil.hematPerTahun).replace("Rp ", "Rp ")} per tahun
+                {formatRupiahShort(hematTahunAnimated)} per tahun
               </p>
             </div>
 
             <div className="relative mt-9 pt-7 border-t border-white/10 grid grid-cols-1 sm:grid-cols-3 sm:divide-x divide-white/10">
-              <ResultStat label="Balik Modal" value={`${hasil.paybackPeriodTahun}`} suffix="tahun" />
-              <ResultStat label="Sistem yang Cocok" value={`${hasil.sistemKwpRekomendasi}`} suffix="kWp" />
+              <ResultStat
+                label="Balik Modal"
+                value={paybackAnimated.toFixed(1).replace(".", ",")}
+                suffix="tahun"
+              />
+              <ResultStat
+                label="Sistem yang Cocok"
+                value={sistemAnimated.toFixed(1).replace(".", ",")}
+                suffix="kWp"
+              />
               <ResultStat
                 label="Biaya Instalasi"
-                value={formatRupiahShort((hasil.biayaInstalasiMin + hasil.biayaInstalasiMax) / 2)}
+                value={formatRupiahShort(biayaMidAnimated)}
                 hint={`(${formatRupiahShort(hasil.biayaInstalasiMin)} – ${formatRupiahShort(hasil.biayaInstalasiMax)})`}
               />
             </div>
@@ -1093,6 +1170,94 @@ function DetailRow({
       >
         {value}
       </dd>
+    </div>
+  );
+}
+
+// ── Calculating state card (shown 1.5s before result reveals) ──
+function CalculatingCard({ kota }: { kota: string }) {
+  const messages = React.useMemo(
+    () => [
+      "Membaca tagihan listrik kamu...",
+      `Mencari Peak Sun Hours untuk ${kota}...`,
+      "Menentukan ukuran sistem optimal...",
+      "Menghitung ROI 25 tahun...",
+    ],
+    [kota]
+  );
+  const [step, setStep] = React.useState(0);
+
+  React.useEffect(() => {
+    const reduced =
+      typeof window !== "undefined" &&
+      window.matchMedia("(prefers-reduced-motion: reduce)").matches;
+    if (reduced) {
+      setStep(messages.length - 1);
+      return;
+    }
+    const stepDuration = CALCULATING_DURATION_MS / messages.length;
+    const id = setInterval(() => {
+      setStep((s) => Math.min(s + 1, messages.length - 1));
+    }, stepDuration);
+    return () => clearInterval(id);
+  }, [messages.length]);
+
+  const progress = ((step + 1) / messages.length) * 100;
+
+  return (
+    <div className="relative overflow-hidden rounded-2xl bg-[#0a3d2e] text-white p-7 sm:p-10 shadow-[0_30px_80px_-32px_rgba(10,61,46,0.45)]">
+      <div
+        className="absolute top-0 right-0 w-[420px] h-[420px] -translate-y-1/4 translate-x-1/4 rounded-full opacity-60 pointer-events-none animate-pulse"
+        style={{
+          background:
+            "radial-gradient(circle, rgba(34,197,94,0.3) 0%, rgba(34,197,94,0) 60%)",
+          animationDuration: "2.4s",
+        }}
+      />
+      <div className="relative">
+        <div className="inline-flex items-center gap-2 text-[10px] sm:text-xs font-semibold uppercase tracking-[0.12em] text-emerald-200/80">
+          <span className="relative inline-flex w-4 h-4 items-center justify-center">
+            <CalculatorIcon className="w-4 h-4 animate-pulse" style={{ animationDuration: "1s" }} />
+          </span>
+          Menghitung Estimasi
+        </div>
+        <div className="mt-6 min-h-[68px] sm:min-h-[80px]">
+          <p
+            key={step}
+            className="text-xl sm:text-3xl font-bold tracking-tight text-white animate-fade-in"
+          >
+            {messages[step]}
+          </p>
+        </div>
+        <div className="mt-1 inline-flex items-center gap-1.5 text-xs text-white/55">
+          <Sparkles className="w-3.5 h-3.5" />
+          Tarif PLN 2024 · PSH NASA POWER · Performance ratio 80%
+        </div>
+
+        {/* Progress bar */}
+        <div className="mt-7 h-1.5 bg-white/10 rounded-full overflow-hidden">
+          <div
+            className="h-full bg-[#22c55e] rounded-full transition-all duration-300 ease-out"
+            style={{ width: `${progress}%` }}
+          />
+        </div>
+
+        {/* Stat skeletons (mimics result card layout) */}
+        <div className="relative mt-9 pt-7 border-t border-white/10 grid grid-cols-1 sm:grid-cols-3 sm:divide-x divide-white/10">
+          {[0, 1, 2].map((i) => (
+            <div
+              key={i}
+              className="px-0 sm:px-6 first:pl-0 last:pr-0 py-4 sm:py-0 first:pt-0 last:pb-0"
+            >
+              <div className="h-3 w-20 rounded bg-white/10 animate-pulse" />
+              <div
+                className="mt-3 h-7 w-28 rounded bg-white/15 animate-pulse"
+                style={{ animationDelay: `${i * 120}ms` }}
+              />
+            </div>
+          ))}
+        </div>
+      </div>
     </div>
   );
 }
