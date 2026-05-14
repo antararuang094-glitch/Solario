@@ -1,5 +1,5 @@
 /* ===== Custom fonts ===== */
-@import url('https://fonts.googleapis.com/css2?family=Bricolage+Grotesque:opsz,wght@12..96,700;12..96,800&family=Inter:wght@500;600;700;800;900&display=swap');
+@import url('https://fonts.googleapis.com/css2?family=Fraunces:opsz,wght@9..144,700;9..144,800;9..144,900&family=Inter:wght@500;600;700;800;900&display=swap');
 
 @font-face {
   font-family: 'Grift';
@@ -23,11 +23,12 @@
   font-display: swap;
 }
 
-/* ── Global headline rule: Bricolage Grotesque (applies to ALL pages) ── */
+/* ── Global headline rule: Fraunces serif display (applies to ALL pages) ── */
 h1, h2, h3, h4 {
-  font-family: 'Bricolage Grotesque', 'Inter', -apple-system, BlinkMacSystemFont, sans-serif;
+  font-family: 'Fraunces', 'Inter', Georgia, "Times New Roman", serif;
   font-weight: 800;
-  letter-spacing: -0.025em;
+  letter-spacing: -0.02em;
+  font-optical-sizing: auto;
 }
 
 @tailwind base;
@@ -107,9 +108,10 @@ html, body {
 .solario-landing h2,
 .solario-landing h3,
 .solario-landing .sl-h1 {
-  font-family: 'Bricolage Grotesque', 'Inter', -apple-system, BlinkMacSystemFont, sans-serif;
+  font-family: 'Fraunces', 'Inter', Georgia, "Times New Roman", serif;
   font-weight: 800;
-  letter-spacing: -0.035em;
+  letter-spacing: -0.025em;
+  font-optical-sizing: auto;
 }
 
 .solario-landing *,
@@ -590,10 +592,10 @@ html, body {
 }
 
 .solario-landing .sl-h1 {
-  font-size: clamp(52px, 8vw, 120px);
+  font-size: clamp(52px, 7vw, 96px);
   font-weight: 800;
-  line-height: 1;
-  letter-spacing: -0.045em;
+  line-height: 1.02;
+  letter-spacing: -0.03em;
   margin: 0;
   color: var(--sl-ink);
   text-wrap: balance;
@@ -1143,9 +1145,9 @@ html, body {
   /* Preview card: show on mobile */
   .solario-landing .sl-hero-preview { display: block; }
   .solario-landing .sl-h1 {
-    font-size: clamp(44px, 11vw, 68px);
-    letter-spacing: -0.04em;
-    line-height: 1.02;
+    font-size: clamp(38px, 9vw, 56px);
+    letter-spacing: -0.025em;
+    line-height: 1.04;
   }
   .solario-landing .sl-hero-sub { font-size: 16px; margin-top: 20px; }
   .solario-landing .sl-hero-ctas { margin-top: 26px; }
@@ -1163,7 +1165,7 @@ html, body {
   .solario-landing .sl-proof,
   .solario-landing .sl-installer { padding: 72px 0; }
   .solario-landing .sl-section-head { margin-bottom: 48px; }
-  .solario-landing .sl-section-head h2 { font-size: clamp(32px, 7vw, 44px); letter-spacing: -0.03em; }
+  .solario-landing .sl-section-head h2 { font-size: clamp(28px, 6vw, 38px); letter-spacing: -0.025em; }
   .solario-landing .sl-section-head p { font-size: 16px; }
 
   .solario-landing .sl-how-grid { grid-template-columns: 1fr; gap: 14px; }
@@ -1193,13 +1195,13 @@ html, body {
   .solario-landing .sl-testi .quote { font-size: 15px; }
 
   /* Calc CTA */
-  .solario-landing .sl-calc-cta h2 { font-size: clamp(34px, 8vw, 48px); letter-spacing: -0.035em; }
+  .solario-landing .sl-calc-cta h2 { font-size: clamp(30px, 7vw, 42px); letter-spacing: -0.025em; }
   .solario-landing .sl-calc-cta p { font-size: 16px; }
   .solario-landing .sl-calc-input { font-size: 16px; padding: 18px 22px; }
 
   /* Installer */
   .solario-landing .sl-installer-grid { grid-template-columns: 1fr; gap: 40px; }
-  .solario-landing .sl-installer h2 { font-size: clamp(32px, 7.5vw, 44px); letter-spacing: -0.03em; }
+  .solario-landing .sl-installer h2 { font-size: clamp(28px, 6.5vw, 40px); letter-spacing: -0.025em; }
   .solario-landing .sl-installer p.lead { font-size: 16px; }
   .solario-landing .sl-bullets li { font-size: 15px; }
   .solario-landing .sl-lead-card { margin: 0 auto; }
@@ -1233,8 +1235,9 @@ html, body {
   /* Hero */
   .solario-landing .sl-hero { padding: 80px 0 0; }
   .solario-landing .sl-h1 {
-    font-size: clamp(38px, 11vw, 56px);
-    line-height: 1;
+    font-size: clamp(34px, 8.5vw, 46px);
+    letter-spacing: -0.02em;
+    line-height: 1.04;
   }
   .solario-landing .sl-hero-sub { font-size: 15px; }
   .solario-landing .sl-badge {
