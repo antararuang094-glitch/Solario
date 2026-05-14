@@ -208,195 +208,201 @@ export function Calculator() {
         year: "numeric",
       });
 
+      // ─ Helper: render section title ─
+      const sectionTitle = (title: string, top: number) => {
+        doc.setFont("helvetica", "bold");
+        doc.setFontSize(11);
+        doc.setTextColor(...PRIMARY);
+        doc.text(title, M, top + 9);
+        return top + 18;
+      };
+
+      // ─ Helper: render zebra-striped key/value table ─
+      const renderTable = (
+        rows: Array<[string, string]>,
+        top: number,
+        rowH = 20
+      ) => {
+        doc.setFontSize(10);
+        rows.forEach((row, i) => {
+          const rowTop = top + i * rowH;
+          doc.setFillColor(i % 2 === 0 ? 248 : 255, 250, 252);
+          doc.rect(M, rowTop, W - 2 * M, rowH, "F");
+          const textBaseline = rowTop + rowH * 0.66;
+          doc.setTextColor(...MUTED);
+          doc.setFont("helvetica", "normal");
+          doc.text(row[0], M + 10, textBaseline);
+          doc.setTextColor(...INK);
+          doc.setFont("helvetica", "bold");
+          doc.text(row[1], W - M - 10, textBaseline, { align: "right" });
+        });
+        return top + rows.length * rowH;
+      };
+
       // ─ Header brand strip ─
       doc.setFillColor(...PRIMARY);
-      doc.rect(0, 0, W, 70, "F");
+      doc.rect(0, 0, W, 76, "F");
+
+      // Green dot
       doc.setFillColor(...ACCENT);
-      doc.circle(M + 8, 35, 7, "F");
+      doc.circle(M + 10, 32, 8, "F");
+
+      // "Solario" + ".id" with accurate spacing using getTextWidth
       doc.setTextColor(255, 255, 255);
       doc.setFont("helvetica", "bold");
-      doc.setFontSize(20);
-      doc.text("Solario", M + 22, 40);
+      doc.setFontSize(22);
+      const brandX = M + 26;
+      const brandY = 37;
+      doc.text("Solario", brandX, brandY);
+      const solarioWidth = doc.getTextWidth("Solario");
+      doc.setFontSize(13);
       doc.setFont("helvetica", "normal");
-      doc.setFontSize(11);
       doc.setTextColor(187, 247, 208);
-      doc.text(".id", M + 88, 40);
+      doc.text(".id", brandX + solarioWidth + 1, brandY);
+
+      // Subtitle
       doc.setFontSize(9);
       doc.setTextColor(220, 252, 231);
-      doc.text(
-        "Kalkulator Solar #1 Indonesia",
-        M + 22,
-        54
-      );
-      doc.text(`Dibuat: ${dateStr}`, W - M, 40, { align: "right" });
+      doc.text("Kalkulator Solar #1 Indonesia", brandX, brandY + 14);
+
+      // Date right-aligned
+      doc.setFontSize(9);
+      doc.setTextColor(220, 252, 231);
+      doc.text(`Dibuat: ${dateStr}`, W - M, brandY, { align: "right" });
 
       // ─ Title ─
-      let y = 105;
+      let y = 110;
       doc.setTextColor(...INK);
       doc.setFont("helvetica", "bold");
       doc.setFontSize(18);
       doc.text("Laporan Estimasi Solar Panel", M, y);
-      y += 6;
+      y += 8;
       doc.setDrawColor(...LINE);
       doc.setLineWidth(0.5);
       doc.line(M, y + 6, W - M, y + 6);
-      y += 28;
+      y += 26;
 
       // ─ Ringkasan Input ─
-      doc.setFont("helvetica", "bold");
-      doc.setFontSize(11);
-      doc.setTextColor(...PRIMARY);
-      doc.text("Ringkasan Input", M, y);
-      y += 16;
-      const inputRows = [
-        ["Kota", inputState.kota === "default" ? "Lainnya" : inputState.kota],
-        ["Golongan PLN", inputState.golonganListrik],
-        ["Tipe Properti", inputState.tipeProperti ?? "-"],
-        ["Tagihan Listrik", `${formatRupiah(inputState.tagihanBulanan)} / bulan`],
-      ];
-      doc.setFontSize(10);
-      inputRows.forEach((row, i) => {
-        const rowY = y + i * 18;
-        doc.setFillColor(i % 2 === 0 ? 248 : 255, 250, 252);
-        doc.rect(M, rowY - 12, W - 2 * M, 18, "F");
-        doc.setTextColor(...MUTED);
-        doc.setFont("helvetica", "normal");
-        doc.text(row[0], M + 8, rowY);
-        doc.setTextColor(...INK);
-        doc.setFont("helvetica", "bold");
-        doc.text(row[1], W - M - 8, rowY, { align: "right" });
-      });
-      y += inputRows.length * 18 + 16;
+      y = sectionTitle("Ringkasan Input", y);
+      y = renderTable(
+        [
+          ["Kota", inputState.kota === "default" ? "Lainnya" : inputState.kota],
+          ["Golongan PLN", inputState.golonganListrik],
+          ["Tipe Properti", inputState.tipeProperti ?? "-"],
+          ["Tagihan Listrik", `${formatRupiah(inputState.tagihanBulanan)} / bulan`],
+        ],
+        y
+      );
+      y += 20;
 
       // ─ Hasil Kalkulasi (highlight card) ─
       doc.setFillColor(...PRIMARY);
-      doc.roundedRect(M, y, W - 2 * M, 92, 8, 8, "F");
+      doc.roundedRect(M, y, W - 2 * M, 100, 10, 10, "F");
       doc.setTextColor(187, 247, 208);
       doc.setFont("helvetica", "normal");
       doc.setFontSize(9);
-      doc.text("HEMAT TAGIHAN LISTRIK", M + 16, y + 22);
+      doc.text("HEMAT TAGIHAN LISTRIK", M + 18, y + 22);
       doc.setTextColor(255, 255, 255);
       doc.setFont("helvetica", "bold");
       doc.setFontSize(28);
-      doc.text(formatRupiah(hasil.hematPerBulan), M + 16, y + 50);
+      doc.text(formatRupiah(hasil.hematPerBulan), M + 18, y + 54);
       doc.setFont("helvetica", "normal");
       doc.setFontSize(9);
       doc.setTextColor(187, 247, 208);
       doc.text(
         `setiap bulan  |  ${formatRupiah(hasil.hematPerTahun)} per tahun`,
-        M + 16,
-        y + 68
+        M + 18,
+        y + 74
       );
       doc.text(
         `BEP ${bepYear ?? "-"} tahun  |  Sistem ${hasil.sistemKwpRekomendasi} kWp`,
-        M + 16,
-        y + 82
+        M + 18,
+        y + 88
       );
-      y += 110;
+      y += 116;
 
       // ─ Detail Hasil ─
-      doc.setFont("helvetica", "bold");
-      doc.setFontSize(11);
-      doc.setTextColor(...PRIMARY);
-      doc.text("Detail Perhitungan", M, y);
-      y += 16;
-      const detailRows = [
-        ["Konsumsi listrik", `${hasil.estimasiKwhPerBulan.toLocaleString("id-ID")} kWh/bulan`],
-        ["Produksi panel", `${hasil.produksiKwhPerBulan.toLocaleString("id-ID")} kWh/bulan`],
-        ["Ukuran sistem", `${hasil.sistemKwpRekomendasi} kWp`],
-        ["Biaya instalasi", `${formatRupiah(hasil.biayaInstalasiMin)} – ${formatRupiah(hasil.biayaInstalasiMax)}`],
-        ["Hemat 25 tahun (akumulasi)", formatRupiah(projeksi25[25]?.hemat ?? 0)],
-        ["CO2 dikurangi", `${hasil.co2DihemanKgPerTahun.toLocaleString("id-ID")} kg/tahun`],
-      ];
-      doc.setFontSize(10);
-      detailRows.forEach((row, i) => {
-        const rowY = y + i * 18;
-        doc.setFillColor(i % 2 === 0 ? 248 : 255, 250, 252);
-        doc.rect(M, rowY - 12, W - 2 * M, 18, "F");
-        doc.setTextColor(...MUTED);
-        doc.setFont("helvetica", "normal");
-        doc.text(row[0], M + 8, rowY);
-        doc.setTextColor(...INK);
-        doc.setFont("helvetica", "bold");
-        doc.text(row[1], W - M - 8, rowY, { align: "right" });
-      });
-      y += detailRows.length * 18 + 16;
+      y = sectionTitle("Detail Perhitungan", y);
+      y = renderTable(
+        [
+          ["Konsumsi listrik", `${hasil.estimasiKwhPerBulan.toLocaleString("id-ID")} kWh/bulan`],
+          ["Produksi panel", `${hasil.produksiKwhPerBulan.toLocaleString("id-ID")} kWh/bulan`],
+          ["Ukuran sistem", `${hasil.sistemKwpRekomendasi} kWp`],
+          ["Biaya instalasi", `${formatRupiah(hasil.biayaInstalasiMin)} - ${formatRupiah(hasil.biayaInstalasiMax)}`],
+          ["Hemat 25 tahun (akumulasi)", formatRupiah(projeksi25[25]?.hemat ?? 0)],
+          ["CO2 dikurangi", `${hasil.co2DihemanKgPerTahun.toLocaleString("id-ID")} kg/tahun`],
+        ],
+        y
+      );
+      y += 20;
 
-      // ─ Proyeksi 25 tahun (table) ─
-      doc.setFont("helvetica", "bold");
-      doc.setFontSize(11);
-      doc.setTextColor(...PRIMARY);
-      doc.text("Proyeksi Hemat (tarif PLN +5% per tahun)", M, y);
-      y += 16;
+      // ─ Proyeksi 25 tahun (table with column headers) ─
+      y = sectionTitle("Proyeksi Hemat (tarif PLN +5% per tahun)", y);
+
+      // Header row (taller, with explicit text positioning)
+      const headerH = 22;
       doc.setFillColor(...SOFT_BG);
-      doc.rect(M, y - 12, W - 2 * M, 22, "F");
+      doc.rect(M, y, W - 2 * M, headerH, "F");
       doc.setFontSize(9);
+      doc.setFont("helvetica", "bold");
       doc.setTextColor(...PRIMARY);
-      doc.text("TAHUN", M + 10, y);
-      doc.text("AKUMULASI HEMAT", M + 110, y);
-      doc.text("STATUS", W - M - 10, y, { align: "right" });
-      y += 10;
+      const headerBaseline = y + headerH * 0.65;
+      doc.text("TAHUN", M + 10, headerBaseline);
+      doc.text("AKUMULASI HEMAT", M + 110, headerBaseline);
+      doc.text("STATUS", W - M - 10, headerBaseline, { align: "right" });
+      y += headerH;
+
+      // Data rows
       const milestoneYears = [1, 3, 5, 10, 25];
+      const projRowH = 20;
       doc.setFontSize(10);
       milestoneYears.forEach((yr, i) => {
         const d = projeksi25.find((p) => p.tahun === yr);
         if (!d) return;
-        const rowY = y + i * 18;
+        const rowTop = y + i * projRowH;
         doc.setFillColor(i % 2 === 0 ? 255 : 248, 250, 252);
-        doc.rect(M, rowY - 12, W - 2 * M, 18, "F");
+        doc.rect(M, rowTop, W - 2 * M, projRowH, "F");
+        const baseline = rowTop + projRowH * 0.66;
         doc.setTextColor(...INK);
         doc.setFont("helvetica", "normal");
-        doc.text(`Tahun ${yr}`, M + 10, rowY);
+        doc.text(`Tahun ${yr}`, M + 10, baseline);
         doc.setFont("helvetica", "bold");
-        doc.text(formatRupiah(d.hemat), M + 110, rowY);
+        doc.text(formatRupiah(d.hemat), M + 110, baseline);
         doc.setFont("helvetica", "normal");
         const bepReached = d.hemat >= d.biaya;
         doc.setTextColor(...(bepReached ? ACCENT : MUTED));
         doc.text(
           bepReached ? "Sudah balik modal" : "Belum balik modal",
           W - M - 10,
-          rowY,
+          baseline,
           { align: "right" }
         );
       });
-      y += milestoneYears.length * 18 + 16;
+      y += milestoneYears.length * projRowH + 20;
 
       // ─ Financing (if cicil) ─
       if (financing && financing.mode === "cicil") {
-        if (y > 700) {
+        if (y > 680) {
           doc.addPage();
           y = 60;
         }
-        doc.setFont("helvetica", "bold");
-        doc.setFontSize(11);
-        doc.setTextColor(...PRIMARY);
-        doc.text("Rincian Cicilan", M, y);
-        y += 16;
-        const cicilRows = [
-          [`Uang Muka (${financing.dpPercent}%)`, formatRupiah(financing.dp)],
-          ["Pokok pinjaman", formatRupiah(financing.pokok)],
-          ["Bunga (0,8% flat/bulan)", formatRupiah(financing.bungaTotal)],
-          ["Tenor", `${financing.tenor} bulan`],
-          ["Cicilan per bulan", formatRupiah(financing.cicilanPerBulan)],
-          ["Total dibayar", formatRupiah(financing.totalBayar)],
+        y = sectionTitle("Rincian Cicilan", y);
+        y = renderTable(
           [
-            "Cash flow per bulan",
-            `${financing.cashFlowMonthly >= 0 ? "+" : ""}${formatRupiah(financing.cashFlowMonthly)}`,
+            [`Uang Muka (${financing.dpPercent}%)`, formatRupiah(financing.dp)],
+            ["Pokok pinjaman", formatRupiah(financing.pokok)],
+            ["Bunga (0,8% flat/bulan)", formatRupiah(financing.bungaTotal)],
+            ["Tenor", `${financing.tenor} bulan`],
+            ["Cicilan per bulan", formatRupiah(financing.cicilanPerBulan)],
+            ["Total dibayar", formatRupiah(financing.totalBayar)],
+            [
+              "Cash flow per bulan",
+              `${financing.cashFlowMonthly >= 0 ? "+" : ""}${formatRupiah(financing.cashFlowMonthly)}`,
+            ],
           ],
-        ];
-        doc.setFontSize(10);
-        cicilRows.forEach((row, i) => {
-          const rowY = y + i * 18;
-          doc.setFillColor(i % 2 === 0 ? 248 : 255, 250, 252);
-          doc.rect(M, rowY - 12, W - 2 * M, 18, "F");
-          doc.setTextColor(...MUTED);
-          doc.setFont("helvetica", "normal");
-          doc.text(row[0], M + 8, rowY);
-          doc.setTextColor(...INK);
-          doc.setFont("helvetica", "bold");
-          doc.text(row[1], W - M - 8, rowY, { align: "right" });
-        });
-        y += cicilRows.length * 18 + 16;
+          y
+        );
+        y += 20;
       }
 
       // ─ Footer ─
