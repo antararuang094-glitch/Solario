@@ -345,65 +345,93 @@ export default function HomePage() {
           </div>
 
           <div className="sl-hero-hills" aria-hidden="true">
-            <svg viewBox="0 0 1200 280" preserveAspectRatio="none" xmlns="http://www.w3.org/2000/svg">
+            <svg viewBox="0 0 1200 400" preserveAspectRatio="none" xmlns="http://www.w3.org/2000/svg">
               <defs>
                 <linearGradient id="hillBack" x1="0" y1="0" x2="0" y2="1">
                   <stop offset="0%" stopColor="#dcfce7" />
                   <stop offset="100%" stopColor="#bbf7d0" />
                 </linearGradient>
                 <linearGradient id="hillMid" x1="0" y1="0" x2="0" y2="1">
-                  <stop offset="0%" stopColor="#bbf7d0" />
-                  <stop offset="100%" stopColor="#86efac" />
+                  <stop offset="0%" stopColor="#a7f3c2" />
+                  <stop offset="100%" stopColor="#6ee7a3" />
                 </linearGradient>
                 <linearGradient id="hillFront" x1="0" y1="0" x2="0" y2="1">
-                  <stop offset="0%" stopColor="#4ade80" />
-                  <stop offset="100%" stopColor="#22c55e" />
+                  <stop offset="0%" stopColor="#22c55e" />
+                  <stop offset="100%" stopColor="#16a34a" />
                 </linearGradient>
+                <radialGradient id="sunGlow" cx="50%" cy="50%" r="50%">
+                  <stop offset="0%" stopColor="#fef3c7" stopOpacity="0.7" />
+                  <stop offset="60%" stopColor="#fde68a" stopOpacity="0.3" />
+                  <stop offset="100%" stopColor="#fde68a" stopOpacity="0" />
+                </radialGradient>
                 <symbol id="solarPanel" viewBox="0 0 22 16">
                   <path d="M0,5 L10,0 L22,0 L12,5 Z" />
                   <rect x="10.4" y="5" width="1.6" height="11" />
                 </symbol>
               </defs>
 
+              {/* Soft sun glow in sky area */}
+              <circle cx="950" cy="80" r="180" fill="url(#sunGlow)" />
+              <circle cx="950" cy="80" r="32" fill="#fde68a" opacity="0.55" />
+
               {/* Back hills (furthest, lightest) */}
               <path
-                d="M0,280 L0,130 Q150,75 300,100 T600,95 T900,105 T1200,98 L1200,280 Z"
+                d="M0,400 L0,180 Q150,100 300,140 T600,130 T900,150 T1200,135 L1200,400 Z"
                 fill="url(#hillBack)"
               />
 
               {/* Mid hills */}
               <path
-                d="M0,280 L0,175 Q200,135 400,158 T800,160 T1200,155 L1200,280 Z"
+                d="M0,400 L0,250 Q200,185 400,220 T800,225 T1200,215 L1200,400 Z"
                 fill="url(#hillMid)"
               />
 
               {/* Front hills (darkest, closest) */}
               <path
-                d="M0,280 L0,220 Q260,195 520,210 T1000,215 T1200,212 L1200,280 Z"
+                d="M0,400 L0,310 Q260,270 520,290 T1000,300 T1200,295 L1200,400 Z"
                 fill="url(#hillFront)"
-                opacity="0.9"
+                opacity="0.92"
               />
 
               {/* Solar panel clusters distributed along the front hill */}
-              <g fill="#0a3d2e" opacity="0.88">
+              <g fill="#0a3d2e" opacity="0.9">
+                {/* Far left cluster */}
+                <use href="#solarPanel" x="80" y="288" width="22" height="16" />
+                <use href="#solarPanel" x="110" y="287" width="22" height="16" />
+                <use href="#solarPanel" x="140" y="289" width="22" height="16" />
+
                 {/* Left cluster */}
-                <use href="#solarPanel" x="170" y="200" width="22" height="16" />
-                <use href="#solarPanel" x="200" y="199" width="22" height="16" />
-                <use href="#solarPanel" x="230" y="201" width="22" height="16" />
-                <use href="#solarPanel" x="260" y="202" width="22" height="16" />
+                <use href="#solarPanel" x="220" y="286" width="24" height="17" />
+                <use href="#solarPanel" x="252" y="284" width="24" height="17" />
+                <use href="#solarPanel" x="284" y="286" width="24" height="17" />
+                <use href="#solarPanel" x="316" y="288" width="24" height="17" />
 
                 {/* Center cluster (bigger - hero panels) */}
-                <use href="#solarPanel" x="500" y="200" width="26" height="19" />
-                <use href="#solarPanel" x="534" y="198" width="26" height="19" />
-                <use href="#solarPanel" x="568" y="200" width="26" height="19" />
-                <use href="#solarPanel" x="602" y="201" width="26" height="19" />
-                <use href="#solarPanel" x="636" y="200" width="26" height="19" />
+                <use href="#solarPanel" x="490" y="284" width="28" height="20" />
+                <use href="#solarPanel" x="526" y="282" width="28" height="20" />
+                <use href="#solarPanel" x="562" y="283" width="28" height="20" />
+                <use href="#solarPanel" x="598" y="285" width="28" height="20" />
+                <use href="#solarPanel" x="634" y="284" width="28" height="20" />
+                <use href="#solarPanel" x="670" y="286" width="28" height="20" />
 
                 {/* Right cluster */}
-                <use href="#solarPanel" x="880" y="201" width="22" height="16" />
-                <use href="#solarPanel" x="910" y="203" width="22" height="16" />
-                <use href="#solarPanel" x="940" y="202" width="22" height="16" />
-                <use href="#solarPanel" x="970" y="201" width="22" height="16" />
+                <use href="#solarPanel" x="820" y="289" width="22" height="16" />
+                <use href="#solarPanel" x="850" y="287" width="22" height="16" />
+                <use href="#solarPanel" x="880" y="289" width="22" height="16" />
+                <use href="#solarPanel" x="910" y="291" width="22" height="16" />
+
+                {/* Far right cluster */}
+                <use href="#solarPanel" x="1020" y="290" width="22" height="16" />
+                <use href="#solarPanel" x="1050" y="292" width="22" height="16" />
+                <use href="#solarPanel" x="1080" y="291" width="22" height="16" />
+              </g>
+
+              {/* Subtle trees on back hills for depth */}
+              <g fill="#16a34a" opacity="0.35">
+                <ellipse cx="180" cy="172" rx="14" ry="22" />
+                <ellipse cx="420" cy="158" rx="12" ry="18" />
+                <ellipse cx="730" cy="170" rx="13" ry="20" />
+                <ellipse cx="1080" cy="160" rx="14" ry="22" />
               </g>
             </svg>
           </div>

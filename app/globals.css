@@ -298,17 +298,17 @@ html, body {
   top: 68%;
   left: 50%;
   transform: translate(-50%, -50%);
-  width: calc(100% - 36px);
-  max-width: 320px;
+  width: calc(100% - 28px);
+  max-width: 380px;
   z-index: 2;
-  border-radius: 18px;
+  border-radius: 22px;
   background: linear-gradient(155deg, #0a3d2e 0%, #07291f 100%);
   color: #fff;
-  padding: 16px 20px 18px;
+  padding: 20px 24px 22px;
   overflow: hidden;
   box-shadow:
-    0 30px 60px -24px rgba(7, 41, 31, 0.6),
-    0 8px 22px -10px rgba(7, 41, 31, 0.35),
+    0 36px 70px -22px rgba(7, 41, 31, 0.65),
+    0 10px 26px -10px rgba(7, 41, 31, 0.4),
     inset 0 1px 0 rgba(255, 255, 255, 0.08);
   opacity: 0;
   animation: sl-preview-in 0.7s var(--sl-ease) 0.55s forwards;
@@ -358,8 +358,8 @@ html, body {
 }
 
 .solario-landing .sl-hero-preview-num {
-  margin: 9px 0 13px;
-  font-size: 32px;
+  margin: 11px 0 15px;
+  font-size: 38px;
   font-weight: 700;
   letter-spacing: -0.025em;
   line-height: 1;
@@ -369,8 +369,8 @@ html, body {
 
 .solario-landing .sl-hero-preview-unit {
   display: inline-block;
-  margin-left: 6px;
-  font-size: 12px;
+  margin-left: 7px;
+  font-size: 13px;
   font-weight: 500;
   color: rgba(255, 255, 255, 0.55);
   letter-spacing: 0;
@@ -381,9 +381,9 @@ html, body {
   display: flex;
   gap: 8px;
   align-items: center;
-  padding-top: 12px;
+  padding-top: 14px;
   border-top: 1px solid rgba(255, 255, 255, 0.1);
-  font-size: 12px;
+  font-size: 13px;
   color: rgba(255, 255, 255, 0.7);
   text-align: left;
 }
@@ -476,14 +476,14 @@ html, body {
 .solario-landing .sl-hero-hills {
   width: 100%;
   margin-top: auto;
-  padding-top: 56px;
+  padding-top: 16px;
   opacity: 0;
   transform: translateY(20px);
   animation: sl-heroImageIn 1s var(--sl-ease) .3s forwards;
 }
 .solario-landing .sl-hero-hills svg {
   width: 100%;
-  height: 280px;
+  height: 400px;
   display: block;
 }
 @keyframes sl-heroImageIn {
@@ -954,8 +954,8 @@ html, body {
   .solario-landing .sl-badge { margin-bottom: 20px; font-size: 12px; }
 
   /* Hills tighter on tablet/mobile */
-  .solario-landing .sl-hero-hills { padding-top: 32px; }
-  .solario-landing .sl-hero-hills svg { height: 180px; }
+  .solario-landing .sl-hero-hills { padding-top: 12px; }
+  .solario-landing .sl-hero-hills svg { height: 260px; }
 
   /* Sections: tighter padding */
   .solario-landing .sl-how,
@@ -1042,8 +1042,8 @@ html, body {
   }
 
   /* Hills tighter on small mobile */
-  .solario-landing .sl-hero-hills { padding-top: 24px; }
-  .solario-landing .sl-hero-hills svg { height: 130px; }
+  .solario-landing .sl-hero-hills { padding-top: 8px; }
+  .solario-landing .sl-hero-hills svg { height: 200px; }
 
   /* Footer */
   .solario-landing .sl-footer-grid {
