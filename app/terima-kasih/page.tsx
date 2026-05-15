@@ -1,7 +1,7 @@
 "use client";
 
 import Link from "next/link";
-import { Navbar, Footer } from "@/components/Navbar";
+import { SiteNavbar, Footer } from "@/components/SiteNavbar";
 import { Button } from "@/components/ui/button";
 import { Check, Copy, MessageCircle } from "lucide-react";
 import * as React from "react";
@@ -31,7 +31,7 @@ export default function TerimaKasihPage() {
 
   return (
     <>
-      <Navbar />
+      <SiteNavbar />
       <main className="mx-auto max-w-xl px-4 sm:px-6 py-16 sm:py-24">
         <div className="text-center">
           <div className="mx-auto w-16 h-16 rounded-full bg-[#16a34a] flex items-center justify-center">

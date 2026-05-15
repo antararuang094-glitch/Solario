@@ -98,7 +98,7 @@ export default function AdminLoginPage() {
         </form>
 
         <p className="mt-6 text-xs text-subtext text-center">
-          Default dev credential: <code className="bg-white border border-[#e5e7eb] rounded px-1.5 py-0.5">admin</code> / <code className="bg-white border border-[#e5e7eb] rounded px-1.5 py-0.5">solario2026</code>
+          Akses terbatas hanya untuk administrator.
         </p>
       </div>
     </main>

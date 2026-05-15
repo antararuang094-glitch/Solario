@@ -1,5 +1,5 @@
 import Link from "next/link";
-import { Navbar, Footer } from "@/components/Navbar";
+import { SiteNavbar, Footer } from "@/components/SiteNavbar";
 import { ArrowRight, Check } from "lucide-react";
 
 export const metadata = {
@@ -11,7 +11,7 @@ export const metadata = {
 export default function TentangPage() {
   return (
     <>
-      <Navbar />
+      <SiteNavbar />
       <main className="mx-auto max-w-3xl px-4 sm:px-6 py-12 sm:py-16">
         <div>
           <span className="inline-flex items-center gap-1.5 px-3 py-1 rounded-full bg-[#f0fdf4] border border-[#bbf7d0] text-[#166534] text-xs font-semibold">

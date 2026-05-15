@@ -1,6 +1,6 @@
 import { NextRequest, NextResponse } from "next/server";
 import { otpSendSchema, normalizeTelepon } from "@/lib/validations";
-import { sendOtp } from "@/lib/otp-store";
+import { sendOtp, OtpRateLimitError } from "@/lib/otp-store";
 
 export async function POST(req: NextRequest) {
   let body: unknown;
@@ -27,6 +27,16 @@ export async function POST(req: NextRequest) {
       ...(process.env.NODE_ENV !== "production" ? { devOtp: otp } : {}),
     });
   } catch (err) {
+    // Rate limit → 429 with Retry-After header
+    if (err instanceof OtpRateLimitError) {
+      return NextResponse.json(
+        { error: err.message },
+        {
+          status: 429,
+          headers: { "Retry-After": String(err.retryAfterSeconds) },
+        }
+      );
+    }
     console.error("[POST /api/otp/send]", err);
     return NextResponse.json({ error: "Gagal kirim OTP" }, { status: 500 });
   }

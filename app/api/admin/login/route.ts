@@ -31,10 +31,20 @@ export async function POST(req: NextRequest) {
     return NextResponse.json({ error: "Username atau password salah" }, { status: 401 });
   }
 
-  const token = await createSessionToken(username);
+  let token: string;
+  try {
+    token = await createSessionToken(username);
+  } catch (err) {
+    console.error("[POST /api/admin/login]", err);
+    return NextResponse.json(
+      { error: "Server tidak dikonfigurasi dengan benar. Hubungi admin." },
+      { status: 500 }
+    );
+  }
+
   cookies().set(SESSION_COOKIE_NAME, token, {
     httpOnly: true,
-    sameSite: "lax",
+    sameSite: "strict",
     secure: process.env.NODE_ENV === "production",
     path: "/",
     maxAge: SESSION_MAX_AGE_SECONDS,

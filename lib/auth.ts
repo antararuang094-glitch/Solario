@@ -2,9 +2,26 @@ import { cookies } from "next/headers";
 
 const COOKIE_NAME = "admin_session";
 const SESSION_DURATION = 24 * 60 * 60 * 1000;
+const MIN_SECRET_LENGTH = 32;
 
+/**
+ * Reads ADMIN_SESSION_SECRET. Throws if missing/too short.
+ * Caller MUST handle the thrown error gracefully (return invalid session).
+ */
 function getSecret(): string {
-  return process.env.ADMIN_SESSION_SECRET || "dev-secret-change-me-please";
+  const secret = process.env.ADMIN_SESSION_SECRET;
+  if (!secret) {
+    throw new Error(
+      "ADMIN_SESSION_SECRET environment variable is required. " +
+        "Generate one with: openssl rand -base64 48"
+    );
+  }
+  if (secret.length < MIN_SECRET_LENGTH) {
+    throw new Error(
+      `ADMIN_SESSION_SECRET must be at least ${MIN_SECRET_LENGTH} characters long`
+    );
+  }
+  return secret;
 }
 
 async function sign(payload: string): Promise<string> {
@@ -38,24 +55,35 @@ export async function createSessionToken(username: string): Promise<string> {
   return `${payload}.${signature}`;
 }
 
+/**
+ * Verifies a session token. Returns { valid: false } on ANY failure
+ * (missing secret, malformed token, expired, bad signature, etc.) without
+ * leaking the failure reason to callers.
+ */
 export async function verifySessionToken(token: string | undefined): Promise<{
   valid: boolean;
   username?: string;
 }> {
   if (!token) return { valid: false };
-  const parts = token.split(".");
-  if (parts.length !== 3) return { valid: false };
+  try {
+    const parts = token.split(".");
+    if (parts.length !== 3) return { valid: false };
 
-  const [username, expiresStr, signature] = parts;
-  const payload = `${username}.${expiresStr}`;
-  const expected = await sign(payload);
+    const [username, expiresStr, signature] = parts;
+    const payload = `${username}.${expiresStr}`;
+    const expected = await sign(payload);
 
-  if (!timingSafeEqualStr(signature, expected)) return { valid: false };
+    if (!timingSafeEqualStr(signature, expected)) return { valid: false };
 
-  const expires = Number(expiresStr);
-  if (Number.isNaN(expires) || expires < Date.now()) return { valid: false };
+    const expires = Number(expiresStr);
+    if (Number.isNaN(expires) || expires < Date.now()) return { valid: false };
 
-  return { valid: true, username };
+    return { valid: true, username };
+  } catch (err) {
+    // Logs to server only — never expose internal errors to client
+    console.error("[auth] Session verification failed:", err);
+    return { valid: false };
+  }
 }
 
 export async function isAdminSession(): Promise<{ valid: boolean; username?: string }> {
@@ -63,9 +91,20 @@ export async function isAdminSession(): Promise<{ valid: boolean; username?: str
   return verifySessionToken(token);
 }
 
+/**
+ * Validates admin credentials. Returns false (without throwing) if
+ * ADMIN_USER or ADMIN_PASS env vars are not set — so missing config
+ * fails closed rather than allowing default credentials.
+ */
 export function checkCredentials(username: string, password: string): boolean {
-  const expectedUser = process.env.ADMIN_USER || "admin";
-  const expectedPass = process.env.ADMIN_PASS || "solario2026";
+  const expectedUser = process.env.ADMIN_USER;
+  const expectedPass = process.env.ADMIN_PASS;
+  if (!expectedUser || !expectedPass) {
+    console.error(
+      "[auth] ADMIN_USER and/or ADMIN_PASS env vars are not set. Login disabled."
+    );
+    return false;
+  }
   return (
     timingSafeEqualStr(username, expectedUser) &&
     timingSafeEqualStr(password, expectedPass)

@@ -1,5 +1,7 @@
-/* ===== Custom fonts ===== */
-@import url('https://fonts.googleapis.com/css2?family=Inter+Tight:wght@500;600;700;800;900&family=Inter:wght@400;500;600;700;800;900&display=swap');
+/* ===== Custom fonts =====
+   Inter + Inter Tight loaded via next/font/google in app/layout.tsx
+   (self-hosted, zero network round-trip, zero CLS).
+   Grift is loaded locally for body text in landing-scoped CSS. */
 
 @font-face {
   font-family: 'Grift';
@@ -25,7 +27,7 @@
 
 /* ── Global headline rule: Inter Tight (fintech-grade display, applies to ALL pages) ── */
 h1, h2, h3, h4 {
-  font-family: 'Inter Tight', 'Inter', -apple-system, BlinkMacSystemFont, sans-serif;
+  font-family: var(--font-inter-tight), 'Inter Tight', 'Inter', -apple-system, BlinkMacSystemFont, sans-serif;
   font-weight: 800;
   letter-spacing: -0.03em;
   font-feature-settings: "cv11", "ss01", "ss03";
@@ -108,7 +110,7 @@ html, body {
 .solario-landing h2,
 .solario-landing h3,
 .solario-landing .sl-h1 {
-  font-family: 'Inter Tight', 'Inter', -apple-system, BlinkMacSystemFont, sans-serif;
+  font-family: var(--font-inter-tight), 'Inter Tight', 'Inter', -apple-system, BlinkMacSystemFont, sans-serif;
   font-weight: 800;
   letter-spacing: -0.035em;
   font-feature-settings: "cv11", "ss01", "ss03";
@@ -226,59 +228,6 @@ html, body {
 .solario-landing .sl-btn:hover .arr { transform: translateX(3px); }
 .solario-landing .sl-btn-sm { padding: 10px 22px; font-size: 14px; }
 
-/* ── Navbar ── */
-.solario-landing .sl-nav {
-  position: fixed;
-  top: 0; left: 0; right: 0;
-  z-index: 100;
-  background: rgba(255, 255, 255, 0.78);
-  backdrop-filter: saturate(180%) blur(20px);
-  -webkit-backdrop-filter: saturate(180%) blur(20px);
-  border-bottom: 1px solid transparent;
-  transition: padding .35s var(--sl-ease-soft), background-color .35s var(--sl-ease-soft),
-              box-shadow .35s var(--sl-ease-soft), border-color .35s var(--sl-ease-soft);
-  padding: 18px 0;
-}
-.solario-landing .sl-nav.scrolled {
-  padding: 10px 0;
-  background: rgba(255, 255, 255, 0.92);
-  box-shadow: 0 1px 0 rgba(15, 23, 42, .04), 0 6px 20px -12px rgba(15, 23, 42, .08);
-  border-bottom-color: rgba(226, 232, 240, .6);
-}
-.solario-landing .sl-nav-inner {
-  display: flex; align-items: center; justify-content: space-between;
-  max-width: var(--sl-max);
-  margin: 0 auto;
-  padding: 0 32px;
-}
-.solario-landing .sl-logo {
-  display: inline-flex; align-items: center; gap: 10px;
-  font-size: 22px; font-weight: 700;
-  letter-spacing: -0.025em;
-  color: var(--sl-ink);
-}
-.solario-landing .sl-logo-dot {
-  width: 10px; height: 10px;
-  border-radius: 50%;
-  background: var(--sl-accent);
-  box-shadow: 0 0 0 4px rgba(34, 197, 94, .15);
-  position: relative;
-  top: 1px;
-}
-.solario-landing .sl-logo-icon {
-  width: 48px;
-  height: 48px;
-  object-fit: contain;
-  display: block;
-  flex-shrink: 0;
-  margin-left: -6px;
-  transition: transform .35s var(--sl-ease-soft);
-}
-.solario-landing .sl-logo:hover .sl-logo-icon {
-  transform: rotate(-4deg) scale(1.05);
-}
-.solario-landing .sl-logo .sub { color: var(--sl-muted); font-weight: 500; }
-
 /* Footer brand — full logo with text, filtered white for dark bg */
 .solario-landing .sl-footer-brand {
   display: inline-block;
@@ -298,149 +247,6 @@ html, body {
   opacity: 1;
   transform: scale(1.02);
 }
-.solario-landing .sl-nav-links {
-  display: flex; align-items: center; gap: 28px;
-}
-.solario-landing .sl-nav-link {
-  font-size: 15px; font-weight: 500; color: var(--sl-ink);
-  position: relative;
-  transition: color .2s var(--sl-ease-soft);
-}
-.solario-landing .sl-nav-link::after {
-  content: ""; position: absolute; left: 0; right: 0; bottom: -6px;
-  height: 2px; background: var(--sl-accent); border-radius: 2px;
-  transform: scaleX(0); transform-origin: left;
-  transition: transform .35s var(--sl-ease);
-}
-.solario-landing .sl-nav-link:hover { color: var(--sl-primary); }
-.solario-landing .sl-nav-link:hover::after { transform: scaleX(1); }
-
-/* Hamburger toggle */
-.solario-landing .sl-nav-toggle {
-  display: none;
-  width: 40px; height: 40px;
-  align-items: center; justify-content: center;
-  border-radius: 100px;
-  background: transparent;
-  color: var(--sl-ink);
-  border: 1px solid var(--sl-line);
-  cursor: pointer;
-  transition: background-color .2s var(--sl-ease-soft), border-color .2s var(--sl-ease-soft);
-  margin-left: 4px;
-}
-.solario-landing .sl-nav-toggle:hover {
-  background: var(--sl-accent-soft);
-  border-color: var(--sl-accent-border);
-}
-
-/* Mobile drawer */
-.solario-landing .sl-drawer-backdrop {
-  position: fixed; inset: 0;
-  background: rgba(7, 41, 31, 0.4);
-  backdrop-filter: blur(6px);
-  -webkit-backdrop-filter: blur(6px);
-  opacity: 0;
-  pointer-events: none;
-  transition: opacity .3s var(--sl-ease-soft);
-  z-index: 199;
-}
-.solario-landing .sl-drawer-backdrop.is-open {
-  opacity: 1;
-  pointer-events: auto;
-}
-
-.solario-landing .sl-drawer {
-  position: fixed; top: 0; right: 0; bottom: 0;
-  width: min(360px, 82vw);
-  background: #fff;
-  z-index: 200;
-  display: flex;
-  flex-direction: column;
-  transform: translateX(100%);
-  transition: transform .32s var(--sl-ease);
-  box-shadow: -20px 0 60px -20px rgba(7, 41, 31, 0.18);
-}
-.solario-landing .sl-drawer.is-open {
-  transform: translateX(0);
-}
-
-.solario-landing .sl-drawer-head {
-  display: flex; align-items: center; justify-content: space-between;
-  padding: 20px 22px 16px;
-  border-bottom: 1px solid var(--sl-line);
-}
-.solario-landing .sl-drawer-close {
-  width: 38px; height: 38px;
-  display: inline-flex; align-items: center; justify-content: center;
-  border-radius: 100px;
-  background: var(--sl-bg-soft);
-  color: var(--sl-ink);
-  border: 1px solid var(--sl-line);
-  cursor: pointer;
-  transition: background-color .2s var(--sl-ease-soft);
-}
-.solario-landing .sl-drawer-close:hover {
-  background: var(--sl-line-soft);
-}
-
-.solario-landing .sl-drawer-nav {
-  flex: 1;
-  padding: 18px 14px;
-  display: flex;
-  flex-direction: column;
-  gap: 2px;
-}
-.solario-landing .sl-drawer-link {
-  display: flex; align-items: center; gap: 14px;
-  padding: 14px 14px;
-  border-radius: 12px;
-  font-size: 16px; font-weight: 500;
-  color: var(--sl-ink);
-  text-decoration: none;
-  transition: background-color .2s var(--sl-ease-soft), color .2s var(--sl-ease-soft);
-  opacity: 0;
-  transform: translateX(12px);
-}
-.solario-landing .sl-drawer.is-open .sl-drawer-link {
-  animation: sl-drawerItem .5s var(--sl-ease) forwards;
-}
-.solario-landing .sl-drawer.is-open .sl-drawer-link:nth-child(1) { animation-delay: .08s; }
-.solario-landing .sl-drawer.is-open .sl-drawer-link:nth-child(2) { animation-delay: .14s; }
-.solario-landing .sl-drawer.is-open .sl-drawer-link:nth-child(3) { animation-delay: .2s; }
-.solario-landing .sl-drawer.is-open .sl-drawer-link:nth-child(4) { animation-delay: .26s; }
-.solario-landing .sl-drawer-link:hover {
-  background: var(--sl-accent-soft);
-  color: var(--sl-primary);
-}
-.solario-landing .sl-drawer-link svg {
-  color: var(--sl-muted);
-  flex-shrink: 0;
-}
-.solario-landing .sl-drawer-link:hover svg {
-  color: var(--sl-accent);
-}
-@keyframes sl-drawerItem {
-  to { opacity: 1; transform: translateX(0); }
-}
-
-.solario-landing .sl-drawer-foot {
-  padding: 18px 22px 26px;
-  border-top: 1px solid var(--sl-line);
-  display: flex;
-  flex-direction: column;
-  align-items: center;
-  gap: 8px;
-}
-.solario-landing .sl-drawer-cta {
-  width: 100%;
-  justify-content: center;
-}
-.solario-landing .sl-drawer-tag {
-  font-size: 12px;
-  color: var(--sl-muted);
-  margin: 0;
-}
-
 /* Sticky bottom CTA — mobile only */
 .solario-landing .sl-sticky-cta {
   display: none;
@@ -1126,14 +932,6 @@ html, body {
 /* ── Responsive ── */
 @media (max-width: 900px) {
   .solario-landing .container { padding: 0 20px; }
-  .solario-landing .sl-nav-inner { padding: 0 16px; }
-
-  /* Navbar: show hamburger, hide menu links */
-  .solario-landing .sl-nav-link { display: none; }
-  .solario-landing .sl-nav-toggle { display: inline-flex; }
-  .solario-landing .sl-nav-cta { padding: 8px 14px; font-size: 13px; }
-  .solario-landing .sl-logo-icon { width: 38px; height: 38px; }
-  .solario-landing .sl-logo { font-size: 18px; gap: 8px; }
 
   /* Hero: fits one viewport on mobile (hills anchor to bottom) */
   .solario-landing .sl-hero {
@@ -1226,11 +1024,6 @@ html, body {
 @media (max-width: 480px) {
   .solario-landing { font-size: 16px; }
   .solario-landing .container { padding: 0 18px; }
-  .solario-landing .sl-nav-inner { padding: 0 14px; }
-
-  /* Hide CTA in nav at very small — drawer + sticky have it */
-  .solario-landing .sl-nav-cta { display: none; }
-  .solario-landing .sl-nav-toggle { width: 42px; height: 42px; }
 
   /* Hero */
   .solario-landing .sl-hero { padding: 80px 0 0; }

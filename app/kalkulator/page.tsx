@@ -1,4 +1,4 @@
-import { Navbar, Footer } from "@/components/Navbar";
+import { SiteNavbar, Footer } from "@/components/SiteNavbar";
 import { Calculator } from "@/components/Calculator";
 
 export const metadata = {
@@ -10,7 +10,7 @@ export const metadata = {
 export default function KalkulatorPage() {
   return (
     <>
-      <Navbar />
+      <SiteNavbar />
       <section className="bg-[#f0fdf4]/40 border-b border-[#e5e7eb]">
         <div className="mx-auto max-w-5xl px-4 sm:px-6 py-12 sm:py-16 text-center sm:text-left">
           <span className="inline-flex items-center gap-1.5 px-3 py-1 rounded-full bg-white border border-[#bbf7d0] text-[#166534] text-xs font-semibold">

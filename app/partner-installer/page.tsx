@@ -1,4 +1,4 @@
-import { Navbar, Footer } from "@/components/Navbar";
+import { SiteNavbar, Footer } from "@/components/SiteNavbar";
 import { InstallerForm } from "@/components/InstallerForm";
 import { CheckCircle2, MapPin, Wallet } from "lucide-react";
 
@@ -28,7 +28,7 @@ export default function PartnerInstallerPage() {
 
   return (
     <>
-      <Navbar />
+      <SiteNavbar />
 
       <section className="border-b border-[#e5e7eb] bg-gradient-to-b from-white to-[#f9fafb]">
         <div className="mx-auto max-w-6xl px-4 sm:px-6 py-14 sm:py-20">

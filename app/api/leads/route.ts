@@ -1,8 +1,9 @@
 import { NextRequest, NextResponse } from "next/server";
 import { prisma } from "@/lib/prisma";
 import { leadSchema, normalizeTelepon } from "@/lib/validations";
-import { isPhoneVerified } from "@/lib/otp-store";
+import { isPhoneVerified, consumeVerifiedOtp } from "@/lib/otp-store";
 import { notifyAdminNewLead } from "@/lib/email";
+import { revalidateTag } from "next/cache";
 
 export async function POST(req: NextRequest) {
   let body: unknown;
@@ -47,6 +48,12 @@ export async function POST(req: NextRequest) {
         sistemKwp: data.sistemKwp,
       },
     });
+
+    // Invalidate the verified OTP so it can't be replayed for another lead
+    await consumeVerifiedOtp(telepon);
+
+    // Bust stats cache so landing page reflects new lead count
+    revalidateTag("site-stats");
 
     notifyAdminNewLead({
       nama: lead.nama,

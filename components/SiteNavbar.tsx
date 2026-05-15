@@ -2,12 +2,65 @@
 
 import * as React from "react";
 import Link from "next/link";
-import { Calculator, Home, LogIn, Menu, Wrench, X } from "lucide-react";
+import {
+  Calculator as CalculatorIcon,
+  Home as HomeIcon,
+  Menu,
+  Wrench,
+  X,
+} from "lucide-react";
 import { cn } from "@/lib/utils";
 
-export function Navbar() {
+// ── Types ──
+export interface SiteNavbarLink {
+  label: string;
+  href: string;
+  /** When true, click triggers smooth scroll instead of route navigation */
+  anchor?: boolean;
+}
+
+export interface SiteNavbarDrawerLink extends SiteNavbarLink {
+  icon?: React.ReactNode;
+}
+
+interface SiteNavbarProps {
+  /** Links shown horizontally on desktop (md+). Hidden on mobile. */
+  desktopLinks?: SiteNavbarLink[];
+  /** Links shown in the mobile hamburger drawer */
+  drawerLinks?: SiteNavbarDrawerLink[];
+  /** CTA button destination (defaults to `/kalkulator`) */
+  ctaHref?: string;
+  /** CTA button label (defaults to "Hitung Sekarang") */
+  ctaLabel?: string;
+}
+
+// ── Defaults ──
+const DEFAULT_DESKTOP_LINKS: SiteNavbarLink[] = [
+  { label: "Beranda", href: "/" },
+  { label: "Kalkulator", href: "/kalkulator" },
+  { label: "Untuk Installer", href: "/partner-installer" },
+];
+
+const DEFAULT_DRAWER_LINKS: SiteNavbarDrawerLink[] = [
+  { label: "Beranda", href: "/", icon: <HomeIcon className="w-5 h-5" /> },
+  { label: "Kalkulator", href: "/kalkulator", icon: <CalculatorIcon className="w-5 h-5" /> },
+  {
+    label: "Untuk Installer",
+    href: "/partner-installer",
+    icon: <Wrench className="w-5 h-5" />,
+  },
+];
+
+// ── Component ──
+export function SiteNavbar({
+  desktopLinks = DEFAULT_DESKTOP_LINKS,
+  drawerLinks = DEFAULT_DRAWER_LINKS,
+  ctaHref = "/kalkulator",
+  ctaLabel = "Hitung Sekarang",
+}: SiteNavbarProps = {}) {
   const [menuOpen, setMenuOpen] = React.useState(false);
 
+  // Body scroll lock when drawer open
   React.useEffect(() => {
     if (menuOpen) {
       document.body.style.overflow = "hidden";
@@ -19,6 +72,7 @@ export function Navbar() {
     };
   }, [menuOpen]);
 
+  // Esc to close drawer
   React.useEffect(() => {
     if (!menuOpen) return;
     const onKey = (e: KeyboardEvent) => {
@@ -28,13 +82,27 @@ export function Navbar() {
     return () => window.removeEventListener("keydown", onKey);
   }, [menuOpen]);
 
-  const closeMenu = () => setMenuOpen(false);
+  const closeMenu = React.useCallback(() => setMenuOpen(false), []);
+
+  const handleAnchorClick = React.useCallback(
+    (e: React.MouseEvent, href: string) => {
+      e.preventDefault();
+      const id = href.replace(/^#/, "");
+      document.getElementById(id)?.scrollIntoView({ behavior: "smooth" });
+      closeMenu();
+    },
+    [closeMenu]
+  );
 
   return (
     <>
       <header className="border-b border-[#e5e7eb] bg-white/85 backdrop-blur sticky top-0 z-30">
         <div className="mx-auto max-w-6xl px-4 sm:px-6 h-16 flex items-center justify-between">
-          <Link href="/" className="flex items-center gap-2 group">
+          <Link
+            href="/"
+            onClick={closeMenu}
+            className="flex items-center gap-2 group"
+          >
             <img
               src="/solario-icon.png"
               alt=""
@@ -47,35 +115,32 @@ export function Navbar() {
           </Link>
 
           <nav className="flex items-center gap-0.5 sm:gap-1 text-sm">
+            {desktopLinks.map((link) =>
+              link.anchor ? (
+                <a
+                  key={link.label}
+                  href={link.href}
+                  onClick={(e) => handleAnchorClick(e, link.href)}
+                  className="hidden md:inline-block px-3 py-2 rounded-xl text-ink hover:text-[#0a3d2e] font-medium"
+                >
+                  {link.label}
+                </a>
+              ) : (
+                <Link
+                  key={link.label}
+                  href={link.href}
+                  className="hidden md:inline-block px-3 py-2 rounded-xl text-ink hover:text-[#0a3d2e] font-medium"
+                >
+                  {link.label}
+                </Link>
+              )
+            )}
+
             <Link
-              href="/"
-              className="hidden md:inline-block px-3 py-2 rounded-xl text-ink hover:text-[#0a3d2e] font-medium"
-            >
-              Beranda
-            </Link>
-            <Link
-              href="/kalkulator"
-              className="hidden md:inline-block px-3 py-2 rounded-xl text-ink hover:text-[#0a3d2e] font-medium"
-            >
-              Kalkulator
-            </Link>
-            <Link
-              href="/partner-installer"
-              className="hidden md:inline-block px-3 py-2 rounded-xl text-ink hover:text-[#0a3d2e] font-medium"
-            >
-              Untuk Installer
-            </Link>
-            <Link
-              href="/admin"
-              className="ml-1 hidden md:inline-flex items-center px-3.5 h-10 rounded-full border border-[#e5e7eb] text-ink hover:border-[#0a3d2e] text-sm font-medium transition-colors"
-            >
-              Masuk Admin
-            </Link>
-            <Link
-              href="/kalkulator"
+              href={ctaHref}
               className="ml-1 hidden sm:inline-flex items-center gap-1.5 px-4 h-10 rounded-full bg-[#0a3d2e] text-white text-sm font-medium hover:bg-[#07291f] transition-colors"
             >
-              Hitung Sekarang
+              {ctaLabel}
               <span aria-hidden>→</span>
             </Link>
 
@@ -92,7 +157,7 @@ export function Navbar() {
         </div>
       </header>
 
-      {/* Mobile drawer */}
+      {/* Mobile drawer backdrop */}
       <div
         className={cn(
           "md:hidden fixed inset-0 z-[199] bg-[#07291f]/40 backdrop-blur-sm transition-opacity duration-300",
@@ -133,51 +198,25 @@ export function Navbar() {
         </div>
 
         <nav className="flex-1 px-3 py-4 flex flex-col gap-0.5">
-          <DrawerLink
-            href="/"
-            icon={<Home className="w-5 h-5" />}
-            onClick={closeMenu}
-            open={menuOpen}
-            delay={80}
-          >
-            Beranda
-          </DrawerLink>
-          <DrawerLink
-            href="/kalkulator"
-            icon={<Calculator className="w-5 h-5" />}
-            onClick={closeMenu}
-            open={menuOpen}
-            delay={140}
-          >
-            Kalkulator
-          </DrawerLink>
-          <DrawerLink
-            href="/partner-installer"
-            icon={<Wrench className="w-5 h-5" />}
-            onClick={closeMenu}
-            open={menuOpen}
-            delay={200}
-          >
-            Untuk Installer
-          </DrawerLink>
-          <DrawerLink
-            href="/admin"
-            icon={<LogIn className="w-5 h-5" />}
-            onClick={closeMenu}
-            open={menuOpen}
-            delay={260}
-          >
-            Masuk Admin
-          </DrawerLink>
+          {drawerLinks.map((link, i) => (
+            <DrawerLink
+              key={link.label}
+              link={link}
+              open={menuOpen}
+              delay={80 + i * 60}
+              onClose={closeMenu}
+              onAnchorClick={handleAnchorClick}
+            />
+          ))}
         </nav>
 
         <div className="px-5 pt-4 pb-6 border-t border-[#e5e7eb] flex flex-col items-center gap-2">
           <Link
-            href="/kalkulator"
+            href={ctaHref}
             onClick={closeMenu}
             className="w-full inline-flex items-center justify-center gap-1.5 h-12 px-6 rounded-full bg-[#0a3d2e] text-white font-medium hover:bg-[#07291f] transition-colors"
           >
-            Hitung Sekarang <span aria-hidden>→</span>
+            {ctaLabel} <span aria-hidden>→</span>
           </Link>
           <p className="text-xs text-subtext">Gratis · Tanpa daftar</p>
         </div>
@@ -186,39 +225,59 @@ export function Navbar() {
   );
 }
 
+// ── Internal drawer link helper ──
 function DrawerLink({
-  href,
-  icon,
-  children,
-  onClick,
+  link,
   open,
   delay,
+  onClose,
+  onAnchorClick,
 }: {
-  href: string;
-  icon: React.ReactNode;
-  children: React.ReactNode;
-  onClick: () => void;
+  link: SiteNavbarDrawerLink;
   open: boolean;
   delay: number;
+  onClose: () => void;
+  onAnchorClick: (e: React.MouseEvent, href: string) => void;
 }) {
+  const className = cn(
+    "flex items-center gap-3.5 px-3.5 py-3.5 rounded-xl text-ink hover:bg-[#f0fdf4] hover:text-[#0a3d2e] font-medium text-base transition-colors group",
+    open
+      ? "animate-[drawerItemIn_0.5s_cubic-bezier(0.16,1,0.3,1)_forwards] opacity-0 -translate-x-3"
+      : "opacity-100 translate-x-0"
+  );
+  const inner = (
+    <>
+      <span className="text-subtext group-hover:text-[#16a34a] transition-colors">
+        {link.icon}
+      </span>
+      {link.label}
+    </>
+  );
+  if (link.anchor) {
+    return (
+      <a
+        href={link.href}
+        onClick={(e) => onAnchorClick(e, link.href)}
+        style={{ animationDelay: `${delay}ms` }}
+        className={className}
+      >
+        {inner}
+      </a>
+    );
+  }
   return (
     <Link
-      href={href}
-      onClick={onClick}
-      style={{
-        animationDelay: `${delay}ms`,
-      }}
-      className={cn(
-        "flex items-center gap-3.5 px-3.5 py-3.5 rounded-xl text-ink hover:bg-[#f0fdf4] hover:text-[#0a3d2e] font-medium text-base transition-colors group",
-        open ? "animate-[drawerItemIn_0.5s_cubic-bezier(0.16,1,0.3,1)_forwards] opacity-0 -translate-x-3" : "opacity-100 translate-x-0"
-      )}
+      href={link.href}
+      onClick={onClose}
+      style={{ animationDelay: `${delay}ms` }}
+      className={className}
     >
-      <span className="text-subtext group-hover:text-[#16a34a] transition-colors">{icon}</span>
-      {children}
+      {inner}
     </Link>
   );
 }
 
+// ── Footer (kept here since it's tightly coupled to navbar branding) ──
 export function Footer() {
   return (
     <footer className="border-t border-[#e5e7eb] bg-surface mt-16">
@@ -237,7 +296,8 @@ export function Footer() {
               </span>
             </Link>
             <p className="mt-3 text-sm text-subtext leading-relaxed max-w-xs">
-              Platform netral yang membantu rumah tangga & UKM Indonesia menghitung potensi hemat dari solar panel — gratis, akurat, tanpa daftar.
+              Platform netral yang membantu rumah tangga & UKM Indonesia menghitung
+              potensi hemat dari solar panel — gratis, akurat, tanpa daftar.
             </p>
           </div>
 

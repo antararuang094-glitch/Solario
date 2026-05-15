@@ -3,6 +3,23 @@
 import * as React from "react";
 import Link from "next/link";
 import { useRouter } from "next/navigation";
+import { Calculator as CalculatorIcon, Home as HomeIcon, Wrench } from "lucide-react";
+import { SiteNavbar } from "@/components/SiteNavbar";
+
+// Marketing-floor fallbacks shown until /api/stats responds.
+// Match lib/stats.ts FALLBACK_STATS so server & client align.
+type SiteStats = {
+  totalKalkulasi: number;
+  avgHematPerBulanJt: number;
+  activeInstallers: number;
+  ratingKepuasan: number;
+};
+const FALLBACK_STATS: SiteStats = {
+  totalKalkulasi: 2400,
+  avgHematPerBulanJt: 1.2,
+  activeInstallers: 18,
+  ratingKepuasan: 4.8,
+};
 
 const TESTIMONIALS = [
   {
@@ -65,46 +82,48 @@ const TESTIMONIALS = [
 
 export default function HomePage() {
   const router = useRouter();
-  const [scrolled, setScrolled] = React.useState(false);
   const [pastHero, setPastHero] = React.useState(false);
-  const [menuOpen, setMenuOpen] = React.useState(false);
   const [inputValue, setInputValue] = React.useState("");
+  const [stats, setStats] = React.useState<SiteStats>(FALLBACK_STATS);
   const inputRef = React.useRef<HTMLInputElement>(null);
   const heroStaggerRef = React.useRef<HTMLDivElement>(null);
 
-  // ── Navbar scroll + sticky CTA trigger ──
+  // ── Fetch live stats from /api/stats (ISR-cached server-side) ──
+  React.useEffect(() => {
+    let cancelled = false;
+    fetch("/api/stats")
+      .then((r) => r.json())
+      .then((d) => {
+        if (cancelled) return;
+        if (d?.success && d?.data) {
+          setStats({
+            totalKalkulasi: Number(d.data.totalKalkulasi) || FALLBACK_STATS.totalKalkulasi,
+            avgHematPerBulanJt:
+              Number(d.data.avgHematPerBulanJt) || FALLBACK_STATS.avgHematPerBulanJt,
+            activeInstallers:
+              Number(d.data.activeInstallers) || FALLBACK_STATS.activeInstallers,
+            ratingKepuasan:
+              Number(d.data.ratingKepuasan) || FALLBACK_STATS.ratingKepuasan,
+          });
+        }
+      })
+      .catch(() => {
+        /* keep fallback values on network failure */
+      });
+    return () => {
+      cancelled = true;
+    };
+  }, []);
+
+  // ── Sticky bottom CTA trigger (mobile only — fires past hero) ──
   React.useEffect(() => {
     const onScroll = () => {
-      const y = window.scrollY;
-      setScrolled(y > 8);
-      setPastHero(y > window.innerHeight * 0.7);
+      setPastHero(window.scrollY > window.innerHeight * 0.7);
     };
     window.addEventListener("scroll", onScroll, { passive: true });
     onScroll();
     return () => window.removeEventListener("scroll", onScroll);
   }, []);
-
-  // ── Body scroll lock when mobile menu open ──
-  React.useEffect(() => {
-    if (menuOpen) {
-      document.body.style.overflow = "hidden";
-    } else {
-      document.body.style.overflow = "";
-    }
-    return () => {
-      document.body.style.overflow = "";
-    };
-  }, [menuOpen]);
-
-  // ── Close menu on Esc ──
-  React.useEffect(() => {
-    if (!menuOpen) return;
-    const onKey = (e: KeyboardEvent) => {
-      if (e.key === "Escape") setMenuOpen(false);
-    };
-    window.addEventListener("keydown", onKey);
-    return () => window.removeEventListener("keydown", onKey);
-  }, [menuOpen]);
 
   // ── Intersection observer reveal + hero immediate ──
   React.useEffect(() => {
@@ -244,129 +263,18 @@ export default function HomePage() {
 
   return (
     <div className="solario-landing">
-      {/* ===== NAVBAR ===== */}
-      <header className={"sl-nav" + (scrolled ? " scrolled" : "")}>
-        <div className="sl-nav-inner">
-          <a href="#top" onClick={(e) => handleAnchorClick(e, "top")} className="sl-logo">
-            <img src="/solario-icon.png" alt="" className="sl-logo-icon" aria-hidden="true" />
-            Solario<span className="sub">.id</span>
-          </a>
-          <nav className="sl-nav-links">
-            <a
-              href="#calc"
-              onClick={(e) => handleAnchorClick(e, "calc")}
-              className="sl-nav-link"
-            >
-              Kalkulator
-            </a>
-            <a
-              href="#installer"
-              onClick={(e) => handleAnchorClick(e, "installer")}
-              className="sl-nav-link"
-            >
-              Untuk Installer
-            </a>
-            <Link href="/kalkulator" className="sl-btn sl-btn-primary sl-btn-sm sl-nav-cta">
-              Hitung Sekarang
-            </Link>
-            <button
-              type="button"
-              className="sl-nav-toggle"
-              aria-label="Buka menu"
-              aria-expanded={menuOpen}
-              onClick={() => setMenuOpen(true)}
-            >
-              <svg width="22" height="22" viewBox="0 0 24 24" fill="none" stroke="currentColor" strokeWidth="2.2" strokeLinecap="round">
-                <line x1="4" y1="7" x2="20" y2="7" />
-                <line x1="4" y1="12" x2="20" y2="12" />
-                <line x1="4" y1="17" x2="20" y2="17" />
-              </svg>
-            </button>
-          </nav>
-        </div>
-      </header>
-
-      {/* ===== MOBILE DRAWER ===== */}
-      <div
-        className={"sl-drawer-backdrop" + (menuOpen ? " is-open" : "")}
-        onClick={() => setMenuOpen(false)}
-        aria-hidden="true"
+      {/* ===== NAVBAR (unified SiteNavbar with landing-specific anchor links) ===== */}
+      <SiteNavbar
+        desktopLinks={[
+          { label: "Kalkulator", href: "#calc", anchor: true },
+          { label: "Untuk Installer", href: "#installer", anchor: true },
+        ]}
+        drawerLinks={[
+          { label: "Beranda", href: "#top", anchor: true, icon: <HomeIcon className="w-5 h-5" /> },
+          { label: "Kalkulator", href: "/kalkulator", icon: <CalculatorIcon className="w-5 h-5" /> },
+          { label: "Untuk Installer", href: "/partner-installer", icon: <Wrench className="w-5 h-5" /> },
+        ]}
       />
-      <aside
-        className={"sl-drawer" + (menuOpen ? " is-open" : "")}
-        role="dialog"
-        aria-modal="true"
-        aria-label="Menu navigasi"
-      >
-        <div className="sl-drawer-head">
-          <span className="sl-logo">
-            <img src="/solario-icon.png" alt="" className="sl-logo-icon" aria-hidden="true" />
-            Solario<span className="sub">.id</span>
-          </span>
-          <button
-            type="button"
-            className="sl-drawer-close"
-            aria-label="Tutup menu"
-            onClick={() => setMenuOpen(false)}
-          >
-            <svg width="22" height="22" viewBox="0 0 24 24" fill="none" stroke="currentColor" strokeWidth="2.2" strokeLinecap="round">
-              <line x1="6" y1="6" x2="18" y2="18" />
-              <line x1="18" y1="6" x2="6" y2="18" />
-            </svg>
-          </button>
-        </div>
-        <nav className="sl-drawer-nav">
-          <a
-            href="#top"
-            onClick={(e) => {
-              setMenuOpen(false);
-              handleAnchorClick(e, "top");
-            }}
-            className="sl-drawer-link"
-          >
-            <svg width="20" height="20" viewBox="0 0 24 24" fill="none" stroke="currentColor" strokeWidth="1.8" strokeLinecap="round" strokeLinejoin="round">
-              <path d="M3 12l9-9 9 9" />
-              <path d="M5 10v10h14V10" />
-            </svg>
-            Beranda
-          </a>
-          <Link href="/kalkulator" className="sl-drawer-link" onClick={() => setMenuOpen(false)}>
-            <svg width="20" height="20" viewBox="0 0 24 24" fill="none" stroke="currentColor" strokeWidth="1.8" strokeLinecap="round" strokeLinejoin="round">
-              <rect x="4" y="3" width="16" height="18" rx="2" />
-              <line x1="8" y1="8" x2="16" y2="8" />
-              <line x1="8" y1="13" x2="11" y2="13" />
-              <line x1="13" y1="13" x2="16" y2="13" />
-              <line x1="8" y1="17" x2="11" y2="17" />
-            </svg>
-            Kalkulator
-          </Link>
-          <Link href="/partner-installer" className="sl-drawer-link" onClick={() => setMenuOpen(false)}>
-            <svg width="20" height="20" viewBox="0 0 24 24" fill="none" stroke="currentColor" strokeWidth="1.8" strokeLinecap="round" strokeLinejoin="round">
-              <path d="M14 7l-3 3 3 3" />
-              <path d="M21 12H8" />
-              <path d="M17 21V5a2 2 0 0 0-2-2H5a2 2 0 0 0-2 2v16" />
-            </svg>
-            Untuk Installer
-          </Link>
-          <Link href="/admin" className="sl-drawer-link" onClick={() => setMenuOpen(false)}>
-            <svg width="20" height="20" viewBox="0 0 24 24" fill="none" stroke="currentColor" strokeWidth="1.8" strokeLinecap="round" strokeLinejoin="round">
-              <rect x="3" y="11" width="18" height="11" rx="2" />
-              <path d="M7 11V7a5 5 0 0110 0v4" />
-            </svg>
-            Masuk Admin
-          </Link>
-        </nav>
-        <div className="sl-drawer-foot">
-          <Link
-            href="/kalkulator"
-            className="sl-btn sl-btn-hero sl-btn-hero-primary sl-drawer-cta"
-            onClick={() => setMenuOpen(false)}
-          >
-            Hitung Sekarang <span className="arr">→</span>
-          </Link>
-          <p className="sl-drawer-tag">Gratis · Tanpa daftar</p>
-        </div>
-      </aside>
 
       {/* ===== STICKY MOBILE CTA ===== */}
       <div className={"sl-sticky-cta" + (pastHero ? " is-visible" : "")} aria-hidden={!pastHero}>
@@ -425,7 +333,10 @@ export default function HomePage() {
               </a>
             </div>
             <div className="sl-hero-stats">
-              <span><strong>2.400+</strong> Kalkulasi</span>
+              <span>
+                <strong>{stats.totalKalkulasi.toLocaleString("id-ID")}+</strong>{" "}
+                Kalkulasi
+              </span>
               <span className="dot" />
               <span><strong>12</strong> Kota</span>
               <span className="dot" />
@@ -586,21 +497,42 @@ export default function HomePage() {
           </div>
           <div className="sl-proof-grid" data-stagger>
             <div className="sl-proof-stat">
-              <div className="val" data-count="2400" data-suffix="+">2.400+</div>
+              <div
+                className="val"
+                data-count={stats.totalKalkulasi}
+                data-suffix="+"
+              >
+                {stats.totalKalkulasi.toLocaleString("id-ID")}+
+              </div>
               <div className="lab">Kalkulasi dilakukan</div>
             </div>
             <div className="sl-proof-stat">
-              <div className="val" data-count="1.2" data-decimals="1" data-prefix="Rp " data-suffix=" Jt">
-                Rp 1,2 Jt
+              <div
+                className="val"
+                data-count={stats.avgHematPerBulanJt}
+                data-decimals="1"
+                data-prefix="Rp "
+                data-suffix=" Jt"
+              >
+                Rp {stats.avgHematPerBulanJt.toFixed(1).replace(".", ",")} Jt
               </div>
               <div className="lab">Rata-rata hemat per bulan</div>
             </div>
             <div className="sl-proof-stat">
-              <div className="val" data-count="18">18</div>
+              <div className="val" data-count={stats.activeInstallers}>
+                {stats.activeInstallers}
+              </div>
               <div className="lab">Partner installer aktif</div>
             </div>
             <div className="sl-proof-stat">
-              <div className="val" data-count="4.8" data-decimals="1" data-suffix="★">4,8★</div>
+              <div
+                className="val"
+                data-count={stats.ratingKepuasan}
+                data-decimals="1"
+                data-suffix="★"
+              >
+                {stats.ratingKepuasan.toFixed(1).replace(".", ",")}★
+              </div>
               <div className="lab">Rating kepuasan</div>
             </div>
           </div>
