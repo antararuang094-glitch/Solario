@@ -1,7 +1,23 @@
 /* ===== Custom fonts =====
    Inter + Inter Tight loaded via next/font/google in app/layout.tsx
    (self-hosted, zero network round-trip, zero CLS).
+   Quilge (modern serif display, self-hosted) drives ALL headlines.
    Grift is loaded locally for body text in landing-scoped CSS. */
+
+@font-face {
+  font-family: 'Quilge';
+  src: url('/fonts/Quilge-Regular.woff2') format('woff2');
+  font-weight: 400 900;
+  font-style: normal;
+  font-display: swap;
+}
+@font-face {
+  font-family: 'Quilge';
+  src: url('/fonts/Quilge-Italic.woff2') format('woff2');
+  font-weight: 400 900;
+  font-style: italic;
+  font-display: swap;
+}
 
 @font-face {
   font-family: 'Grift';
@@ -25,12 +41,12 @@
   font-display: swap;
 }
 
-/* ── Global headline rule: Inter Tight (fintech-grade display, applies to ALL pages) ── */
+/* ── Global headline rule: Quilge serif (editorial, applies to ALL pages) ── */
 h1, h2, h3, h4 {
-  font-family: var(--font-inter-tight), 'Inter Tight', 'Plus Jakarta Sans', -apple-system, BlinkMacSystemFont, 'Segoe UI', sans-serif;
-  font-weight: 800;
-  letter-spacing: -0.03em;
-  font-feature-settings: "cv11", "ss01", "ss03";
+  font-family: 'Quilge', 'Playfair Display', Georgia, 'Times New Roman', serif;
+  font-weight: 700;
+  letter-spacing: -0.02em;
+  font-feature-settings: "liga" 1, "dlig" 1;
 }
 
 @tailwind base;
@@ -118,10 +134,10 @@ body {
 .solario-landing h2,
 .solario-landing h3,
 .solario-landing .sl-h1 {
-  font-family: var(--font-inter-tight), 'Inter Tight', 'Inter', -apple-system, BlinkMacSystemFont, sans-serif;
-  font-weight: 800;
-  letter-spacing: -0.035em;
-  font-feature-settings: "cv11", "ss01", "ss03";
+  font-family: 'Quilge', 'Playfair Display', Georgia, 'Times New Roman', serif;
+  font-weight: 700;
+  letter-spacing: -0.02em;
+  font-feature-settings: "liga" 1, "dlig" 1;
 }
 
 .solario-landing *,
@@ -280,16 +296,20 @@ body {
   font-size: 15px;
 }
 
-/* ── Hero (editorial serif design, light mint) ── */
+/* ── Hero (editorial serif design, light mint) ──
+   Hero fills exactly (viewport - navbar) so the marquee strip is
+   pinned at the bottom edge of the visible window. Navbar is the
+   sticky h-16 (64px) header inside SiteNavbar. */
 .solario-landing .sl-hero {
   background: #eef5f0;
   color: var(--sl-ink);
-  padding: 96px 0 0;
+  padding: 40px 0 0;
   position: relative;
   overflow: hidden;
   display: flex;
   flex-direction: column;
-  min-height: 100vh;
+  min-height: calc(100vh - 64px);
+  min-height: calc(100dvh - 64px);
 }
 .solario-landing .sl-hero-bg {
   position: absolute;
@@ -308,17 +328,17 @@ body {
   text-align: center;
   display: flex;
   flex-direction: column;
-  flex: 1;
   justify-content: center;
-  padding-bottom: 96px;
+  flex: 1 1 auto;
+  padding-bottom: 32px;
 }
 
 .solario-landing .sl-h1 {
-  font-family: var(--font-playfair), 'Playfair Display', 'DM Serif Display', Georgia, 'Times New Roman', serif;
+  font-family: 'Quilge', 'Playfair Display', Georgia, 'Times New Roman', serif;
   font-size: clamp(46px, 6.4vw, 96px);
-  font-weight: 800;
-  line-height: 1.02;
-  letter-spacing: -0.015em;
+  font-weight: 700;
+  line-height: 1.04;
+  letter-spacing: -0.01em;
   margin: 0;
   color: #0d3b2e;
   text-wrap: balance;
@@ -340,9 +360,9 @@ body {
 }
 
 .solario-landing .sl-hero-sub {
-  margin: 36px auto 0;
+  margin: 28px auto 0;
   max-width: 620px;
-  font-size: 19px;
+  font-size: 18px;
   color: #475569;
   line-height: 1.55;
   font-weight: 400;
@@ -355,7 +375,7 @@ body {
   font-style: italic;
 }
 .solario-landing .sl-hero-ctas {
-  margin-top: 40px;
+  margin-top: 32px;
   display: flex; gap: 14px; justify-content: center; flex-wrap: wrap;
 }
 
@@ -368,7 +388,7 @@ body {
   border: 1px solid var(--sl-accent-border);
   border-radius: 100px;
   font-size: 13px; font-weight: 600; letter-spacing: 0.01em;
-  margin-bottom: 32px;
+  margin-bottom: 24px;
   animation: sl-floaty 8s ease-in-out infinite;
   box-shadow:
     0 1px 0 rgba(255, 255, 255, 0.8) inset,
@@ -387,7 +407,7 @@ body {
 
 /* Hero stats row */
 .solario-landing .sl-hero-stats {
-  margin-top: 32px;
+  margin-top: 24px;
   display: flex; gap: 40px; justify-content: center; flex-wrap: wrap;
   font-size: 14px; color: #475569; font-weight: 400;
 }
@@ -417,12 +437,14 @@ body {
   width: 100%;
   background: #22c55e;
   color: #ffffff;
-  padding: 18px 0;
+  padding: 22px 0;
   overflow: hidden;
   display: flex;
   white-space: nowrap;
-  border-top: 1px solid rgba(13, 59, 46, 0.08);
-  box-shadow: 0 -8px 24px -16px rgba(13, 59, 46, 0.18);
+  border-top: 1px solid rgba(13, 59, 46, 0.12);
+  box-shadow:
+    0 -12px 32px -18px rgba(13, 59, 46, 0.18),
+    0 1px 0 rgba(255, 255, 255, 0.25) inset;
 }
 .solario-landing .sl-hero-marquee-track {
   display: inline-flex;
@@ -436,11 +458,11 @@ body {
   align-items: center;
   gap: 28px;
   padding-right: 28px;
-  font-family: var(--font-playfair), 'Playfair Display', Georgia, serif;
+  font-family: 'Quilge', 'Playfair Display', Georgia, serif;
   font-style: italic;
-  font-weight: 800;
-  font-size: 26px;
-  letter-spacing: 0.02em;
+  font-weight: 700;
+  font-size: 28px;
+  letter-spacing: 0.01em;
   color: #ffffff;
   flex-shrink: 0;
 }
@@ -914,14 +936,12 @@ body {
 @media (max-width: 900px) {
   .solario-landing .container { padding: 0 20px; }
 
-  /* Hero: fits one viewport on mobile (marquee anchors to bottom) */
+  /* Hero: full viewport on mobile too, marquee pinned to bottom */
   .solario-landing .sl-hero {
-    padding: 72px 0 0;
-    min-height: 100vh;
-    min-height: 100dvh;
+    padding: 32px 0 0;
   }
   .solario-landing .sl-hero-inner {
-    padding-bottom: 72px;
+    padding-bottom: 16px;
   }
   .solario-landing .sl-h1 {
     font-size: clamp(38px, 9.5vw, 64px);

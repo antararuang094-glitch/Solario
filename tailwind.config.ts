@@ -32,7 +32,7 @@ const config: Config = {
           "sans-serif",
         ],
         serif: [
-          "var(--font-playfair)",
+          "Quilge",
           "Playfair Display",
           "DM Serif Display",
           "Georgia",
