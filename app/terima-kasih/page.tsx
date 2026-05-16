@@ -37,18 +37,18 @@ export default function TerimaKasihPage() {
           <div className="mx-auto w-16 h-16 rounded-full bg-[#16a34a] flex items-center justify-center">
             <Check className="w-8 h-8 text-white" />
           </div>
-          <h1 className="mt-6 text-3xl sm:text-4xl font-semibold text-ink">
+          <h1 className="mt-8 text-3xl sm:text-4xl font-semibold text-[#0f172a] tracking-tight">
             Permintaan kamu sudah kami terima!
           </h1>
-          <p className="mt-3 text-subtext text-base">
+          <p className="mt-4 text-[#64748b] text-base leading-relaxed">
             Tim Solario akan meneruskan data ke installer terpercaya di kotamu.
-            Kamu akan dihubungi via WhatsApp dalam <b className="text-ink">1×24 jam</b>.
+            Kamu akan dihubungi via WhatsApp dalam <b className="text-[#0f172a]">1×24 jam</b>.
           </p>
         </div>
 
-        <div className="mt-10 rounded-xl border border-[#e5e7eb] bg-surface p-6">
-          <p className="text-sm font-medium text-ink">Apa yang terjadi selanjutnya?</p>
-          <ol className="mt-3 space-y-2 text-sm text-subtext list-decimal pl-5">
+        <div className="mt-12 rounded-xl border border-[#e5e7eb] bg-surface p-6">
+          <p className="text-sm font-semibold text-[#0f172a]">Apa yang terjadi selanjutnya?</p>
+          <ol className="mt-4 space-y-2 text-sm text-[#64748b] list-decimal pl-5 leading-relaxed">
             <li>Tim Solario verifikasi data dan match dengan installer di kota kamu.</li>
             <li>Installer akan hubungi kamu via WhatsApp untuk survei awal.</li>
             <li>Setelah cocok, mereka kasih penawaran resmi — kamu bebas terima atau tolak.</li>
@@ -56,8 +56,8 @@ export default function TerimaKasihPage() {
         </div>
 
         <div className="mt-8">
-          <p className="text-sm font-medium text-ink">Bantu teman kamu hemat juga</p>
-          <div className="mt-3 flex flex-col sm:flex-row gap-2">
+          <p className="text-sm font-semibold text-[#0f172a]">Bantu teman kamu hemat juga</p>
+          <div className="mt-4 flex flex-col sm:flex-row gap-3">
             <a href={waUrl} target="_blank" rel="noopener noreferrer" className="flex-1">
               <Button variant="secondary" className="w-full">
                 <MessageCircle className="w-4 h-4" />
@@ -71,11 +71,17 @@ export default function TerimaKasihPage() {
           </div>
         </div>
 
-        <div className="mt-10 flex flex-col sm:flex-row gap-2 justify-center text-sm">
-          <Link href="/" className="text-[#0d3b2e] hover:underline px-3 py-2">
+        <div className="mt-12 flex flex-col sm:flex-row gap-2 justify-center text-sm">
+          <Link
+            href="/"
+            className="text-[#0d3b2e] hover:underline px-3 min-h-[44px] inline-flex items-center justify-center"
+          >
             ← Kembali ke beranda
           </Link>
-          <Link href="/kalkulator" className="text-[#0d3b2e] hover:underline px-3 py-2">
+          <Link
+            href="/kalkulator"
+            className="text-[#0d3b2e] hover:underline px-3 min-h-[44px] inline-flex items-center justify-center"
+          >
             Hitung untuk rumah/usaha lain
           </Link>
         </div>

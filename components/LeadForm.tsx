@@ -186,7 +186,7 @@ export function LeadForm({
             className="flex-1"
           />
           {otpStep === "verified" ? (
-            <div className="inline-flex items-center gap-1.5 px-3 h-11 rounded-xl bg-[#f0fdf4] text-[#16a34a] text-sm font-medium border border-[#16a34a]/30">
+            <div className="inline-flex items-center gap-1.5 px-4 h-12 rounded-xl bg-[#f0fdf4] text-[#16a34a] text-sm font-medium border border-[#16a34a]/30">
               <ShieldCheck className="w-4 h-4" />
               Terverifikasi
             </div>
@@ -264,12 +264,12 @@ export function LeadForm({
         type="submit"
         size="lg"
         loading={isSubmitting}
-        disabled={otpStep !== "verified"}
+        disabled={otpStep !== "verified" || isSubmitting}
         className="w-full sm:w-auto"
       >
-        Hubungkan Saya dengan Installer
+        {isSubmitting ? "Mengirim..." : "Hubungkan Saya dengan Installer"}
       </Button>
-      <p className="text-xs text-subtext">
+      <p className="text-xs text-subtext leading-relaxed">
         Dengan submit, Anda setuju dihubungi installer terverifikasi via WhatsApp. Data Anda aman dan tidak dijual ke pihak lain.
       </p>
     </form>

@@ -13,7 +13,7 @@ export const Input = React.forwardRef<HTMLInputElement, InputProps>(
       <input
         ref={ref}
         className={cn(
-          "block w-full h-11 px-3 text-[15px] rounded-xl border bg-white text-ink placeholder:text-subtext",
+          "block w-full h-12 px-4 text-base sm:text-[15px] rounded-xl border bg-white text-ink placeholder:text-subtext",
           "focus:outline-none focus:ring-2 focus:ring-[#16a34a]/30 focus:border-[#16a34a]",
           "disabled:bg-surface disabled:cursor-not-allowed",
           error ? "border-red-500" : "border-[#e5e7eb]",
@@ -34,7 +34,7 @@ export const Textarea = React.forwardRef<
     <textarea
       ref={ref}
       className={cn(
-        "block w-full min-h-[88px] px-3 py-2 text-[15px] rounded-xl border bg-white text-ink placeholder:text-subtext",
+        "block w-full min-h-[96px] px-4 py-3 text-base sm:text-[15px] rounded-xl border bg-white text-ink placeholder:text-subtext",
         "focus:outline-none focus:ring-2 focus:ring-[#16a34a]/30 focus:border-[#16a34a]",
         error ? "border-red-500" : "border-[#e5e7eb]",
         className
