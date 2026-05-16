@@ -1,5 +1,5 @@
 import type { Metadata } from "next";
-import { Inter, Inter_Tight, Playfair_Display } from "next/font/google";
+import { Inter, Inter_Tight } from "next/font/google";
 import { Analytics } from "@vercel/analytics/react";
 import "./globals.css";
 import { ToastProvider } from "@/components/ui/toast";
@@ -11,7 +11,7 @@ const inter = Inter({
   display: "swap",
 });
 
-// Display/headline font — tighter horizontal metrics, used in h1-h4
+// Sans display fallback (still wired for any Tailwind utility that wants it)
 const interTight = Inter_Tight({
   subsets: ["latin"],
   weight: ["500", "600", "700", "800", "900"],
@@ -19,14 +19,7 @@ const interTight = Inter_Tight({
   display: "swap",
 });
 
-// Editorial serif for hero headline
-const playfair = Playfair_Display({
-  subsets: ["latin"],
-  weight: ["700", "800", "900"],
-  style: ["normal", "italic"],
-  variable: "--font-playfair",
-  display: "swap",
-});
+// Headline serif (Quilge) is self-hosted via @font-face in app/globals.css
 
 export const metadata: Metadata = {
   title: "Solario.id — Kalkulator ROI Solar Panel untuk Indonesia",
@@ -55,7 +48,7 @@ export default function RootLayout({
   children: React.ReactNode;
 }) {
   return (
-    <html lang="id" className={`${inter.variable} ${interTight.variable} ${playfair.variable}`}>
+    <html lang="id" className={`${inter.variable} ${interTight.variable}`}>
       <body
         className={`${inter.className} antialiased min-h-screen bg-white text-ink`}
       >

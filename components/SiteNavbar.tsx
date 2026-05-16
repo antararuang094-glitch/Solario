@@ -139,7 +139,7 @@ export function SiteNavbar({
 
             <Link
               href={ctaHref}
-              className="ml-1 inline-flex items-center gap-1.5 px-5 h-11 rounded-full bg-[#0d3b2e] text-white text-sm font-medium hover:bg-[#07291f] transition-colors"
+              className="ml-1 inline-flex items-center gap-1.5 px-5 h-11 rounded-full bg-[#22c55e] text-white text-sm font-semibold shadow-[0_8px_18px_-8px_rgba(34,197,94,0.55)] hover:bg-[#16a34a] hover:shadow-[0_10px_22px_-8px_rgba(34,197,94,0.65)] transition-all"
             >
               {ctaLabel}
               <span aria-hidden>→</span>
@@ -216,7 +216,7 @@ export function SiteNavbar({
           <Link
             href={ctaHref}
             onClick={closeMenu}
-            className="w-full inline-flex items-center justify-center gap-1.5 h-12 px-6 rounded-full bg-[#0d3b2e] text-white font-medium hover:bg-[#07291f] transition-colors"
+            className="w-full inline-flex items-center justify-center gap-1.5 h-12 px-6 rounded-full bg-[#22c55e] text-white font-semibold shadow-[0_10px_22px_-8px_rgba(34,197,94,0.55)] hover:bg-[#16a34a] transition-colors"
           >
             {ctaLabel} <span aria-hidden>→</span>
           </Link>
