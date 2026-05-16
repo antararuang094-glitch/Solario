@@ -114,14 +114,15 @@ export function SiteNavbar({
             </span>
           </Link>
 
-          <nav className="flex items-center gap-0.5 sm:gap-1 text-sm">
+          {/* Desktop nav — md+ only */}
+          <nav className="hidden md:flex items-center gap-1 text-sm">
             {desktopLinks.map((link) =>
               link.anchor ? (
                 <a
                   key={link.label}
                   href={link.href}
                   onClick={(e) => handleAnchorClick(e, link.href)}
-                  className="hidden md:inline-block px-3 py-2 rounded-xl text-ink hover:text-[#0a3d2e] font-medium"
+                  className="inline-flex items-center px-3 h-11 rounded-xl text-ink hover:text-[#0d3b2e] font-medium"
                 >
                   {link.label}
                 </a>
@@ -129,7 +130,7 @@ export function SiteNavbar({
                 <Link
                   key={link.label}
                   href={link.href}
-                  className="hidden md:inline-block px-3 py-2 rounded-xl text-ink hover:text-[#0a3d2e] font-medium"
+                  className="inline-flex items-center px-3 h-11 rounded-xl text-ink hover:text-[#0d3b2e] font-medium"
                 >
                   {link.label}
                 </Link>
@@ -138,22 +139,23 @@ export function SiteNavbar({
 
             <Link
               href={ctaHref}
-              className="ml-1 hidden sm:inline-flex items-center gap-1.5 px-4 h-10 rounded-full bg-[#0a3d2e] text-white text-sm font-medium hover:bg-[#07291f] transition-colors"
+              className="ml-1 inline-flex items-center gap-1.5 px-5 h-11 rounded-full bg-[#0d3b2e] text-white text-sm font-medium hover:bg-[#07291f] transition-colors"
             >
               {ctaLabel}
               <span aria-hidden>→</span>
             </Link>
-
-            <button
-              type="button"
-              aria-label="Buka menu"
-              aria-expanded={menuOpen}
-              onClick={() => setMenuOpen(true)}
-              className="md:hidden ml-1 inline-flex items-center justify-center w-10 h-10 rounded-full border border-[#e5e7eb] text-ink hover:bg-[#f0fdf4] hover:border-[#bbf7d0] transition-colors"
-            >
-              <Menu className="w-5 h-5" />
-            </button>
           </nav>
+
+          {/* Mobile menu button — below md only */}
+          <button
+            type="button"
+            aria-label="Buka menu"
+            aria-expanded={menuOpen}
+            onClick={() => setMenuOpen(true)}
+            className="md:hidden inline-flex items-center justify-center w-[44px] h-[44px] rounded-full border border-[#e5e7eb] text-ink hover:bg-[#f0fdf4] hover:border-[#bbf7d0] transition-colors"
+          >
+            <Menu className="w-5 h-5" />
+          </button>
         </div>
       </header>
 
@@ -191,7 +193,7 @@ export function SiteNavbar({
             type="button"
             aria-label="Tutup menu"
             onClick={closeMenu}
-            className="w-9 h-9 inline-flex items-center justify-center rounded-full bg-surface border border-[#e5e7eb] text-ink hover:bg-[#f0fdf4] transition-colors"
+            className="w-[44px] h-[44px] inline-flex items-center justify-center rounded-full bg-surface border border-[#e5e7eb] text-ink hover:bg-[#f0fdf4] transition-colors"
           >
             <X className="w-5 h-5" />
           </button>
@@ -214,7 +216,7 @@ export function SiteNavbar({
           <Link
             href={ctaHref}
             onClick={closeMenu}
-            className="w-full inline-flex items-center justify-center gap-1.5 h-12 px-6 rounded-full bg-[#0a3d2e] text-white font-medium hover:bg-[#07291f] transition-colors"
+            className="w-full inline-flex items-center justify-center gap-1.5 h-12 px-6 rounded-full bg-[#0d3b2e] text-white font-medium hover:bg-[#07291f] transition-colors"
           >
             {ctaLabel} <span aria-hidden>→</span>
           </Link>
@@ -240,7 +242,7 @@ function DrawerLink({
   onAnchorClick: (e: React.MouseEvent, href: string) => void;
 }) {
   const className = cn(
-    "flex items-center gap-3.5 px-3.5 py-3.5 rounded-xl text-ink hover:bg-[#f0fdf4] hover:text-[#0a3d2e] font-medium text-base transition-colors group",
+    "flex items-center gap-3.5 px-4 min-h-[48px] rounded-xl text-ink hover:bg-[#f0fdf4] hover:text-[#0d3b2e] font-medium text-base transition-colors group",
     open
       ? "animate-[drawerItemIn_0.5s_cubic-bezier(0.16,1,0.3,1)_forwards] opacity-0 -translate-x-3"
       : "opacity-100 translate-x-0"

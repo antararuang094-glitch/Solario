@@ -183,10 +183,16 @@ export function InstallerForm() {
         />
       </div>
 
-      <Button type="submit" size="lg" loading={isSubmitting} className="w-full sm:w-auto">
-        Daftar Sekarang — Gratis
+      <Button
+        type="submit"
+        size="lg"
+        loading={isSubmitting}
+        disabled={isSubmitting}
+        className="w-full sm:w-auto"
+      >
+        {isSubmitting ? "Mengirim..." : "Daftar Sekarang — Gratis"}
       </Button>
-      <p className="text-xs text-subtext">
+      <p className="text-xs text-subtext leading-relaxed">
         Tim kami akan menghubungi dalam 1×24 jam untuk verifikasi. Tidak ada biaya pendaftaran.
       </p>
     </form>

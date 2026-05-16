@@ -15,15 +15,22 @@ const config: Config = {
           700: "#0a2d23",
         },
         accent: {
-          DEFAULT: "#16a34a",
+          DEFAULT: "#22c55e",
         },
-        ink: "#111827",
-        subtext: "#6b7280",
+        ink: "#0f172a",
+        subtext: "#64748b",
         border: "#e5e7eb",
         surface: "#f9fafb",
       },
       fontFamily: {
-        sans: ["var(--font-inter)", "system-ui", "-apple-system", "Segoe UI", "Roboto", "sans-serif"],
+        sans: [
+          "var(--font-inter)",
+          "Plus Jakarta Sans",
+          "-apple-system",
+          "BlinkMacSystemFont",
+          "Segoe UI",
+          "sans-serif",
+        ],
       },
       borderRadius: {
         xl: "12px",

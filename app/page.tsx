@@ -84,6 +84,7 @@ export default function HomePage() {
   const router = useRouter();
   const [pastHero, setPastHero] = React.useState(false);
   const [inputValue, setInputValue] = React.useState("");
+  const [submitting, setSubmitting] = React.useState(false);
   const [stats, setStats] = React.useState<SiteStats>(FALLBACK_STATS);
   const inputRef = React.useRef<HTMLInputElement>(null);
   const heroStaggerRef = React.useRef<HTMLDivElement>(null);
@@ -230,6 +231,7 @@ export default function HomePage() {
 
   const handleSubmit = (e: React.FormEvent) => {
     e.preventDefault();
+    if (submitting) return;
     const v = inputValue.replace(/\D/g, "");
     if (!v || parseInt(v, 10) < 50000) {
       inputRef.current?.focus();
@@ -250,6 +252,7 @@ export default function HomePage() {
     } catch {
       /* ignore */
     }
+    setSubmitting(true);
     router.push(`/kalkulator?tagihan=${v}`);
   };
 
@@ -342,96 +345,249 @@ export default function HomePage() {
               <span className="dot" />
               <span>Gratis Selamanya</span>
             </div>
+
+            {/* Desktop-only floating preview tiles (Apple-style mini-cards) */}
+            <div className="sl-hero-tiles" aria-hidden="true">
+              <div className="sl-tile sl-tile-result">
+                <div className="sl-tile-glow" />
+                <div className="sl-tile-head">
+                  <span className="sl-tile-dot" />
+                  <span>Contoh · Tagihan Rp 1,5 jt</span>
+                </div>
+                <div className="sl-tile-num">
+                  Rp 1,2 jt
+                  <span className="sl-tile-unit">hemat / bulan</span>
+                </div>
+                <div className="sl-tile-meta">
+                  <span>Balik modal <b>4,5 tahun</b></span>
+                  <span className="sl-tile-bullet">·</span>
+                  <span>Sistem <b>3,5 kWp</b></span>
+                </div>
+              </div>
+
+              <div className="sl-tile sl-tile-chart">
+                <div className="sl-tile-eyebrow">Proyeksi 25 tahun</div>
+                <svg viewBox="0 0 200 80" preserveAspectRatio="none" className="sl-tile-chart-svg">
+                  <defs>
+                    <linearGradient id="chartFill" x1="0" y1="0" x2="0" y2="1">
+                      <stop offset="0%" stopColor="#22c55e" stopOpacity="0.35" />
+                      <stop offset="100%" stopColor="#22c55e" stopOpacity="0" />
+                    </linearGradient>
+                  </defs>
+                  <path d="M0,76 L0,68 Q20,60 40,52 T80,40 T120,28 T160,16 T200,6 L200,76 Z" fill="url(#chartFill)" />
+                  <path d="M0,68 Q20,60 40,52 T80,40 T120,28 T160,16 T200,6" fill="none" stroke="#16a34a" strokeWidth="2" strokeLinecap="round" />
+                  <line x1="0" y1="48" x2="200" y2="48" stroke="#dc2626" strokeWidth="1.4" strokeDasharray="4 3" opacity="0.7" />
+                  <circle cx="92" cy="36" r="3.5" fill="#fff" stroke="#16a34a" strokeWidth="2" />
+                </svg>
+                <div className="sl-tile-meta">
+                  <span>BEP <b>4,5 thn</b></span>
+                  <span className="sl-tile-bullet">·</span>
+                  <span>Total hemat <b>Rp 540 jt</b></span>
+                </div>
+              </div>
+
+              <div className="sl-tile sl-tile-lead">
+                <div className="sl-tile-lead-badge">LIVE</div>
+                <div className="sl-tile-lead-row">
+                  <div className="sl-tile-lead-avatar">BS</div>
+                  <div>
+                    <div className="sl-tile-lead-name">Budi · Jakarta</div>
+                    <div className="sl-tile-lead-sub">Hemat est. Rp 1,8 jt/bln</div>
+                  </div>
+                </div>
+                <div className="sl-tile-lead-verified">
+                  <svg width="11" height="11" viewBox="0 0 24 24" fill="none" stroke="currentColor" strokeWidth="3.2" strokeLinecap="round" strokeLinejoin="round" aria-hidden="true">
+                    <path d="M20 6L9 17l-5-5" />
+                  </svg>
+                  WhatsApp verified
+                </div>
+              </div>
+            </div>
           </div>
 
           <div className="sl-hero-hills" aria-hidden="true">
-            <svg viewBox="0 0 1200 400" preserveAspectRatio="none" xmlns="http://www.w3.org/2000/svg">
+            <svg viewBox="0 0 1200 480" preserveAspectRatio="xMidYMax slice" xmlns="http://www.w3.org/2000/svg">
               <defs>
-                <linearGradient id="hillBack" x1="0" y1="0" x2="0" y2="1">
-                  <stop offset="0%" stopColor="#dcfce7" />
-                  <stop offset="100%" stopColor="#bbf7d0" />
+                <linearGradient id="sky" x1="0" y1="0" x2="0" y2="1">
+                  <stop offset="0%" stopColor="#ffffff" />
+                  <stop offset="60%" stopColor="#fefce8" />
+                  <stop offset="100%" stopColor="#ecfdf5" />
+                </linearGradient>
+                <linearGradient id="hillFar" x1="0" y1="0" x2="0" y2="1">
+                  <stop offset="0%" stopColor="#d1fae5" />
+                  <stop offset="100%" stopColor="#a7f3d0" />
                 </linearGradient>
                 <linearGradient id="hillMid" x1="0" y1="0" x2="0" y2="1">
-                  <stop offset="0%" stopColor="#a7f3c2" />
-                  <stop offset="100%" stopColor="#6ee7a3" />
+                  <stop offset="0%" stopColor="#86efac" />
+                  <stop offset="100%" stopColor="#4ade80" />
                 </linearGradient>
                 <linearGradient id="hillFront" x1="0" y1="0" x2="0" y2="1">
                   <stop offset="0%" stopColor="#22c55e" />
-                  <stop offset="100%" stopColor="#16a34a" />
+                  <stop offset="100%" stopColor="#15803d" />
                 </linearGradient>
-                <radialGradient id="sunGlow" cx="50%" cy="50%" r="50%">
-                  <stop offset="0%" stopColor="#fef3c7" stopOpacity="0.7" />
-                  <stop offset="60%" stopColor="#fde68a" stopOpacity="0.3" />
+                <linearGradient id="hillFloor" x1="0" y1="0" x2="0" y2="1">
+                  <stop offset="0%" stopColor="#166534" />
+                  <stop offset="100%" stopColor="#0d3b2e" />
+                </linearGradient>
+                <radialGradient id="sunHalo" cx="50%" cy="50%" r="50%">
+                  <stop offset="0%" stopColor="#fef9c3" stopOpacity="0.95" />
+                  <stop offset="40%" stopColor="#fde68a" stopOpacity="0.45" />
                   <stop offset="100%" stopColor="#fde68a" stopOpacity="0" />
                 </radialGradient>
-                <symbol id="solarPanel" viewBox="0 0 22 16">
-                  <path d="M0,5 L10,0 L22,0 L12,5 Z" />
-                  <rect x="10.4" y="5" width="1.6" height="11" />
+                <radialGradient id="sunCore" cx="50%" cy="50%" r="50%">
+                  <stop offset="0%" stopColor="#fef08a" />
+                  <stop offset="100%" stopColor="#facc15" stopOpacity="0.6" />
+                </radialGradient>
+                <linearGradient id="panelGloss" x1="0" y1="0" x2="0" y2="1">
+                  <stop offset="0%" stopColor="#1e293b" />
+                  <stop offset="100%" stopColor="#0f172a" />
+                </linearGradient>
+                <linearGradient id="rayGlow" x1="0" y1="0" x2="0" y2="1">
+                  <stop offset="0%" stopColor="#fde68a" stopOpacity="0.4" />
+                  <stop offset="100%" stopColor="#fde68a" stopOpacity="0" />
+                </linearGradient>
+                <symbol id="pine" viewBox="0 0 20 36">
+                  <path d="M10 0 L18 14 L13 14 L20 26 L13 26 L20 36 L0 36 L7 26 L0 26 L7 14 L2 14 Z" />
+                </symbol>
+                <symbol id="panel" viewBox="0 0 28 18">
+                  <path d="M2 16 L8 2 L26 2 L20 16 Z" fill="url(#panelGloss)" />
+                  <path d="M8 2 L26 2 L20 16 L2 16 Z" fill="none" stroke="#22c55e" strokeWidth="0.4" strokeOpacity="0.4" />
+                  <line x1="11" y1="2" x2="5" y2="16" stroke="#22c55e" strokeWidth="0.3" strokeOpacity="0.55" />
+                  <line x1="14" y1="2" x2="8" y2="16" stroke="#22c55e" strokeWidth="0.3" strokeOpacity="0.55" />
+                  <line x1="17" y1="2" x2="11" y2="16" stroke="#22c55e" strokeWidth="0.3" strokeOpacity="0.55" />
+                  <line x1="20" y1="2" x2="14" y2="16" stroke="#22c55e" strokeWidth="0.3" strokeOpacity="0.55" />
+                  <line x1="23" y1="2" x2="17" y2="16" stroke="#22c55e" strokeWidth="0.3" strokeOpacity="0.55" />
+                  <line x1="8" y1="9" x2="23" y2="9" stroke="#22c55e" strokeWidth="0.3" strokeOpacity="0.55" />
+                  <rect x="12" y="16" width="3" height="2" fill="#0f172a" />
                 </symbol>
               </defs>
 
-              {/* Soft sun glow in sky area */}
-              <circle cx="950" cy="80" r="180" fill="url(#sunGlow)" />
-              <circle cx="950" cy="80" r="32" fill="#fde68a" opacity="0.55" />
+              {/* Sky gradient backdrop */}
+              <rect x="0" y="0" width="1200" height="480" fill="url(#sky)" />
 
-              {/* Back hills (furthest, lightest) */}
+              {/* Sun rays — soft vertical glow */}
+              <ellipse cx="920" cy="180" rx="160" ry="280" fill="url(#rayGlow)" />
+
+              {/* Sun halo + core */}
+              <circle cx="920" cy="120" r="220" fill="url(#sunHalo)" />
+              <circle cx="920" cy="120" r="58" fill="url(#sunCore)" />
+              <circle cx="920" cy="120" r="34" fill="#fef9c3" opacity="0.85" />
+
+              {/* Soft clouds */}
+              <g fill="#ffffff" opacity="0.7">
+                <ellipse cx="180" cy="100" rx="68" ry="14" />
+                <ellipse cx="220" cy="92" rx="40" ry="10" />
+                <ellipse cx="560" cy="70" rx="52" ry="11" />
+                <ellipse cx="1080" cy="140" rx="56" ry="13" />
+                <ellipse cx="1110" cy="132" rx="34" ry="9" />
+              </g>
+
+              {/* Birds */}
+              <g fill="none" stroke="#0d3b2e" strokeWidth="1.6" strokeLinecap="round" opacity="0.55">
+                <path d="M380 150 Q386 144 392 150 Q398 144 404 150" />
+                <path d="M420 168 Q424 164 428 168 Q432 164 436 168" />
+                <path d="M700 130 Q706 124 712 130 Q718 124 724 130" />
+              </g>
+
+              {/* Far hills */}
               <path
-                d="M0,400 L0,180 Q150,100 300,140 T600,130 T900,150 T1200,135 L1200,400 Z"
-                fill="url(#hillBack)"
+                d="M0,480 L0,260 Q120,210 250,235 Q380,255 520,225 Q660,200 820,230 Q960,255 1080,225 Q1140,212 1200,235 L1200,480 Z"
+                fill="url(#hillFar)"
+                opacity="0.85"
               />
+
+              {/* Far-hill pines (small, faded) */}
+              <g fill="#10b981" opacity="0.45">
+                <use href="#pine" x="160" y="218" width="10" height="18" />
+                <use href="#pine" x="190" y="222" width="10" height="18" />
+                <use href="#pine" x="430" y="208" width="10" height="18" />
+                <use href="#pine" x="460" y="212" width="10" height="18" />
+                <use href="#pine" x="730" y="216" width="11" height="20" />
+                <use href="#pine" x="1040" y="210" width="10" height="18" />
+                <use href="#pine" x="1070" y="214" width="10" height="18" />
+              </g>
 
               {/* Mid hills */}
               <path
-                d="M0,400 L0,250 Q200,185 400,220 T800,225 T1200,215 L1200,400 Z"
+                d="M0,480 L0,330 Q160,280 320,308 Q480,332 640,302 Q800,275 960,310 Q1080,335 1200,308 L1200,480 Z"
                 fill="url(#hillMid)"
               />
 
-              {/* Front hills (darkest, closest) */}
-              <path
-                d="M0,400 L0,310 Q260,270 520,290 T1000,300 T1200,295 L1200,400 Z"
-                fill="url(#hillFront)"
-                opacity="0.92"
-              />
-
-              {/* Solar panel clusters distributed along the front hill */}
-              <g fill="#0a3d2e" opacity="0.9">
-                {/* Far left cluster */}
-                <use href="#solarPanel" x="80" y="288" width="22" height="16" />
-                <use href="#solarPanel" x="110" y="287" width="22" height="16" />
-                <use href="#solarPanel" x="140" y="289" width="22" height="16" />
-
-                {/* Left cluster */}
-                <use href="#solarPanel" x="220" y="286" width="24" height="17" />
-                <use href="#solarPanel" x="252" y="284" width="24" height="17" />
-                <use href="#solarPanel" x="284" y="286" width="24" height="17" />
-                <use href="#solarPanel" x="316" y="288" width="24" height="17" />
-
-                {/* Center cluster (bigger - hero panels) */}
-                <use href="#solarPanel" x="490" y="284" width="28" height="20" />
-                <use href="#solarPanel" x="526" y="282" width="28" height="20" />
-                <use href="#solarPanel" x="562" y="283" width="28" height="20" />
-                <use href="#solarPanel" x="598" y="285" width="28" height="20" />
-                <use href="#solarPanel" x="634" y="284" width="28" height="20" />
-                <use href="#solarPanel" x="670" y="286" width="28" height="20" />
-
-                {/* Right cluster */}
-                <use href="#solarPanel" x="820" y="289" width="22" height="16" />
-                <use href="#solarPanel" x="850" y="287" width="22" height="16" />
-                <use href="#solarPanel" x="880" y="289" width="22" height="16" />
-                <use href="#solarPanel" x="910" y="291" width="22" height="16" />
-
-                {/* Far right cluster */}
-                <use href="#solarPanel" x="1020" y="290" width="22" height="16" />
-                <use href="#solarPanel" x="1050" y="292" width="22" height="16" />
-                <use href="#solarPanel" x="1080" y="291" width="22" height="16" />
+              {/* Mid-hill pines (medium) */}
+              <g fill="#15803d" opacity="0.7">
+                <use href="#pine" x="100" y="294" width="13" height="24" />
+                <use href="#pine" x="132" y="298" width="13" height="24" />
+                <use href="#pine" x="270" y="290" width="14" height="26" />
+                <use href="#pine" x="296" y="294" width="13" height="24" />
+                <use href="#pine" x="320" y="296" width="13" height="24" />
+                <use href="#pine" x="580" y="282" width="14" height="26" />
+                <use href="#pine" x="608" y="286" width="13" height="24" />
+                <use href="#pine" x="860" y="288" width="13" height="24" />
+                <use href="#pine" x="890" y="292" width="13" height="24" />
+                <use href="#pine" x="1110" y="296" width="13" height="24" />
               </g>
 
-              {/* Subtle trees on back hills for depth */}
-              <g fill="#16a34a" opacity="0.35">
-                <ellipse cx="180" cy="172" rx="14" ry="22" />
-                <ellipse cx="420" cy="158" rx="12" ry="18" />
-                <ellipse cx="730" cy="170" rx="13" ry="20" />
-                <ellipse cx="1080" cy="160" rx="14" ry="22" />
+              {/* Front hill */}
+              <path
+                d="M0,480 L0,390 Q200,355 400,380 Q560,400 760,378 Q940,358 1200,390 L1200,480 Z"
+                fill="url(#hillFront)"
+              />
+
+              {/* Solar farm — grid array on front hill */}
+              <g>
+                {/* Cluster 1 (left) */}
+                {Array.from({ length: 3 }).map((_, row) =>
+                  Array.from({ length: 5 }).map((_, col) => (
+                    <use
+                      key={`a-${row}-${col}`}
+                      href="#panel"
+                      x={120 + col * 30 + row * 4}
+                      y={384 + row * 12}
+                      width="26"
+                      height="16"
+                    />
+                  ))
+                )}
+                {/* Cluster 2 (center, hero) */}
+                {Array.from({ length: 4 }).map((_, row) =>
+                  Array.from({ length: 7 }).map((_, col) => (
+                    <use
+                      key={`b-${row}-${col}`}
+                      href="#panel"
+                      x={470 + col * 32 + row * 5}
+                      y={376 + row * 13}
+                      width="28"
+                      height="18"
+                    />
+                  ))
+                )}
+                {/* Cluster 3 (right) */}
+                {Array.from({ length: 3 }).map((_, row) =>
+                  Array.from({ length: 5 }).map((_, col) => (
+                    <use
+                      key={`c-${row}-${col}`}
+                      href="#panel"
+                      x={930 + col * 30 + row * 4}
+                      y={388 + row * 12}
+                      width="26"
+                      height="16"
+                    />
+                  ))
+                )}
+              </g>
+
+              {/* Foreground (dark green strip + grass texture) */}
+              <path
+                d="M0,480 L0,448 Q300,432 600,442 Q900,452 1200,438 L1200,480 Z"
+                fill="url(#hillFloor)"
+              />
+              {/* Subtle grass blades */}
+              <g stroke="#22c55e" strokeWidth="1" strokeLinecap="round" opacity="0.4">
+                {Array.from({ length: 24 }).map((_, i) => {
+                  const x = 30 + i * 48;
+                  const h = 5 + (i % 3) * 2;
+                  return <line key={`g-${i}`} x1={x} y1="462" x2={x} y2={462 - h} />;
+                })}
               </g>
             </svg>
           </div>
@@ -508,9 +664,32 @@ export default function HomePage() {
               inputMode="numeric"
               value={inputValue}
               onChange={handleInputChange}
+              disabled={submitting}
             />
-            <button type="submit" className="sl-btn sl-btn-accent">
-              Hitung Sekarang <span className="arr">→</span>
+            <button
+              type="submit"
+              className="sl-btn sl-btn-accent"
+              disabled={submitting}
+              aria-busy={submitting}
+            >
+              {submitting ? (
+                <>
+                  <svg
+                    className="h-4 w-4 animate-spin"
+                    viewBox="0 0 24 24"
+                    fill="none"
+                    aria-hidden="true"
+                  >
+                    <circle cx="12" cy="12" r="10" stroke="currentColor" strokeWidth="3" className="opacity-25" />
+                    <path d="M22 12a10 10 0 0 1-10 10" stroke="currentColor" strokeWidth="3" strokeLinecap="round" />
+                  </svg>
+                  Memuat kalkulator…
+                </>
+              ) : (
+                <>
+                  Hitung Sekarang <span className="arr">→</span>
+                </>
+              )}
             </button>
           </form>
         </div>
