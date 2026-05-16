@@ -31,6 +31,14 @@ const config: Config = {
           "Segoe UI",
           "sans-serif",
         ],
+        serif: [
+          "var(--font-playfair)",
+          "Playfair Display",
+          "DM Serif Display",
+          "Georgia",
+          "Times New Roman",
+          "serif",
+        ],
       },
       borderRadius: {
         xl: "12px",
