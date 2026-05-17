@@ -61,8 +61,8 @@ export function InstallerForm() {
 
   if (success) {
     return (
-      <div className="rounded-xl border border-[#16a34a]/30 bg-[#f0fdf4] p-8 text-center">
-        <div className="mx-auto w-14 h-14 rounded-full bg-[#16a34a] flex items-center justify-center mb-4">
+      <div className="rounded-xl border border-accent-deep/30 bg-accent-soft p-8 text-center">
+        <div className="mx-auto w-14 h-14 rounded-full bg-accent-deep flex items-center justify-center mb-4">
           <Check className="w-7 h-7 text-white" />
         </div>
         <h3 className="text-xl font-semibold text-ink">Terima kasih, pendaftaran Anda terkirim!</h3>

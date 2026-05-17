@@ -14,9 +14,9 @@ export const Input = React.forwardRef<HTMLInputElement, InputProps>(
         ref={ref}
         className={cn(
           "block w-full h-12 px-4 text-base sm:text-[15px] rounded-xl border bg-white text-ink placeholder:text-subtext",
-          "focus:outline-none focus:ring-2 focus:ring-[#16a34a]/30 focus:border-[#16a34a]",
+          "focus:outline-none focus:ring-2 focus:ring-accent-deep/30 focus:border-accent-deep",
           "disabled:bg-surface disabled:cursor-not-allowed",
-          error ? "border-red-500" : "border-[#e5e7eb]",
+          error ? "border-red-500" : "border-border",
           className
         )}
         {...props}
@@ -35,8 +35,8 @@ export const Textarea = React.forwardRef<
       ref={ref}
       className={cn(
         "block w-full min-h-[96px] px-4 py-3 text-base sm:text-[15px] rounded-xl border bg-white text-ink placeholder:text-subtext",
-        "focus:outline-none focus:ring-2 focus:ring-[#16a34a]/30 focus:border-[#16a34a]",
-        error ? "border-red-500" : "border-[#e5e7eb]",
+        "focus:outline-none focus:ring-2 focus:ring-accent-deep/30 focus:border-accent-deep",
+        error ? "border-red-500" : "border-border",
         className
       )}
       {...props}

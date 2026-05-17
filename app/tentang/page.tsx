@@ -14,35 +14,35 @@ export default function TentangPage() {
       <SiteNavbar />
       <main className="mx-auto max-w-3xl px-4 sm:px-6 py-16 sm:py-20">
         <div>
-          <span className="inline-flex items-center gap-1.5 px-3 py-1 rounded-full bg-[#f0fdf4] border border-[#bbf7d0] text-[#166534] text-xs font-semibold">
+          <span className="inline-flex items-center gap-1.5 px-3 py-1 rounded-full bg-accent-soft border border-accent-border text-accent-text text-xs font-semibold">
             Tentang Kami
           </span>
-          <h1 className="mt-4 text-3xl sm:text-4xl lg:text-5xl font-bold text-[#0f172a] tracking-tight leading-tight">
+          <h1 className="mt-4 text-3xl sm:text-4xl lg:text-5xl font-bold text-ink tracking-tight leading-tight">
             Membuat solar lebih mudah <br className="hidden sm:block" />
             untuk semua orang Indonesia.
           </h1>
-          <p className="mt-6 text-lg text-[#64748b] leading-relaxed">
+          <p className="mt-6 text-lg text-subtext leading-relaxed">
             Solario.id adalah platform netral yang menghubungkan rumah tangga dan UKM Indonesia dengan installer solar panel terpercaya. Kami percaya keputusan untuk pindah ke solar harus didasari informasi yang jujur, transparan, dan mudah dipahami — bukan promosi sepihak.
           </p>
         </div>
 
         <section className="mt-16 grid sm:grid-cols-2 gap-8">
           <div>
-            <h2 className="text-xl font-bold text-[#0f172a]">Misi Kami</h2>
-            <p className="mt-4 text-[#64748b] leading-relaxed">
+            <h2 className="text-xl font-bold text-ink">Misi Kami</h2>
+            <p className="mt-4 text-subtext leading-relaxed">
               Mengakselerasi transisi energi bersih di Indonesia dengan menyediakan tools dan informasi yang membuat ROI solar bisa dihitung dalam hitungan detik — tanpa daftar, tanpa email spam.
             </p>
           </div>
           <div>
-            <h2 className="text-xl font-bold text-[#0f172a]">Cara Kerja</h2>
-            <p className="mt-4 text-[#64748b] leading-relaxed">
+            <h2 className="text-xl font-bold text-ink">Cara Kerja</h2>
+            <p className="mt-4 text-subtext leading-relaxed">
               Kami pakai tarif PLN 2024, Peak Sun Hours per kota, dan performance ratio industri (80%) untuk memberikan estimasi yang konservatif. Setelah hitung, kami sambungkan ke installer terverifikasi di kotamu.
             </p>
           </div>
         </section>
 
-        <section className="mt-16 rounded-2xl border border-[#e5e7eb] bg-surface p-6 sm:p-8">
-          <h2 className="text-xl font-bold text-[#0f172a]">Nilai-nilai Kami</h2>
+        <section className="mt-16 rounded-2xl border border-border bg-surface p-6 sm:p-8">
+          <h2 className="text-xl font-bold text-ink">Nilai-nilai Kami</h2>
           <ul className="mt-6 space-y-4">
             {[
               {
@@ -59,18 +59,18 @@ export default function TentangPage() {
               },
             ].map((v) => (
               <li key={v.title} className="flex items-start gap-3">
-                <span className="mt-0.5 flex-shrink-0 w-5 h-5 rounded-full bg-[#16a34a] text-white flex items-center justify-center">
+                <span className="mt-0.5 flex-shrink-0 w-5 h-5 rounded-full bg-accent-deep text-white flex items-center justify-center">
                   <Check className="w-3 h-3" strokeWidth={3} />
                 </span>
-                <span className="text-[#64748b]">
-                  <b className="text-[#0f172a]">{v.title}</b> — {v.desc}
+                <span className="text-subtext">
+                  <b className="text-ink">{v.title}</b> — {v.desc}
                 </span>
               </li>
             ))}
           </ul>
         </section>
 
-        <section className="mt-16 text-center bg-[#0d3b2e] text-white rounded-2xl p-8 sm:p-12 relative overflow-hidden">
+        <section className="mt-16 text-center bg-primary text-white rounded-2xl p-8 sm:p-12 relative overflow-hidden">
           <div
             aria-hidden="true"
             className="absolute inset-0 pointer-events-none"
@@ -86,7 +86,7 @@ export default function TentangPage() {
             </p>
             <Link
               href="/kalkulator"
-              className="mt-8 inline-flex items-center gap-2 px-6 h-12 rounded-full bg-[#22c55e] text-[#0d3b2e] font-semibold hover:bg-[#86efac] transition-colors"
+              className="mt-8 inline-flex items-center gap-2 px-6 h-12 rounded-full bg-accent text-white font-semibold hover:bg-accent-deep transition-colors"
             >
               Hitung Sekarang
               <ArrowRight className="w-4 h-4" />
@@ -94,11 +94,11 @@ export default function TentangPage() {
           </div>
         </section>
 
-        <p className="mt-12 text-sm text-[#64748b] text-center">
+        <p className="mt-12 text-sm text-subtext text-center">
           Punya pertanyaan? Kirim email ke{" "}
           <a
             href="mailto:halo@solario.id"
-            className="text-[#0d3b2e] font-semibold hover:underline"
+            className="text-primary font-semibold hover:underline"
           >
             halo@solario.id
           </a>

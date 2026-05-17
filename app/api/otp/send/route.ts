@@ -21,10 +21,16 @@ export async function POST(req: NextRequest) {
   const telepon = normalizeTelepon(parsed.data.telepon);
   try {
     const { otp, expiresIn } = await sendOtp(telepon);
+    // Only echo OTP when EXPOSE_DEV_OTP is explicitly enabled. We do NOT
+    // rely on NODE_ENV alone because some hosting setups run staging with
+    // NODE_ENV=development on publicly reachable URLs.
+    const shouldEchoOtp =
+      process.env.EXPOSE_DEV_OTP === "true" &&
+      process.env.NODE_ENV !== "production";
     return NextResponse.json({
       success: true,
       expiresIn,
-      ...(process.env.NODE_ENV !== "production" ? { devOtp: otp } : {}),
+      ...(shouldEchoOtp ? { devOtp: otp } : {}),
     });
   } catch (err) {
     // Rate limit → 429 with Retry-After header

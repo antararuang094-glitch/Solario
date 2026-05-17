@@ -35,3 +35,23 @@ export function formatDate(d: Date | string): string {
     minute: "2-digit",
   });
 }
+
+/**
+ * Strip any non-digit character from a string. Centralised here so the
+ * many places that parse phone numbers / Rupiah inputs / OTP digits
+ * agree on one implementation.
+ */
+export function stripDigits(s: string): string {
+  return s.replace(/\D/g, "");
+}
+
+/**
+ * Build a `https://wa.me/<international>` URL from an Indonesian phone
+ * number that may use any of `+62`, `62`, or `0` prefixes.
+ */
+export function buildWaUrl(telepon: string): string {
+  let t = stripDigits(telepon);
+  if (t.startsWith("0")) t = "62" + t.slice(1);
+  // If number already starts with 62 (or any other country code), leave it.
+  return `https://wa.me/${t}`;
+}
