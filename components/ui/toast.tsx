@@ -18,14 +18,23 @@ const ToastContext = React.createContext<ToastContextValue | null>(null);
 
 export function ToastProvider({ children }: { children: React.ReactNode }) {
   const [items, setItems] = React.useState<ToastItem[]>([]);
+  const timersRef = React.useRef<number[]>([]);
+
+  React.useEffect(() => {
+    return () => {
+      timersRef.current.forEach((id) => window.clearTimeout(id));
+      timersRef.current = [];
+    };
+  }, []);
 
   const toast = React.useCallback(
     (message: React.ReactNode, variant: ToastVariant = "default") => {
       const id = Date.now() + Math.random();
       setItems((prev) => [...prev, { id, message, variant }]);
-      setTimeout(() => {
+      const timer = window.setTimeout(() => {
         setItems((prev) => prev.filter((t) => t.id !== id));
       }, 5000);
+      timersRef.current.push(timer);
     },
     []
   );
@@ -40,12 +49,12 @@ export function ToastProvider({ children }: { children: React.ReactNode }) {
             className={
               "rounded-xl px-4 py-3 shadow-lg border text-sm animate-slide-in " +
               (t.variant === "success"
-                ? "bg-[#16a34a] text-white border-[#16a34a]"
+                ? "bg-accent-deep text-white border-accent-deep"
                 : t.variant === "error"
                 ? "bg-red-600 text-white border-red-600"
                 : t.variant === "info"
-                ? "bg-[#0d3b2e] text-white border-[#0d3b2e]"
-                : "bg-white text-ink border-[#e5e7eb]")
+                ? "bg-primary text-white border-primary"
+                : "bg-white text-ink border-border")
             }
           >
             {t.message}
@@ -59,7 +68,15 @@ export function ToastProvider({ children }: { children: React.ReactNode }) {
 export function useToast() {
   const ctx = React.useContext(ToastContext);
   if (!ctx) {
-    return { toast: (message: React.ReactNode) => console.log("[toast]", message) };
+    if (process.env.NODE_ENV !== "production") {
+      console.warn(
+        "[useToast] No <ToastProvider> ancestor found — falling back to console. Wrap your app in <ToastProvider> for visible toasts."
+      );
+    }
+    return {
+      toast: (message: React.ReactNode) =>
+        console.warn("[toast]", message),
+    };
   }
   return ctx;
 }

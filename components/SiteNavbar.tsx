@@ -96,7 +96,7 @@ export function SiteNavbar({
 
   return (
     <>
-      <header className="border-b border-[#e5e7eb] bg-white/85 backdrop-blur sticky top-0 z-30">
+      <header className="border-b border-border bg-white/85 backdrop-blur sticky top-0 z-30">
         <div className="mx-auto max-w-6xl px-4 sm:px-6 h-16 flex items-center justify-between">
           <Link
             href="/"
@@ -110,7 +110,7 @@ export function SiteNavbar({
               className="w-11 h-11 object-contain -ml-1 transition-transform group-hover:rotate-[-4deg] group-hover:scale-105"
             />
             <span className="font-bold text-ink text-lg tracking-tight">
-              Solario<span className="text-[#16a34a]">.id</span>
+              Solario<span className="text-accent-deep">.id</span>
             </span>
           </Link>
 
@@ -122,7 +122,7 @@ export function SiteNavbar({
                   key={link.label}
                   href={link.href}
                   onClick={(e) => handleAnchorClick(e, link.href)}
-                  className="inline-flex items-center px-3 h-11 rounded-xl text-ink hover:text-[#0d3b2e] font-medium"
+                  className="inline-flex items-center px-3 h-11 rounded-xl text-ink hover:text-primary font-medium"
                 >
                   {link.label}
                 </a>
@@ -130,7 +130,7 @@ export function SiteNavbar({
                 <Link
                   key={link.label}
                   href={link.href}
-                  className="inline-flex items-center px-3 h-11 rounded-xl text-ink hover:text-[#0d3b2e] font-medium"
+                  className="inline-flex items-center px-3 h-11 rounded-xl text-ink hover:text-primary font-medium"
                 >
                   {link.label}
                 </Link>
@@ -139,7 +139,7 @@ export function SiteNavbar({
 
             <Link
               href={ctaHref}
-              className="ml-1 inline-flex items-center gap-1.5 px-5 h-11 rounded-full bg-[#22c55e] text-white text-sm font-semibold shadow-[0_8px_18px_-8px_rgba(34,197,94,0.55)] hover:bg-[#16a34a] hover:shadow-[0_10px_22px_-8px_rgba(34,197,94,0.65)] transition-all"
+              className="ml-1 inline-flex items-center gap-1.5 px-5 h-11 rounded-full bg-accent text-white text-sm font-semibold shadow-[0_8px_18px_-8px_rgba(34,197,94,0.55)] hover:bg-accent-deep hover:shadow-[0_10px_22px_-8px_rgba(34,197,94,0.65)] transition-all"
             >
               {ctaLabel}
               <span aria-hidden>→</span>
@@ -152,7 +152,7 @@ export function SiteNavbar({
             aria-label="Buka menu"
             aria-expanded={menuOpen}
             onClick={() => setMenuOpen(true)}
-            className="md:hidden inline-flex items-center justify-center w-[44px] h-[44px] rounded-full border border-[#e5e7eb] text-ink hover:bg-[#f0fdf4] hover:border-[#bbf7d0] transition-colors"
+            className="md:hidden inline-flex items-center justify-center w-[44px] h-[44px] rounded-full border border-border text-ink hover:bg-accent-soft hover:border-accent-border transition-colors"
           >
             <Menu className="w-5 h-5" />
           </button>
@@ -162,7 +162,7 @@ export function SiteNavbar({
       {/* Mobile drawer backdrop */}
       <div
         className={cn(
-          "md:hidden fixed inset-0 z-[199] bg-[#07291f]/40 backdrop-blur-sm transition-opacity duration-300",
+          "md:hidden fixed inset-0 z-[199] bg-primary-deep/40 backdrop-blur-sm transition-opacity duration-300",
           menuOpen ? "opacity-100" : "opacity-0 pointer-events-none"
         )}
         onClick={closeMenu}
@@ -177,7 +177,7 @@ export function SiteNavbar({
         aria-modal="true"
         aria-label="Menu navigasi"
       >
-        <div className="flex items-center justify-between px-5 py-4 border-b border-[#e5e7eb]">
+        <div className="flex items-center justify-between px-5 py-4 border-b border-border">
           <span className="flex items-center gap-2">
             <img
               src="/solario-icon.png"
@@ -186,14 +186,14 @@ export function SiteNavbar({
               className="w-10 h-10 object-contain -ml-1"
             />
             <span className="font-bold text-ink tracking-tight">
-              Solario<span className="text-[#16a34a]">.id</span>
+              Solario<span className="text-accent-deep">.id</span>
             </span>
           </span>
           <button
             type="button"
             aria-label="Tutup menu"
             onClick={closeMenu}
-            className="w-[44px] h-[44px] inline-flex items-center justify-center rounded-full bg-surface border border-[#e5e7eb] text-ink hover:bg-[#f0fdf4] transition-colors"
+            className="w-[44px] h-[44px] inline-flex items-center justify-center rounded-full bg-surface border border-border text-ink hover:bg-accent-soft transition-colors"
           >
             <X className="w-5 h-5" />
           </button>
@@ -212,11 +212,11 @@ export function SiteNavbar({
           ))}
         </nav>
 
-        <div className="px-5 pt-4 pb-6 border-t border-[#e5e7eb] flex flex-col items-center gap-2">
+        <div className="px-5 pt-4 pb-6 border-t border-border flex flex-col items-center gap-2">
           <Link
             href={ctaHref}
             onClick={closeMenu}
-            className="w-full inline-flex items-center justify-center gap-1.5 h-12 px-6 rounded-full bg-[#22c55e] text-white font-semibold shadow-[0_10px_22px_-8px_rgba(34,197,94,0.55)] hover:bg-[#16a34a] transition-colors"
+            className="w-full inline-flex items-center justify-center gap-1.5 h-12 px-6 rounded-full bg-accent text-white font-semibold shadow-[0_10px_22px_-8px_rgba(34,197,94,0.55)] hover:bg-accent-deep transition-colors"
           >
             {ctaLabel} <span aria-hidden>→</span>
           </Link>
@@ -242,14 +242,14 @@ function DrawerLink({
   onAnchorClick: (e: React.MouseEvent, href: string) => void;
 }) {
   const className = cn(
-    "flex items-center gap-3.5 px-4 min-h-[48px] rounded-xl text-ink hover:bg-[#f0fdf4] hover:text-[#0d3b2e] font-medium text-base transition-colors group",
+    "flex items-center gap-3.5 px-4 min-h-[48px] rounded-xl text-ink hover:bg-accent-soft hover:text-primary font-medium text-base transition-colors group",
     open
       ? "animate-[drawerItemIn_0.5s_cubic-bezier(0.16,1,0.3,1)_forwards] opacity-0 -translate-x-3"
       : "opacity-100 translate-x-0"
   );
   const inner = (
     <>
-      <span className="text-subtext group-hover:text-[#16a34a] transition-colors">
+      <span className="text-subtext group-hover:text-accent-deep transition-colors">
         {link.icon}
       </span>
       {link.label}
@@ -282,7 +282,7 @@ function DrawerLink({
 // ── Footer (kept here since it's tightly coupled to navbar branding) ──
 export function Footer() {
   return (
-    <footer className="border-t border-[#e5e7eb] bg-surface mt-16">
+    <footer className="border-t border-border bg-surface mt-16">
       <div className="mx-auto max-w-6xl px-4 sm:px-6 py-12 sm:py-14">
         <div className="grid grid-cols-2 sm:grid-cols-4 gap-8 sm:gap-10">
           <div className="col-span-2 sm:col-span-1">
@@ -294,7 +294,7 @@ export function Footer() {
                 className="w-10 h-10 object-contain -ml-1"
               />
               <span className="font-bold text-ink tracking-tight">
-                Solario<span className="text-[#16a34a]">.id</span>
+                Solario<span className="text-accent-deep">.id</span>
               </span>
             </Link>
             <p className="mt-3 text-sm text-subtext leading-relaxed max-w-xs">
@@ -332,7 +332,7 @@ export function Footer() {
           />
         </div>
 
-        <div className="mt-10 pt-6 border-t border-[#e5e7eb] flex flex-col sm:flex-row gap-2 sm:gap-4 justify-between text-xs text-subtext">
+        <div className="mt-10 pt-6 border-t border-border flex flex-col sm:flex-row gap-2 sm:gap-4 justify-between text-xs text-subtext">
           <span>© {new Date().getFullYear()} Solario.id · Jakarta, Indonesia</span>
           <span>Tarif PLN 2024 · PSH NASA POWER</span>
         </div>
@@ -348,23 +348,38 @@ function FooterColumn({
   title: string;
   links: Array<{ label: string; href: string }>;
 }) {
+  const linkClass =
+    "text-sm text-ink hover:text-accent-deep transition-colors";
+  // Placeholder href ("#") means the page doesn't exist yet — render as a
+  // muted disabled label with a "(soon)" hint rather than a broken link
+  // that scrolls the page to top.
+  const disabledClass = "text-sm text-subtext/70 cursor-not-allowed select-none";
   return (
     <div>
-      <h4 className="text-[11px] font-bold uppercase tracking-[0.1em] text-subtext mb-4">
+      <h4 className="text-xs font-bold uppercase tracking-[0.1em] text-subtext mb-4">
         {title}
       </h4>
       <ul className="space-y-2.5">
         {links.map((l) => {
+          const isPlaceholder = l.href === "#";
           const isExternal =
             l.href.startsWith("mailto:") ||
             l.href.startsWith("tel:") ||
-            l.href.startsWith("http") ||
-            l.href === "#";
-          const linkClass =
-            "text-sm text-ink hover:text-[#16a34a] transition-colors";
+            l.href.startsWith("http");
           return (
             <li key={l.label}>
-              {isExternal ? (
+              {isPlaceholder ? (
+                <span
+                  className={disabledClass}
+                  aria-disabled="true"
+                  title="Segera hadir"
+                >
+                  {l.label}{" "}
+                  <span className="text-[10px] uppercase tracking-wide text-subtext/60">
+                    (soon)
+                  </span>
+                </span>
+              ) : isExternal ? (
                 <a href={l.href} className={linkClass}>
                   {l.label}
                 </a>

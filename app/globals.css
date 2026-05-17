@@ -96,17 +96,19 @@ body {
 .solario-landing {
   --sl-bg: #ffffff;
   --sl-bg-soft: #f8faf8;
-  --sl-primary: #0a3d2e;
+  --sl-primary: #0d3b2e;
   --sl-primary-deep: #07291f;
   --sl-accent: #22c55e;
+  --sl-accent-deep: #16a34a;
   --sl-accent-soft: #f0fdf4;
   --sl-accent-border: #bbf7d0;
+  --sl-accent-text: #166534;
   --sl-ink: #0f172a;
   --sl-ink-2: #1e293b;
   --sl-muted: #64748b;
   --sl-line: #e2e8f0;
   --sl-line-soft: #eef2ef;
-  --sl-gradient: linear-gradient(110deg, #22c55e 0%, #0a3d2e 100%);
+  --sl-gradient: linear-gradient(110deg, #22c55e 0%, #0d3b2e 100%);
   --sl-ease: cubic-bezier(0.16, 1, 0.3, 1);
   --sl-ease-soft: cubic-bezier(0.22, 0.61, 0.36, 1);
   --sl-shadow-sm: 0 1px 2px rgba(15, 23, 42, .04);

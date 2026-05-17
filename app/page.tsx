@@ -5,21 +5,7 @@ import Link from "next/link";
 import { useRouter } from "next/navigation";
 import { Calculator as CalculatorIcon, Home as HomeIcon, Wrench } from "lucide-react";
 import { SiteNavbar } from "@/components/SiteNavbar";
-
-// Marketing-floor fallbacks shown until /api/stats responds.
-// Match lib/stats.ts FALLBACK_STATS so server & client align.
-type SiteStats = {
-  totalKalkulasi: number;
-  avgHematPerBulanJt: number;
-  activeInstallers: number;
-  ratingKepuasan: number;
-};
-const FALLBACK_STATS: SiteStats = {
-  totalKalkulasi: 2400,
-  avgHematPerBulanJt: 1.2,
-  activeInstallers: 18,
-  ratingKepuasan: 4.8,
-};
+import { FALLBACK_STATS, type SiteStats } from "@/lib/stats-constants";
 
 const TESTIMONIALS = [
   {

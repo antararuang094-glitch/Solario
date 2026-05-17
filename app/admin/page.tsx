@@ -57,14 +57,14 @@ export default function AdminLoginPage() {
             className="w-16 h-16 object-contain"
           />
           <h1 className="mt-3 text-2xl font-semibold text-ink">
-            Solario<span className="text-[#16a34a]">.id</span> Admin
+            Solario<span className="text-accent-deep">.id</span> Admin
           </h1>
           <p className="mt-1 text-sm text-subtext">Login untuk mengelola leads dan installer</p>
         </div>
 
         <form
           onSubmit={handleSubmit(onSubmit)}
-          className="rounded-xl border border-[#e5e7eb] bg-white p-6 shadow-sm space-y-4"
+          className="rounded-xl border border-border bg-white p-6 shadow-sm space-y-4"
         >
           <div>
             <Label htmlFor="username">Username</Label>

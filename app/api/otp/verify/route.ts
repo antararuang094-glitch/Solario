@@ -19,14 +19,21 @@ export async function POST(req: NextRequest) {
   }
 
   const telepon = normalizeTelepon(parsed.data.telepon);
-  const result = await verifyOtp(telepon, parsed.data.otp);
 
-  if (!result.verified) {
+  try {
+    const result = await verifyOtp(telepon, parsed.data.otp);
+    if (!result.verified) {
+      return NextResponse.json(
+        { verified: false, error: result.error ?? "OTP salah" },
+        { status: 400 }
+      );
+    }
+    return NextResponse.json({ verified: true });
+  } catch (err) {
+    console.error("[POST /api/otp/verify]", err);
     return NextResponse.json(
-      { verified: false, error: result.error ?? "OTP salah" },
-      { status: 400 }
+      { verified: false, error: "Gagal memverifikasi OTP" },
+      { status: 500 }
     );
   }
-
-  return NextResponse.json({ verified: true });
 }

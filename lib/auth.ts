@@ -39,11 +39,20 @@ async function sign(payload: string): Promise<string> {
     .join("");
 }
 
+/**
+ * Constant-time string comparison. Note: when lengths differ we still
+ * iterate over the longer string to avoid leaking length information via
+ * timing. Returns false for any length mismatch.
+ */
 function timingSafeEqualStr(a: string, b: string): boolean {
-  if (a.length !== b.length) return false;
-  let result = 0;
-  for (let i = 0; i < a.length; i++) {
-    result |= a.charCodeAt(i) ^ b.charCodeAt(i);
+  const max = Math.max(a.length, b.length);
+  let result = a.length ^ b.length;
+  for (let i = 0; i < max; i++) {
+    // XOR each char code; for indices past a string's end use 0 so the
+    // loop body cost stays constant regardless of which string is longer.
+    const ca = i < a.length ? a.charCodeAt(i) : 0;
+    const cb = i < b.length ? b.charCodeAt(i) : 0;
+    result |= ca ^ cb;
   }
   return result === 0;
 }

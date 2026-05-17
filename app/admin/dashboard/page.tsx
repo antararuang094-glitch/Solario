@@ -11,9 +11,12 @@ export default async function AdminDashboardPage() {
     redirect("/admin");
   }
 
+  // Cap initial SSR payload at the 200 most recent of each entity.
+  // The admin UI fetches more via /api/admin/* with proper pagination,
+  // but the first page should never balloon when the tables grow.
   const [leads, installers] = await Promise.all([
-    prisma.lead.findMany({ orderBy: { createdAt: "desc" } }),
-    prisma.installer.findMany({ orderBy: { createdAt: "desc" } }),
+    prisma.lead.findMany({ orderBy: { createdAt: "desc" }, take: 200 }),
+    prisma.installer.findMany({ orderBy: { createdAt: "desc" }, take: 200 }),
   ]);
 
   const serializableLeads = leads.map((l) => ({

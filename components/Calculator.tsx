@@ -7,6 +7,7 @@ import {
   GOLONGAN_OPTIONS,
   KOTA_OPTIONS,
   hitungSolar,
+  buatProyeksi25Tahun,
   type KalkulatorOutput,
 } from "@/lib/solar-calc";
 import { kalkulatorSchema } from "@/lib/validations";
@@ -16,6 +17,8 @@ import { Label, FieldError } from "@/components/ui/label";
 import { Select } from "@/components/ui/select";
 import { formatRupiah, formatRupiahShort, parseRupiahInput } from "@/lib/utils";
 import { LeadForm } from "@/components/LeadForm";
+import { useToast } from "@/components/ui/toast";
+import { useCountUp } from "@/lib/hooks/useCountUp";
 import {
   ArrowRight,
   Building2,
@@ -46,36 +49,14 @@ import {
 const TENOR_OPTIONS = [12, 24, 36, 48, 60] as const;
 type Tenor = (typeof TENOR_OPTIONS)[number];
 const BUNGA_FLAT_PER_BULAN = 0.008; // 0.8% flat
-const KENAIKAN_TARIF_PLN = 0.05; // 5% per tahun
-const DEGRADASI_PANEL = 0.005; // 0.5% per tahun
+// PLN tariff escalation and panel degradation now live in lib/solar-calc.ts
+// as KENAIKAN_TARIF_PLN / DEGRADASI_PANEL so the hero card total
+// (`penghematanTotal25Tahun`) and the chart projection share one formula.
 const CALCULATING_DURATION_MS = 1500; // total loading state duration
 const COUNTUP_DURATION_MS = 1300; // count-up animation duration
 
-// ── Count-up hook (easeOutCubic) — animates from 0 to target ──
-function useCountUp(target: number, duration = COUNTUP_DURATION_MS, decimals = 0) {
-  const [val, setVal] = React.useState(0);
-  React.useEffect(() => {
-    if (typeof window === "undefined") return;
-    setVal(0);
-    const reduced = window.matchMedia("(prefers-reduced-motion: reduce)").matches;
-    if (reduced) {
-      setVal(target);
-      return;
-    }
-    let raf = 0;
-    const start = performance.now();
-    const factor = Math.pow(10, decimals);
-    const step = (now: number) => {
-      const p = Math.min(1, (now - start) / duration);
-      const eased = 1 - Math.pow(1 - p, 3); // easeOutCubic
-      setVal(Math.round(target * eased * factor) / factor);
-      if (p < 1) raf = requestAnimationFrame(step);
-    };
-    raf = requestAnimationFrame(step);
-    return () => cancelAnimationFrame(raf);
-  }, [target, duration, decimals]);
-  return val;
-}
+// useCountUp lives in lib/hooks/useCountUp.ts so both the calculator and
+// the landing page can share the same easeOutCubic animation.
 
 type FormData = {
   tagihanBulanan: number;
@@ -101,6 +82,17 @@ export function Calculator() {
   const [pdfLoading, setPdfLoading] = React.useState(false);
   const resultsRef = React.useRef<HTMLDivElement>(null);
   const leadFormRef = React.useRef<HTMLDivElement>(null);
+  const { toast } = useToast();
+
+  // Track in-flight submit timers so we can clear them on unmount and avoid
+  // "Can't perform a state update on an unmounted component" warnings.
+  const submitTimersRef = React.useRef<number[]>([]);
+  React.useEffect(() => {
+    return () => {
+      submitTimersRef.current.forEach((id) => window.clearTimeout(id));
+      submitTimersRef.current = [];
+    };
+  }, []);
 
   // ── Animated values for result hero card ──
   const hematAnimated = useCountUp(hasil?.hematPerBulan ?? 0);
@@ -111,27 +103,14 @@ export function Calculator() {
     hasil ? Math.round((hasil.biayaInstalasiMin + hasil.biayaInstalasiMax) / 2) : 0
   );
 
-  // ── Proyeksi 25 tahun dengan kenaikan tarif PLN 5%/tahun + degradasi panel 0.5%/tahun ──
+  // ── Proyeksi 25 tahun (sourced from lib/solar-calc.ts to avoid drift with
+  //    `hasil.penghematanTotal25Tahun`, which uses the same formula) ──
   const projeksi25 = React.useMemo(() => {
     if (!hasil) return [];
     const biayaInstalasi = Math.round(
       (hasil.biayaInstalasiMin + hasil.biayaInstalasiMax) / 2
     );
-    const data: Array<{ tahun: number; hemat: number; biaya: number }> = [];
-    let kumulatif = 0;
-    for (let year = 0; year <= 25; year++) {
-      if (year > 0) {
-        const tariffMul = Math.pow(1 + KENAIKAN_TARIF_PLN, year - 1);
-        const degMul = Math.pow(1 - DEGRADASI_PANEL, year - 1);
-        kumulatif += hasil.hematPerTahun * tariffMul * degMul;
-      }
-      data.push({
-        tahun: year,
-        hemat: Math.round(kumulatif),
-        biaya: biayaInstalasi,
-      });
-    }
-    return data;
+    return buatProyeksi25Tahun(hasil.hematPerTahun, biayaInstalasi);
   }, [hasil]);
 
   // ── BEP year (linear interpolation between data points) ──
@@ -214,25 +193,35 @@ export function Calculator() {
 
     setInputState(data);
 
+    const trackTimer = (id: number) => {
+      submitTimersRef.current.push(id);
+    };
+
     if (reduced) {
       setHasil(out);
       setCalculating(false);
-      setTimeout(() => {
-        resultsRef.current?.scrollIntoView({ behavior: "smooth", block: "start" });
-      }, 50);
+      trackTimer(
+        window.setTimeout(() => {
+          resultsRef.current?.scrollIntoView({ behavior: "smooth", block: "start" });
+        }, 50)
+      );
       return;
     }
 
     // Show calculating state, scroll into view, then reveal result after delay
     setHasil(null);
     setCalculating(true);
-    setTimeout(() => {
-      resultsRef.current?.scrollIntoView({ behavior: "smooth", block: "start" });
-    }, 80);
-    setTimeout(() => {
-      setHasil(out);
-      setCalculating(false);
-    }, CALCULATING_DURATION_MS);
+    trackTimer(
+      window.setTimeout(() => {
+        resultsRef.current?.scrollIntoView({ behavior: "smooth", block: "start" });
+      }, 80)
+    );
+    trackTimer(
+      window.setTimeout(() => {
+        setHasil(out);
+        setCalculating(false);
+      }, CALCULATING_DURATION_MS)
+    );
   };
 
   const handleTagihanChange = (e: React.ChangeEvent<HTMLInputElement>) => {
@@ -491,7 +480,7 @@ export function Calculator() {
       doc.save(`solario-laporan-${kotaSlug}-${ts}.pdf`);
     } catch (err) {
       console.error("[PDF generation]", err);
-      alert("Gagal membuat PDF. Silakan coba lagi.");
+      toast("Gagal membuat PDF. Silakan coba lagi.", "error");
     } finally {
       setPdfLoading(false);
     }
@@ -502,7 +491,7 @@ export function Calculator() {
       {/* ── Form Card ── */}
       <form
         onSubmit={handleSubmit(onSubmit)}
-        className="rounded-2xl border border-[#e5e7eb] bg-white shadow-sm p-6 sm:p-8 space-y-6"
+        className="rounded-2xl border border-border bg-white shadow-sm p-6 sm:p-8 space-y-6"
       >
         <div>
           <Label htmlFor="tagihanBulanan">Tagihan listrik rata-rata per bulan</Label>
@@ -569,8 +558,8 @@ export function Calculator() {
                   className={
                     "flex items-center gap-2.5 h-12 px-4 rounded-xl border cursor-pointer text-sm font-medium transition-colors " +
                     (isActive
-                      ? "bg-[#f0fdf4] border-[#16a34a] text-[#0a3d2e]"
-                      : "border-[#e5e7eb] text-ink hover:bg-surface")
+                      ? "bg-accent-soft border-accent-deep text-primary"
+                      : "border-border text-ink hover:bg-surface")
                   }
                 >
                   <input
@@ -579,7 +568,7 @@ export function Calculator() {
                     {...register("tipeProperti")}
                     className="sr-only"
                   />
-                  <Icon className={"w-4 h-4 " + (isActive ? "text-[#16a34a]" : "text-subtext")} />
+                  <Icon className={"w-4 h-4 " + (isActive ? "text-accent-deep" : "text-subtext")} />
                   <span>{t.value}</span>
                 </label>
               );
@@ -587,7 +576,7 @@ export function Calculator() {
           </div>
         </div>
 
-        <div className="flex flex-col sm:flex-row items-start sm:items-center justify-between gap-4 pt-2 border-t border-[#e5e7eb]/60">
+        <div className="flex flex-col sm:flex-row items-start sm:items-center justify-between gap-4 pt-2 border-t border-border/60">
           <p className="inline-flex items-center gap-1.5 text-xs text-subtext">
             <Lock className="w-3.5 h-3.5" />
             Data tidak dijual, tidak ada email spam.
@@ -596,7 +585,7 @@ export function Calculator() {
             type="submit"
             size="lg"
             loading={isSubmitting}
-            className="bg-[#0a3d2e] hover:bg-[#07291f] h-12 px-7 text-[15px]"
+            className="bg-primary hover:bg-primary-deep h-12 px-7 text-[15px]"
           >
             Hitung Sekarang
             <ArrowRight className="w-4 h-4" />
@@ -617,7 +606,7 @@ export function Calculator() {
       {hasil && inputState && !calculating ? (
         <div ref={resultsRef} className="space-y-6 scroll-mt-20">
           {/* HUGE dark green hero result card */}
-          <div className="relative overflow-hidden rounded-2xl bg-[#0a3d2e] text-white p-7 sm:p-10 shadow-[0_30px_80px_-32px_rgba(10,61,46,0.45)]">
+          <div className="relative overflow-hidden rounded-2xl bg-primary text-white p-7 sm:p-10 shadow-[0_30px_80px_-32px_rgba(10,61,46,0.45)]">
             <div
               className="absolute top-0 right-0 w-[420px] h-[420px] -translate-y-1/4 translate-x-1/4 rounded-full opacity-60 pointer-events-none"
               style={{
@@ -673,9 +662,9 @@ export function Calculator() {
 
           {/* ── FITUR 1: Financing Calculator (Cash / Cicil) ── */}
           {financing ? (
-            <div className="rounded-2xl border border-[#e5e7eb] bg-white p-6 sm:p-8 shadow-sm">
+            <div className="rounded-2xl border border-border bg-white p-6 sm:p-8 shadow-sm">
               <div className="flex items-start gap-3">
-                <div className="w-10 h-10 rounded-xl bg-[#f0fdf4] text-[#0a3d2e] flex items-center justify-center shrink-0">
+                <div className="w-10 h-10 rounded-xl bg-accent-soft text-primary flex items-center justify-center shrink-0">
                   <Wallet className="w-5 h-5" />
                 </div>
                 <div>
@@ -696,7 +685,7 @@ export function Calculator() {
                   className={
                     "py-3 px-4 rounded-lg font-semibold text-sm transition-all inline-flex items-center justify-center gap-2 " +
                     (paymentMode === "cash"
-                      ? "bg-white text-[#0a3d2e] shadow-sm"
+                      ? "bg-white text-primary shadow-sm"
                       : "text-subtext hover:text-ink")
                   }
                 >
@@ -709,7 +698,7 @@ export function Calculator() {
                   className={
                     "py-3 px-4 rounded-lg font-semibold text-sm transition-all inline-flex items-center justify-center gap-2 " +
                     (paymentMode === "cicil"
-                      ? "bg-white text-[#0a3d2e] shadow-sm"
+                      ? "bg-white text-primary shadow-sm"
                       : "text-subtext hover:text-ink")
                   }
                 >
@@ -720,14 +709,14 @@ export function Calculator() {
 
               {/* Cash mode */}
               {financing.mode === "cash" ? (
-                <div className="mt-6 rounded-xl bg-[#f0fdf4] border border-[#bbf7d0] p-5 sm:p-6">
-                  <p className="text-[11px] font-bold uppercase tracking-wider text-[#166534]">
+                <div className="mt-6 rounded-xl bg-accent-soft border border-accent-border p-5 sm:p-6">
+                  <p className="text-[11px] font-bold uppercase tracking-wider text-accent-text">
                     Total Investasi
                   </p>
-                  <p className="mt-2 text-3xl sm:text-4xl font-bold text-[#0a3d2e] tracking-tight tabular-nums">
+                  <p className="mt-2 text-3xl sm:text-4xl font-bold text-primary tracking-tight tabular-nums">
                     {formatRupiah(financing.biayaTotal)}
                   </p>
-                  <p className="mt-3 text-sm text-[#166534]/85 leading-relaxed">
+                  <p className="mt-3 text-sm text-accent-text/85 leading-relaxed">
                     Bayar sekali di muka → langsung hemat penuh{" "}
                     <b>{formatRupiah(hasil.hematPerBulan)}/bulan</b> dari bulan pertama. Balik modal dalam <b>{bepYear ?? hasil.paybackPeriodTahun} tahun</b>, sisanya pure profit.
                   </p>
@@ -738,7 +727,7 @@ export function Calculator() {
                   <div>
                     <div className="flex items-baseline justify-between mb-2">
                       <Label className="!mb-0">Uang muka (DP)</Label>
-                      <span className="text-sm font-bold text-[#0a3d2e] tabular-nums">
+                      <span className="text-sm font-bold text-primary tabular-nums">
                         {dpPercent}% · {formatRupiahShort(financing.dp)}
                       </span>
                     </div>
@@ -749,7 +738,7 @@ export function Calculator() {
                       step={5}
                       value={dpPercent}
                       onChange={(e) => setDpPercent(Number(e.target.value))}
-                      className="w-full h-2 rounded-lg appearance-none bg-[#e5e7eb] accent-[#0a3d2e] cursor-pointer"
+                      className="w-full h-2 rounded-full appearance-none bg-border accent-primary cursor-pointer"
                     />
                     <div className="flex justify-between text-[10px] text-subtext mt-1.5 font-medium">
                       <span>10%</span>
@@ -772,8 +761,8 @@ export function Calculator() {
                           className={
                             "py-2.5 rounded-lg text-sm font-semibold transition-colors " +
                             (tenor === t
-                              ? "bg-[#0a3d2e] text-white"
-                              : "bg-surface border border-[#e5e7eb] text-ink hover:border-[#0a3d2e]")
+                              ? "bg-primary text-white"
+                              : "bg-surface border border-border text-ink hover:border-primary")
                           }
                         >
                           {t} bln
@@ -786,7 +775,7 @@ export function Calculator() {
                   </div>
 
                   {/* Cicil result card */}
-                  <div className="relative overflow-hidden rounded-xl bg-[#0a3d2e] text-white p-5 sm:p-6">
+                  <div className="relative overflow-hidden rounded-xl bg-primary text-white p-5 sm:p-6">
                     <div
                       className="absolute top-0 right-0 w-48 h-48 -translate-y-1/3 translate-x-1/3 rounded-full opacity-50 pointer-events-none"
                       style={{
@@ -827,7 +816,7 @@ export function Calculator() {
                     className={
                       "rounded-xl p-4 sm:p-5 border-2 " +
                       (financing.cashFlowMonthly >= 0
-                        ? "bg-[#f0fdf4] border-[#16a34a]/30"
+                        ? "bg-accent-soft border-accent-deep/30"
                         : "bg-amber-50 border-amber-200")
                     }
                   >
@@ -836,7 +825,7 @@ export function Calculator() {
                         className={
                           "w-9 h-9 rounded-full flex items-center justify-center shrink-0 " +
                           (financing.cashFlowMonthly >= 0
-                            ? "bg-[#16a34a] text-white"
+                            ? "bg-accent-deep text-white"
                             : "bg-amber-500 text-white")
                         }
                       >
@@ -851,7 +840,7 @@ export function Calculator() {
                           className={
                             "text-sm sm:text-base font-bold " +
                             (financing.cashFlowMonthly >= 0
-                              ? "text-[#166534]"
+                              ? "text-accent-text"
                               : "text-amber-800")
                           }
                         >
@@ -866,7 +855,7 @@ export function Calculator() {
                           <b
                             className={
                               financing.cashFlowMonthly >= 0
-                                ? "text-[#166534]"
+                                ? "text-accent-text"
                                 : "text-amber-800"
                             }
                           >
@@ -884,16 +873,16 @@ export function Calculator() {
 
           {/* ── FITUR 2: Side-by-side: Interactive Projection Chart + Detail breakdown ── */}
           <div className="grid lg:grid-cols-2 gap-5">
-            <div className="rounded-2xl border border-[#e5e7eb] bg-white p-6 sm:p-7 shadow-sm">
+            <div className="rounded-2xl border border-border bg-white p-6 sm:p-7 shadow-sm">
               <div className="flex items-start justify-between gap-3">
                 <div>
                   <h3 className="text-lg font-bold text-ink">Proyeksi 25 tahun</h3>
                   <p className="mt-1 text-xs text-subtext leading-relaxed">
                     <span className="inline-flex items-center gap-1">
-                      <span className="inline-block w-2 h-2 rounded-full bg-[#16a34a]" />
+                      <span className="inline-block w-2 h-2 rounded-full bg-accent-deep" />
                       <span>Akumulasi hemat (tarif PLN +5%/tahun)</span>
                     </span>
-                    <span className="mx-2 text-[#e2e8f0]">·</span>
+                    <span className="mx-2 text-border">·</span>
                     <span className="inline-flex items-center gap-1">
                       <span className="inline-block w-2 h-2 rounded-full bg-red-500" />
                       <span>Biaya instalasi</span>
@@ -940,10 +929,10 @@ export function Calculator() {
                         const sisa = Math.max(0, d.biaya - d.hemat);
                         const surplus = Math.max(0, d.hemat - d.biaya);
                         return (
-                          <div className="rounded-xl bg-white border border-[#e2e8f0] shadow-lg p-3 text-xs">
+                          <div className="rounded-xl bg-white border border-border shadow-lg p-3 text-xs">
                             <p className="font-bold text-ink">Tahun ke-{d.tahun}</p>
                             <div className="mt-2 space-y-1">
-                              <p className="text-[#16a34a]">
+                              <p className="text-accent-deep">
                                 Total hemat: <b className="tabular-nums">{formatRupiahShort(d.hemat)}</b>
                               </p>
                               {sisa > 0 ? (
@@ -951,7 +940,7 @@ export function Calculator() {
                                   Sisa investasi: <b className="tabular-nums text-ink">{formatRupiahShort(sisa)}</b>
                                 </p>
                               ) : (
-                                <p className="text-[#166534]">
+                                <p className="text-accent-text">
                                   Surplus: <b className="tabular-nums">{formatRupiahShort(surplus)}</b>
                                 </p>
                               )}
@@ -1008,16 +997,16 @@ export function Calculator() {
                 </ResponsiveContainer>
               </div>
               {bepYear !== null && finalProfit > 0 ? (
-                <div className="mt-4 rounded-xl bg-[#f0fdf4] border border-[#bbf7d0] p-3.5">
-                  <p className="text-sm text-[#166534] leading-relaxed">
+                <div className="mt-4 rounded-xl bg-accent-soft border border-accent-border p-3.5">
+                  <p className="text-sm text-accent-text leading-relaxed">
                     <span className="font-semibold">Di tahun ke-{bepYear}</span>, kamu sudah balik modal dan lanjut hemat{" "}
-                    <b className="text-[#0a3d2e]">{formatRupiahShort(finalProfit)}</b> hingga tahun ke-25.
+                    <b className="text-primary">{formatRupiahShort(finalProfit)}</b> hingga tahun ke-25.
                   </p>
                 </div>
               ) : null}
             </div>
 
-            <div className="rounded-2xl border border-[#e5e7eb] bg-white p-6 sm:p-7 shadow-sm">
+            <div className="rounded-2xl border border-border bg-white p-6 sm:p-7 shadow-sm">
               <h3 className="text-lg font-bold text-ink">Detail perhitungan</h3>
               <dl className="mt-5 space-y-4">
                 <DetailRow
@@ -1036,7 +1025,7 @@ export function Calculator() {
                 <DetailRow
                   label={
                     <span className="inline-flex items-center gap-1.5">
-                      <Leaf className="w-3.5 h-3.5 text-[#16a34a]" />
+                      <Leaf className="w-3.5 h-3.5 text-accent-deep" />
                       CO₂ dikurangi
                     </span>
                   }
@@ -1047,10 +1036,10 @@ export function Calculator() {
           </div>
 
           {/* ── FITUR 3: Download PDF Report ── */}
-          <div className="rounded-2xl border border-[#e5e7eb] bg-gradient-to-br from-white to-[#f0fdf4]/60 p-5 sm:p-6">
+          <div className="rounded-2xl border border-border bg-gradient-to-br from-white to-accent-soft/60 p-5 sm:p-6">
             <div className="flex flex-col sm:flex-row items-start sm:items-center justify-between gap-4">
               <div className="flex items-start gap-3">
-                <div className="w-10 h-10 rounded-xl bg-[#0a3d2e] text-white flex items-center justify-center shrink-0">
+                <div className="w-10 h-10 rounded-xl bg-primary text-white flex items-center justify-center shrink-0">
                   <Download className="w-5 h-5" />
                 </div>
                 <div>
@@ -1065,7 +1054,7 @@ export function Calculator() {
                 onClick={handleDownloadPDF}
                 loading={pdfLoading}
                 variant="secondary"
-                className="shrink-0 border-[#0a3d2e] text-[#0a3d2e] hover:bg-[#0a3d2e] hover:text-white whitespace-nowrap"
+                className="shrink-0 border-primary text-primary hover:bg-primary hover:text-white whitespace-nowrap"
               >
                 <Download className="w-4 h-4" />
                 Unduh PDF
@@ -1074,7 +1063,7 @@ export function Calculator() {
           </div>
 
           {/* Lead CTA card */}
-          <div className="rounded-2xl border border-[#e5e7eb] bg-surface/60 p-6 sm:p-7">
+          <div className="rounded-2xl border border-border bg-surface/60 p-6 sm:p-7">
             <div className="flex flex-col sm:flex-row gap-4 items-start sm:items-center justify-between">
               <div>
                 <h3 className="text-lg sm:text-xl font-bold text-ink">
@@ -1087,7 +1076,7 @@ export function Calculator() {
               <Button
                 type="button"
                 onClick={scrollToLead}
-                className="bg-[#0a3d2e] hover:bg-[#07291f] h-11 px-6 shrink-0"
+                className="bg-primary hover:bg-primary-deep h-11 px-6 shrink-0"
               >
                 Hubungkan saya
                 <ArrowRight className="w-4 h-4" />
@@ -1098,7 +1087,7 @@ export function Calculator() {
           {/* Lead form section */}
           <div
             ref={leadFormRef}
-            className="rounded-2xl border border-[#16a34a]/25 bg-[#f0fdf4]/40 p-6 sm:p-8 scroll-mt-20"
+            className="rounded-2xl border border-accent-deep/25 bg-accent-soft/40 p-6 sm:p-8 scroll-mt-20"
           >
             <h3 className="text-xl font-bold text-ink">Form Pendaftaran</h3>
             <p className="mt-1 text-sm text-subtext mb-5">
@@ -1160,12 +1149,12 @@ function DetailRow({
   emphasis?: boolean;
 }) {
   return (
-    <div className="flex items-baseline justify-between gap-3 pb-3 border-b border-dashed border-[#e5e7eb] last:border-0 last:pb-0">
+    <div className="flex items-baseline justify-between gap-3 pb-3 border-b border-dashed border-border last:border-0 last:pb-0">
       <dt className="text-sm text-subtext">{label}</dt>
       <dd
         className={
           "text-sm font-bold tabular-nums " +
-          (emphasis ? "text-[#0a3d2e] text-base" : "text-ink")
+          (emphasis ? "text-primary text-base" : "text-ink")
         }
       >
         {value}
@@ -1205,7 +1194,7 @@ function CalculatingCard({ kota }: { kota: string }) {
   const progress = ((step + 1) / messages.length) * 100;
 
   return (
-    <div className="relative overflow-hidden rounded-2xl bg-[#0a3d2e] text-white p-7 sm:p-10 shadow-[0_30px_80px_-32px_rgba(10,61,46,0.45)]">
+    <div className="relative overflow-hidden rounded-2xl bg-primary text-white p-7 sm:p-10 shadow-[0_30px_80px_-32px_rgba(10,61,46,0.45)]">
       <div
         className="absolute top-0 right-0 w-[420px] h-[420px] -translate-y-1/4 translate-x-1/4 rounded-full opacity-60 pointer-events-none animate-pulse"
         style={{
@@ -1237,7 +1226,7 @@ function CalculatingCard({ kota }: { kota: string }) {
         {/* Progress bar */}
         <div className="mt-7 h-1.5 bg-white/10 rounded-full overflow-hidden">
           <div
-            className="h-full bg-[#22c55e] rounded-full transition-all duration-300 ease-out"
+            className="h-full bg-accent rounded-full transition-all duration-300 ease-out"
             style={{ width: `${progress}%` }}
           />
         </div>

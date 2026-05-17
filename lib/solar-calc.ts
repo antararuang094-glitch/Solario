@@ -70,6 +70,14 @@ const BIAYA_PER_KWP_MAX = 15_000_000;
 const PERFORMANCE_RATIO = 0.8;
 const CO2_PER_KWH = 0.709;
 
+// ── 25-year projection assumptions (single source of truth) ──
+// PLN tariff has historically risen ~5%/year. Solar panels degrade ~0.5%/year.
+// These constants drive both `penghematanTotal25Tahun` and `buatProyeksi25Tahun`
+// so the totals on the hero card and on the projection chart never disagree.
+export const KENAIKAN_TARIF_PLN = 0.05;
+export const DEGRADASI_PANEL = 0.005;
+export const PROYEKSI_TAHUN = 25;
+
 export function hitungSolar(input: KalkulatorInput): KalkulatorOutput {
   const tarif = TARIF_PLN[input.golonganListrik] ?? 1444;
   const psh = PSH_KOTA[input.kota] ?? PSH_KOTA["default"];
@@ -91,9 +99,13 @@ export function hitungSolar(input: KalkulatorInput): KalkulatorOutput {
 
   const payback = hematPerTahun > 0 ? biayaMid / hematPerTahun : 0;
 
+  // Sum yearly savings over PROYEKSI_TAHUN with tariff escalation (+5%)
+  // compounding panel degradation (-0.5%). Matches buatProyeksi25Tahun.
   let totalHemat = 0;
-  for (let i = 0; i < 25; i++) {
-    totalHemat += hematPerTahun * Math.pow(0.995, i);
+  for (let i = 0; i < PROYEKSI_TAHUN; i++) {
+    const tariffMul = Math.pow(1 + KENAIKAN_TARIF_PLN, i);
+    const degMul = Math.pow(1 - DEGRADASI_PANEL, i);
+    totalHemat += hematPerTahun * tariffMul * degMul;
   }
 
   const co2Hemat = Math.round(kwhDihemat * 12 * CO2_PER_KWH);
@@ -112,19 +124,30 @@ export function hitungSolar(input: KalkulatorInput): KalkulatorOutput {
   };
 }
 
+/**
+ * 25-year cumulative savings projection — single source of truth used by
+ * both the calculator UI chart and the hero card total. Models PLN tariff
+ * escalation (+5%/yr) compounded with panel degradation (-0.5%/yr).
+ *
+ * Returns an array with entry per year 0..25 inclusive, where `hemat` is
+ * the cumulative savings up to and including that year and `biaya` is the
+ * flat installation cost (constant across years for break-even visualization).
+ */
 export function buatProyeksi25Tahun(
   hematPerTahun: number,
   biayaInstalasi: number
-): Array<{ tahun: number; kumulatifHemat: number; biaya: number }> {
-  const data: Array<{ tahun: number; kumulatifHemat: number; biaya: number }> = [];
+): Array<{ tahun: number; hemat: number; biaya: number }> {
+  const data: Array<{ tahun: number; hemat: number; biaya: number }> = [];
   let kumulatif = 0;
-  for (let i = 0; i <= 25; i++) {
-    if (i > 0) {
-      kumulatif += hematPerTahun * Math.pow(0.995, i - 1);
+  for (let year = 0; year <= PROYEKSI_TAHUN; year++) {
+    if (year > 0) {
+      const tariffMul = Math.pow(1 + KENAIKAN_TARIF_PLN, year - 1);
+      const degMul = Math.pow(1 - DEGRADASI_PANEL, year - 1);
+      kumulatif += hematPerTahun * tariffMul * degMul;
     }
     data.push({
-      tahun: i,
-      kumulatifHemat: Math.round(kumulatif),
+      tahun: year,
+      hemat: Math.round(kumulatif),
       biaya: biayaInstalasi,
     });
   }

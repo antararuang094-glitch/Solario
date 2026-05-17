@@ -14,10 +14,10 @@ interface ButtonProps extends React.ButtonHTMLAttributes<HTMLButtonElement> {
 
 const variantClasses: Record<Variant, string> = {
   primary:
-    "bg-[#0d3b2e] text-white hover:bg-[#16a34a] disabled:bg-[#0d3b2e]/50 disabled:cursor-not-allowed",
+    "bg-primary text-white hover:bg-primary-deep disabled:bg-primary/50 disabled:cursor-not-allowed",
   secondary:
-    "border border-[#0d3b2e] text-[#0d3b2e] hover:bg-[#f0fdf4] bg-white",
-  ghost: "text-[#0d3b2e] hover:bg-[#f0fdf4] bg-transparent",
+    "border border-primary text-primary hover:bg-accent-soft bg-white",
+  ghost: "text-primary hover:bg-accent-soft bg-transparent",
   danger:
     "bg-red-600 text-white hover:bg-red-700 disabled:bg-red-600/50 disabled:cursor-not-allowed",
 };
@@ -35,7 +35,7 @@ export const Button = React.forwardRef<HTMLButtonElement, ButtonProps>(
         ref={ref}
         disabled={disabled || loading}
         className={cn(
-          "inline-flex items-center justify-center gap-2 rounded-xl font-medium transition-colors focus:outline-none focus:ring-2 focus:ring-[#16a34a]/30",
+          "inline-flex items-center justify-center gap-2 rounded-xl font-medium transition-colors focus:outline-none focus:ring-2 focus:ring-accent-deep/30",
           variantClasses[variant],
           sizeClasses[size],
           className

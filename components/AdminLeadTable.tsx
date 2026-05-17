@@ -4,27 +4,10 @@ import * as React from "react";
 import { Input, Textarea } from "@/components/ui/input";
 import { Select } from "@/components/ui/select";
 import { Button } from "@/components/ui/button";
-import { formatDate, formatRupiah, formatRupiahShort } from "@/lib/utils";
+import { formatDate, formatRupiah, formatRupiahShort, buildWaUrl } from "@/lib/utils";
 import { useToast } from "@/components/ui/toast";
 import { ChevronDown, ChevronUp, MessageCircle, Search } from "lucide-react";
-
-interface Lead {
-  id: number;
-  nama: string;
-  telepon: string;
-  teleponVerified: boolean;
-  email: string | null;
-  kota: string;
-  budgetRange: string;
-  timeline: string;
-  tagihanListrik: number;
-  estimasiHemat: number;
-  sistemKwp: number;
-  status: string;
-  installerTarget: string | null;
-  catatan: string | null;
-  createdAt: string;
-}
+import type { Lead, Installer } from "@/lib/types";
 
 const STATUS_OPTIONS = [
   "Baru",
@@ -49,12 +32,6 @@ function statusColor(s: string): string {
     default:
       return "bg-gray-100 text-gray-700 border-gray-200";
   }
-}
-
-function buildWaUrl(telepon: string): string {
-  let t = telepon.replace(/[^\d]/g, "");
-  if (t.startsWith("0")) t = "62" + t.slice(1);
-  return `https://wa.me/${t}`;
 }
 
 export function AdminLeadTable({ initialLeads }: { initialLeads: Lead[] }) {
@@ -160,7 +137,7 @@ export function AdminLeadTable({ initialLeads }: { initialLeads: Lead[] }) {
         </Select>
       </div>
 
-      <div className="overflow-x-auto rounded-xl border border-[#e5e7eb] bg-white">
+      <div className="overflow-x-auto rounded-xl border border-border bg-white">
         <table className="w-full text-sm">
           <thead>
             <tr className="bg-surface text-subtext text-xs uppercase tracking-wide">
@@ -177,7 +154,7 @@ export function AdminLeadTable({ initialLeads }: { initialLeads: Lead[] }) {
               <th className="px-3 py-3"></th>
             </tr>
           </thead>
-          <tbody className="divide-y divide-[#e5e7eb]">
+          <tbody className="divide-y divide-border">
             {filtered.length === 0 ? (
               <tr>
                 <td colSpan={11} className="px-3 py-10 text-center text-subtext">
@@ -192,7 +169,10 @@ export function AdminLeadTable({ initialLeads }: { initialLeads: Lead[] }) {
                   <td className="px-3 py-3 font-medium text-ink">
                     {l.nama}
                     {l.teleponVerified ? (
-                      <span className="ml-2 inline-block w-2 h-2 rounded-full bg-[#16a34a]" title="Telepon terverifikasi" />
+                      <span
+                        className="ml-2 inline-block w-2 h-2 rounded-full bg-accent-deep"
+                        title="Telepon terverifikasi"
+                      />
                     ) : null}
                   </td>
                   <td className="px-3 py-3">
@@ -200,7 +180,7 @@ export function AdminLeadTable({ initialLeads }: { initialLeads: Lead[] }) {
                       href={buildWaUrl(l.telepon)}
                       target="_blank"
                       rel="noopener noreferrer"
-                      className="inline-flex items-center gap-1 text-[#16a34a] hover:underline"
+                      className="inline-flex items-center gap-1 text-accent-deep hover:underline"
                     >
                       <MessageCircle className="w-3.5 h-3.5" />
                       {l.telepon}
@@ -212,7 +192,7 @@ export function AdminLeadTable({ initialLeads }: { initialLeads: Lead[] }) {
                   <td className="px-3 py-3 text-right whitespace-nowrap">
                     {formatRupiahShort(l.tagihanListrik)}
                   </td>
-                  <td className="px-3 py-3 text-right whitespace-nowrap text-[#16a34a] font-medium">
+                  <td className="px-3 py-3 text-right whitespace-nowrap text-accent-deep font-medium">
                     {formatRupiahShort(l.estimasiHemat)}
                   </td>
                   <td className="px-3 py-3">
@@ -226,7 +206,7 @@ export function AdminLeadTable({ initialLeads }: { initialLeads: Lead[] }) {
                   <td className="px-3 py-3">
                     <button
                       onClick={() => setExpanded(expanded === l.id ? null : l.id)}
-                      className="inline-flex items-center gap-1 text-xs text-[#0d3b2e] hover:underline"
+                      className="inline-flex items-center gap-1 text-xs text-primary hover:underline"
                     >
                       {expanded === l.id ? <ChevronUp className="w-4 h-4" /> : <ChevronDown className="w-4 h-4" />}
                       {expanded === l.id ? "Tutup" : "Kelola"}
@@ -238,10 +218,14 @@ export function AdminLeadTable({ initialLeads }: { initialLeads: Lead[] }) {
                     <td colSpan={11} className="px-4 py-4">
                       <div className="grid sm:grid-cols-3 gap-4 max-w-4xl">
                         <div>
-                          <label className="text-xs font-medium uppercase tracking-wide text-subtext mb-1.5 block">
+                          <label
+                            htmlFor={`lead-status-${l.id}`}
+                            className="text-xs font-medium uppercase tracking-wide text-subtext mb-1.5 block"
+                          >
                             Status
                           </label>
                           <Select
+                            id={`lead-status-${l.id}`}
                             value={l.status}
                             onChange={(e) => updateLead(l.id, { status: e.target.value })}
                           >
@@ -251,40 +235,50 @@ export function AdminLeadTable({ initialLeads }: { initialLeads: Lead[] }) {
                           </Select>
                         </div>
                         <div>
-                          <label className="text-xs font-medium uppercase tracking-wide text-subtext mb-1.5 block">
+                          <label
+                            htmlFor={`lead-installer-${l.id}`}
+                            className="text-xs font-medium uppercase tracking-wide text-subtext mb-1.5 block"
+                          >
                             Installer Target
                           </label>
                           <Input
+                            id={`lead-installer-${l.id}`}
                             defaultValue={l.installerTarget ?? ""}
                             placeholder="Nama installer"
-                            onBlur={(e) =>
-                              e.target.value !== (l.installerTarget ?? "") &&
-                              updateLead(l.id, { installerTarget: e.target.value })
-                            }
+                            onBlur={(e) => {
+                              if (e.target.value !== (l.installerTarget ?? "")) {
+                                updateLead(l.id, { installerTarget: e.target.value });
+                              }
+                            }}
                           />
                         </div>
                         <div>
-                          <label className="text-xs font-medium uppercase tracking-wide text-subtext mb-1.5 block">
+                          <span className="text-xs font-medium uppercase tracking-wide text-subtext mb-1.5 block">
                             Detail Lead
-                          </label>
+                          </span>
                           <div className="text-xs text-subtext space-y-0.5">
                             <p>Sistem: <b>{l.sistemKwp} kWp</b></p>
                             <p>Tagihan: <b>{formatRupiah(l.tagihanListrik)}/bln</b></p>
-                            <p>Hemat: <b className="text-[#16a34a]">{formatRupiah(l.estimasiHemat)}/bln</b></p>
+                            <p>Hemat: <b className="text-accent-deep">{formatRupiah(l.estimasiHemat)}/bln</b></p>
                             {l.email ? <p>Email: {l.email}</p> : null}
                           </div>
                         </div>
                         <div className="sm:col-span-3">
-                          <label className="text-xs font-medium uppercase tracking-wide text-subtext mb-1.5 block">
+                          <label
+                            htmlFor={`lead-catatan-${l.id}`}
+                            className="text-xs font-medium uppercase tracking-wide text-subtext mb-1.5 block"
+                          >
                             Catatan
                           </label>
                           <Textarea
+                            id={`lead-catatan-${l.id}`}
                             defaultValue={l.catatan ?? ""}
                             placeholder="Catatan tentang lead ini"
-                            onBlur={(e) =>
-                              e.target.value !== (l.catatan ?? "") &&
-                              updateLead(l.id, { catatan: e.target.value })
-                            }
+                            onBlur={(e) => {
+                              if (e.target.value !== (l.catatan ?? "")) {
+                                updateLead(l.id, { catatan: e.target.value });
+                              }
+                            }}
                           />
                         </div>
                       </div>
@@ -298,21 +292,6 @@ export function AdminLeadTable({ initialLeads }: { initialLeads: Lead[] }) {
       </div>
     </div>
   );
-}
-
-interface Installer {
-  id: number;
-  namaPerusahaan: string;
-  picNama: string;
-  picTelepon: string;
-  picEmail: string | null;
-  kota: string;
-  provinsi: string;
-  cakupanKota: string;
-  kapasitasBulan: string;
-  status: string;
-  catatan: string | null;
-  createdAt: string;
 }
 
 const INSTALLER_STATUS = ["Pending", "Aktif", "Tidak Aktif"];
@@ -341,7 +320,7 @@ export function AdminInstallerTable({ initialInstallers }: { initialInstallers: 
   };
 
   return (
-    <div className="overflow-x-auto rounded-xl border border-[#e5e7eb] bg-white">
+    <div className="overflow-x-auto rounded-xl border border-border bg-white">
       <table className="w-full text-sm">
         <thead>
           <tr className="bg-surface text-subtext text-xs uppercase tracking-wide">
@@ -356,7 +335,7 @@ export function AdminInstallerTable({ initialInstallers }: { initialInstallers: 
             <th className="px-3 py-3 text-left font-medium">Daftar</th>
           </tr>
         </thead>
-        <tbody className="divide-y divide-[#e5e7eb]">
+        <tbody className="divide-y divide-border">
           {installers.length === 0 ? (
             <tr>
               <td colSpan={9} className="px-3 py-10 text-center text-subtext">
@@ -374,7 +353,7 @@ export function AdminInstallerTable({ initialInstallers }: { initialInstallers: 
                   href={buildWaUrl(i.picTelepon)}
                   target="_blank"
                   rel="noopener noreferrer"
-                  className="text-[#16a34a] hover:underline"
+                  className="text-accent-deep hover:underline"
                 >
                   {i.picTelepon}
                 </a>
@@ -386,7 +365,8 @@ export function AdminInstallerTable({ initialInstallers }: { initialInstallers: 
                 <Select
                   value={i.status}
                   onChange={(e) => updateInstaller(i.id, { status: e.target.value })}
-                  className="h-9 text-xs"
+                  className="h-11 text-sm"
+                  aria-label={`Status installer ${i.namaPerusahaan}`}
                 >
                   {INSTALLER_STATUS.map((s) => (
                     <option key={s} value={s}>{s}</option>
@@ -422,7 +402,7 @@ function StatBox({
       ? "text-emerald-700"
       : "text-ink";
   return (
-    <div className="rounded-xl border border-[#e5e7eb] bg-white p-4">
+    <div className="rounded-xl border border-border bg-white p-4">
       <p className="text-xs uppercase tracking-wide text-subtext">{label}</p>
       <p className={`mt-1 text-2xl font-semibold ${valueClass}`}>{value}</p>
     </div>

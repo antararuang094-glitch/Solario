@@ -81,6 +81,8 @@ export function OTPInput({
             refs.current[i] = el;
           }}
           inputMode="numeric"
+          autoComplete={i === 0 ? "one-time-code" : "off"}
+          aria-label={`Digit ${i + 1} dari OTP`}
           maxLength={1}
           value={d}
           disabled={disabled}
@@ -89,9 +91,9 @@ export function OTPInput({
           onPaste={handlePaste}
           className={cn(
             "w-11 h-12 sm:w-12 sm:h-12 text-center text-lg font-semibold rounded-xl border bg-white text-ink",
-            "focus:outline-none focus:ring-2 focus:ring-[#16a34a]/30 focus:border-[#16a34a]",
+            "focus:outline-none focus:ring-2 focus:ring-accent-deep/30 focus:border-accent-deep",
             "disabled:bg-surface disabled:cursor-not-allowed",
-            error ? "border-red-500" : "border-[#e5e7eb]"
+            error ? "border-red-500" : "border-border"
           )}
         />
       ))}

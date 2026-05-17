@@ -8,7 +8,7 @@ export function Card({
   return (
     <div
       className={cn(
-        "rounded-xl border border-[#e5e7eb] bg-white shadow-sm",
+        "rounded-xl border border-border bg-white shadow-sm",
         className
       )}
       {...props}
@@ -58,8 +58,8 @@ export function StatCard({
       className={cn(
         "rounded-xl border p-5 shadow-sm",
         accent
-          ? "bg-[#0d3b2e] text-white border-[#0d3b2e]"
-          : "bg-white border-[#e5e7eb]"
+          ? "bg-primary text-white border-primary"
+          : "bg-white border-border"
       )}
     >
       <p

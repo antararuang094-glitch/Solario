@@ -43,6 +43,11 @@ export function LeadForm({
   const [otpSending, setOtpSending] = React.useState(false);
   const [otpVerifying, setOtpVerifying] = React.useState(false);
   const [secondsLeft, setSecondsLeft] = React.useState(0);
+  // Snapshot of the phone number we actually sent the OTP to. We MUST verify
+  // against this exact number, not whatever the user currently has typed in
+  // the form — otherwise editing the input after "Kirim OTP" would send an
+  // invalid verify request against a different number.
+  const [sentTelepon, setSentTelepon] = React.useState<string | null>(null);
 
   const {
     register,
@@ -63,11 +68,36 @@ export function LeadForm({
 
   const telepon = watch("telepon");
 
+  // OTP resend countdown — uses a deadline timestamp + single setInterval
+  // tick so we don't re-create the timer on every state change (the previous
+  // implementation rebuilt the interval 120 times during a 2-minute resend
+  // cooldown).
+  const deadlineRef = React.useRef<number | null>(null);
   React.useEffect(() => {
-    if (secondsLeft <= 0) return;
-    const t = setInterval(() => setSecondsLeft((s) => s - 1), 1000);
-    return () => clearInterval(t);
-  }, [secondsLeft]);
+    if (secondsLeft <= 0) {
+      deadlineRef.current = null;
+      return;
+    }
+    if (deadlineRef.current === null) {
+      deadlineRef.current = Date.now() + secondsLeft * 1000;
+    }
+    const id = window.setInterval(() => {
+      const remaining = Math.max(
+        0,
+        Math.ceil(((deadlineRef.current ?? Date.now()) - Date.now()) / 1000)
+      );
+      setSecondsLeft(remaining);
+      if (remaining <= 0) {
+        deadlineRef.current = null;
+        window.clearInterval(id);
+      }
+    }, 1000);
+    return () => window.clearInterval(id);
+    // We intentionally depend only on the "is countdown active" boolean, not
+    // on secondsLeft itself, so the interval is created exactly once per
+    // countdown burst.
+    // eslint-disable-next-line react-hooks/exhaustive-deps
+  }, [secondsLeft > 0]);
 
   const handleSendOtp = async () => {
     if (!telepon || telepon.length < 9) {
@@ -87,6 +117,9 @@ export function LeadForm({
         return;
       }
       setOtpStep("sent");
+      setSentTelepon(telepon);
+      // Reset deadline so the new countdown picks up the fresh duration.
+      deadlineRef.current = null;
       setSecondsLeft(120);
       if (data.devOtp) {
         toast(`OTP dev: ${data.devOtp} (cek juga console server)`, "info");
@@ -105,12 +138,16 @@ export function LeadForm({
       toast("Masukkan 6 digit OTP", "error");
       return;
     }
+    if (!sentTelepon) {
+      toast("Kirim OTP dulu sebelum verifikasi", "error");
+      return;
+    }
     setOtpVerifying(true);
     try {
       const res = await fetch("/api/otp/verify", {
         method: "POST",
         headers: { "Content-Type": "application/json" },
-        body: JSON.stringify({ telepon, otp }),
+        body: JSON.stringify({ telepon: sentTelepon, otp }),
       });
       const data = await res.json();
       if (!res.ok || !data.verified) {
@@ -181,12 +218,12 @@ export function LeadForm({
             type="tel"
             placeholder="08123456789"
             {...register("telepon")}
-            disabled={otpStep === "verified"}
+            disabled={otpStep !== "idle"}
             error={!!errors.telepon}
             className="flex-1"
           />
           {otpStep === "verified" ? (
-            <div className="inline-flex items-center gap-1.5 px-4 h-12 rounded-xl bg-[#f0fdf4] text-[#16a34a] text-sm font-medium border border-[#16a34a]/30">
+            <div className="inline-flex items-center gap-1.5 px-4 h-12 rounded-xl bg-accent-soft text-accent-deep text-sm font-medium border border-accent-deep/30">
               <ShieldCheck className="w-4 h-4" />
               Terverifikasi
             </div>
@@ -208,10 +245,25 @@ export function LeadForm({
           )}
         </div>
         <FieldError message={errors.telepon?.message} />
+        {otpStep === "sent" ? (
+          <button
+            type="button"
+            onClick={() => {
+              setOtpStep("idle");
+              setSentTelepon(null);
+              setOtp("");
+              setSecondsLeft(0);
+              deadlineRef.current = null;
+            }}
+            className="mt-1.5 text-xs text-accent-deep hover:underline"
+          >
+            Ganti nomor
+          </button>
+        ) : null}
       </div>
 
       {otpStep === "sent" ? (
-        <div className="rounded-xl border border-[#e5e7eb] bg-white p-4 space-y-3">
+        <div className="rounded-xl border border-border bg-white p-4 space-y-3">
           <div>
             <Label>Masukkan 6 digit OTP</Label>
             <p className="text-xs text-subtext mb-2">
@@ -260,15 +312,22 @@ export function LeadForm({
         </div>
       </div>
 
-      <Button
-        type="submit"
-        size="lg"
-        loading={isSubmitting}
-        disabled={otpStep !== "verified" || isSubmitting}
-        className="w-full sm:w-auto"
-      >
-        {isSubmitting ? "Mengirim..." : "Hubungkan Saya dengan Installer"}
-      </Button>
+      <div>
+        <Button
+          type="submit"
+          size="lg"
+          loading={isSubmitting}
+          disabled={otpStep !== "verified"}
+          className="w-full sm:w-auto"
+        >
+          {isSubmitting ? "Mengirim..." : "Hubungkan Saya dengan Installer"}
+        </Button>
+        {otpStep !== "verified" ? (
+          <p className="mt-2 text-xs text-subtext">
+            Verifikasi nomor WhatsApp dulu untuk mengaktifkan tombol kirim.
+          </p>
+        ) : null}
+      </div>
       <p className="text-xs text-subtext leading-relaxed">
         Dengan submit, Anda setuju dihubungi installer terverifikasi via WhatsApp. Data Anda aman dan tidak dijual ke pihak lain.
       </p>
